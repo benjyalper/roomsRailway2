@@ -246,6 +246,7 @@ async function deleteColoredCells(roomNumber, startTime, endTime) {
                     'border': '1px solid black',
                 });
                 $(this).html(''); // Remove content from the cells
+                window.location.href = '/room-schedule.html';
             });
 
             console.log('Cells deleted successfully');
