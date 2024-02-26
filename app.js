@@ -24,7 +24,7 @@ dotenv.config();
 //     console.log('Connected to the database');
 
 //     // Simple test query
-//     const [results, fields] = await connection.execute('SELECT * FROM selected_dates');
+//     const [results, fields] = await connection.execute('SELECT * FROM selected_dates_2');
 //     console.log('Query results:', results);
 // } catch (error) {
 //     console.error('Error executing query:', error);
@@ -42,7 +42,7 @@ const port = process.env.PORT || 3000;
 //     host: 'database-1.cdo2qwkw8yqi.eu-north-1.rds.amazonaws.com',
 //     user: 'Benjyalper',
 //     password: 'Ag1ag1ag1$', // replace with your actual password
-//     database: 'selected_dates',
+//     database: 'selected_dates_2',
 // });
 
 
@@ -103,13 +103,13 @@ app.post('/submit', async (req, res) => {
 
         try {
             // Insert the main event
-            await connection.execute('INSERT INTO selected_dates (selected_date, names, color, startTime, endTime, roomNumber, recurringEvent) VALUES (?, ?, ?, ?, ?, ?, ?)', [selectedDate, names, selectedColor, startTime, endTime, roomNumber, recurringEvent]);
+            await connection.execute('INSERT INTO selected_dates_2 (selected_date, names, color, startTime, endTime, roomNumber, recurringEvent) VALUES (?, ?, ?, ?, ?, ?, ?)', [selectedDate, names, selectedColor, startTime, endTime, roomNumber, recurringEvent]);
 
             if (recurringEvent) {
                 // Insert the recurring events for the next 4 weeks (adjust as needed)
                 for (let i = 1; i <= 4; i++) {
                     const nextDate = moment(selectedDate).add(i, 'weeks').format('YYYY-MM-DD');
-                    await connection.execute('INSERT INTO selected_dates (selected_date, names, color, startTime, endTime, roomNumber, recurringEvent) VALUES (?, ?, ?, ?, ?, ?, ?)', [nextDate, names, selectedColor, startTime, endTime, roomNumber, recurringEvent]);
+                    await connection.execute('INSERT INTO selected_dates_2 (selected_date, names, color, startTime, endTime, roomNumber, recurringEvent) VALUES (?, ?, ?, ?, ?, ?, ?)', [nextDate, names, selectedColor, startTime, endTime, roomNumber, recurringEvent]);
                 }
             }
 
@@ -140,7 +140,7 @@ app.delete('/deleteEntry', async (req, res) => {
         const connection = await pool.getConnection();
 
         // Execute a DELETE query in your database
-        await connection.execute('DELETE FROM selected_dates WHERE roomNumber = ? AND startTime = ?', [roomNumber, startTime]);
+        await connection.execute('DELETE FROM selected_dates_2 WHERE roomNumber = ? AND startTime = ?', [roomNumber, startTime]);
 
         connection.release();
 
@@ -158,11 +158,11 @@ app.get('/room/:roomNumber', async (req, res) => {
     try {
         // Retrieve room schedule data from MySQL database
         const connection = await pool.getConnection();
-        const [roomRows] = await connection.execute('SELECT * FROM selected_dates WHERE roomNumber = ?', [roomNumber]);
+        const [roomRows] = await connection.execute('SELECT * FROM selected_dates_2 WHERE roomNumber = ?', [roomNumber]);
 
         // Fetch data for today
         const nowMoment = moment().format('YYYY-MM-DD');
-        const [dateRows] = await connection.execute('SELECT names, color, startTime, endTime, roomNumber FROM selected_dates WHERE selected_date = ?', [nowMoment]);
+        const [dateRows] = await connection.execute('SELECT names, color, startTime, endTime, roomNumber FROM selected_dates_2 WHERE selected_date = ?', [nowMoment]);
 
         connection.release();
 
@@ -183,7 +183,7 @@ app.get('/fetchDataByDate', async (req, res) => {
         const lookupDate = req.query.date || moment().format('YYYY-MM-DD');
 
         const connection = await pool.getConnection();
-        const [rows] = await connection.execute('SELECT names, color, startTime, endTime, roomNumber FROM selected_dates WHERE selected_date = ?', [lookupDate]);
+        const [rows] = await connection.execute('SELECT names, color, startTime, endTime, roomNumber FROM selected_dates_2 WHERE selected_date = ?', [lookupDate]);
         connection.release();
 
         if (rows.length > 0) {
@@ -203,7 +203,7 @@ app.get('/dateData', async (req, res) => {
         const nowMoment = moment().format('YYYY-MM-DD');
 
         const connection = await pool.getConnection();
-        const [rows] = await connection.execute('SELECT names, color, startTime, endTime, roomNumber FROM selected_dates WHERE selected_date = ?', [nowMoment]);
+        const [rows] = await connection.execute('SELECT names, color, startTime, endTime, roomNumber FROM selected_dates_2 WHERE selected_date = ?', [nowMoment]);
         connection.release();
 
         if (rows.length > 0) {
@@ -230,7 +230,7 @@ app.post('/therapist-form', async (req, res) => {
         const connection = await pool.getConnection();
         try {
             await connection.execute(
-                'INSERT INTO selected_dates ( roomNumber, startTime, endTime) VALUES (?, ?, ?)',
+                'INSERT INTO selected_dates_2 ( roomNumber, startTime, endTime) VALUES (?, ?, ?)',
                 [roomNumber, startTime, endTime]
             );
         } finally {
@@ -254,7 +254,7 @@ app.post('/deleteRow', async (req, res) => {
         const connection = await pool.getConnection();
         try {
             // Delete the row from the database
-            await connection.execute('DELETE FROM selected_dates WHERE roomNumber = ? AND startTime = ? AND endTime = ?', [roomNumber, startTime, endTime]);
+            await connection.execute('DELETE FROM selected_dates_2 WHERE roomNumber = ? AND startTime = ? AND endTime = ?', [roomNumber, startTime, endTime]);
             res.json({ success: true });
         } finally {
             connection.release();
