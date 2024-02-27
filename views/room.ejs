@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" dir="rtl">
+<html lang="en">
 
     <head>
         <meta charset="UTF-8">
@@ -28,6 +28,7 @@
         <% const parts = timeString.split(':'); %>
         <% const hours = parseInt(parts[0], 10); %>
         <% const minutes = parseInt(parts[1], 10); %>
+        <% const seconds = parseInt(parts[2], 10); %>
         <!-- Remove seconds since they are not needed -->
         <% const result = new Date(); %>
         <% result.setHours(hours, minutes); %>
@@ -47,7 +48,7 @@
             <div class="background-container">
                 <div class="calendar-container">
                     <div class="calender-item">
-                        <%= new Date().toLocaleString('he-IL', { timeZone: 'Asia/Jerusalem', hour12: true, hour: 'numeric', minute: 'numeric' }) %>
+                        <%= new Date().toLocaleString('en-US', { timeZone: 'Asia/Jerusalem', hour12: true, hour: 'numeric', minute: 'numeric' }) %>
                     </div>
                     <div>
                         <!-- Display data for today -->
