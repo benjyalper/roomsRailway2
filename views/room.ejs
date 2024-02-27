@@ -55,8 +55,7 @@
                         <% data.forEach(row => { %>
                         <% if (row.roomNumber === roomNumber && isCurrentTimeInRange(row.startTime, row.endTime)) { %>
                         <!-- Format endTime to display only hours and minutes -->
-                        <span style="color: green;"><%= row.names %> בטיפול עד
-                            <%= parseTime(row.endTime).toLocaleTimeString('he-IL', { hour12: true, hour: 'numeric', minute: 'numeric' }) %></span>
+                        <span style="color: green;"><%= row.names %> בטיפול עד <%= row.endTime %></span>
                         <% therapistAvailable = true; %>
                         <% } %>
                         <% }); %>
