@@ -20,9 +20,12 @@
         <% const start = parseTime(startTime); %>
         <% const end = parseTime(endTime); %>
 
+        <% console.log('Current Time:', now.toLocaleString()); %>
+        <% console.log('Start Time:', start.toLocaleString()); %>
+        <% console.log('End Time:', end.toLocaleString()); %>
+
         <% return now >= start && now <= end; %>
         <% } %>
-
 
         <% function parseTime(timeString) { %>
         <% const parts = timeString.split(':'); %>
@@ -31,6 +34,8 @@
         <!-- Remove seconds since they are not needed -->
         <% const result = new Date(); %>
         <% result.setHours(hours, minutes); %>
+
+        <% console.log('Parsed Time:', result.toLocaleString()); %>
 
         <% return result; %>
         <% } %>
