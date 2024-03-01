@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="he">
+<html lang="he" dir="rtl">
 
     <head>
         <meta charset="UTF-8">
@@ -17,9 +17,19 @@
 
     <body>
         <div class="container-fluid">
-
             <nav class="navbar navbar-room-schedule">
                 <!-- <div id="lookupResult" style="display: none;"></div> -->
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false"
+                    aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div>
+                    <input type="date" id="lookupDate" onchange="fetchDataByDate()">
+                </div>
+
+                <button class="back-btn"><i class="fa fa-home fa-2x" aria-hidden="true"></i></button>
 
                 <div class="collapse navbar-collapse" id="navbarNavDropdown">
                     <ul class="navbar-nav">
@@ -37,26 +47,14 @@
                     </ul>
                 </div>
 
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                    data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false"
-                    aria-label="Toggle navigation" style="margin-left: 20px;">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-
-                <div>
-                    <input type="date" id="lookupDate" onchange="fetchDataByDate()">
-                    <label for="lookupDate">בחר/י תאריך:</label>
-                </div>
-                <div>
-                    <h1 style="font-size: 28px;">טבלת חדרים</h1>
-                </div>
-                <button class="back-btn"><i class="fa fa-home fa-2x" aria-hidden="true"></i></button>
             </nav>
+
+            <h1 id="heading">טבלת חדרים</h1>
 
             <div class="grid-container">
                 <!-- Creating the grid cells -->
                 <!-- Row 1 -->
-                <div class="grid-cell frame room"></div>
+                <div class="grid-cell frame room" style="border-radius: 0 10px 0 0;"></div>
                 <div class="grid-cell frame room" data-room-number="1">חדר 1</div>
                 <div class="grid-cell frame room" data-room-number="2">חדר 2</div>
                 <div class="grid-cell frame room" data-room-number="3">חדר 3</div>
@@ -64,7 +62,8 @@
                 <div class="grid-cell frame room" data-room-number="5">חדר 5</div>
                 <div class="grid-cell frame room" data-room-number="6">חדר 6</div>
                 <div class="grid-cell frame room" data-room-number="7">חדר 7</div>
-                <div class="grid-cell frame room" data-room-number="מטבח">מטבח</div>
+                <div class="grid-cell frame room" data-room-number="מטבח" style="border-radius: 10px 0 0;">
+                    מטבח</div>
                 <!-- column 1 -->
                 <div class="grid-cell frame cell8">8:00</div>
                 <div class="grid-cell frame cell9">9:00</div>
