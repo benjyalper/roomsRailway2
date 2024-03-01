@@ -15,6 +15,7 @@ body {
 } */
 
 .navbar-room-schedule {
+    position: fixed;
     background-color: rgb(241, 249, 239);
     /* change */
     width: 500px;
@@ -35,8 +36,8 @@ body {
     padding: 5px;
     color: rgb(135, 192, 155);
     border-color: rgb(5, 239, 107);
-    height: 50px;
-    margin-right: 5px;
+    /* height: 50px; */
+    margin-left: 20px;
     /* Add your custom styles here */
 }
 
@@ -92,4 +93,26 @@ select {
 
 #roomNumber {
     height: 2rem;
+}
+
+#selectedDate {
+    width: 12rem;
+}
+
+#heading {
+    /* margin: auto; */
+    text-align: center;
+    /* margin-top: 60px; */
+    font-size: 28px;
+    color: rgb(19, 86, 39);
+    background-color: rgb(241, 249, 239);
+    /* width: 100%; */
+    /* Set the width to the same value as the navbar */
+    /* max-width: 1200px; */
+    /* Set a max-width to prevent it from expanding indefinitely */
+    padding: 10px;
+}
+
+.navbar-toggler {
+    margin-right: 20px;
 }
