@@ -65,7 +65,7 @@ async function submitDate() {
     console.log(`Submitted Date: ${selectedDate}, Names: ${names}, Color: ${selectedColor}, Start Time: ${startTime}, End Time: ${endTime}, Room Number: ${roomNumber}, Recurring Event: ${recurringEvent}`);
 
     // Update end time options based on the selected start time
-    updateEndTimeOptions();
+    
 }
 
 // Function to update end time options based on the selected start time
