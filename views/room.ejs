@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" dir="rtl">
+<html lang="he" dir="rtl">
 
     <head>
         <meta charset="UTF-8">
@@ -20,12 +20,9 @@
         <% const start = parseTime(startTime); %>
         <% const end = parseTime(endTime); %>
 
-        <% console.log('Current Time:', now.toLocaleString()); %>
-        <% console.log('Start Time:', start.toLocaleString()); %>
-        <% console.log('End Time:', end.toLocaleString()); %>
-
         <% return now >= start && now <= end; %>
         <% } %>
+
 
         <% function parseTime(timeString) { %>
         <% const parts = timeString.split(':'); %>
@@ -35,20 +32,46 @@
         <% const result = new Date(); %>
         <% result.setHours(hours, minutes); %>
 
-        <% console.log('Parsed Time:', result.toLocaleString()); %>
-
         <% return result; %>
         <% } %>
         <div class="container-lg">
-            <nav class="navbar1">
-                <button class="back-btn"><i class="fa fa-home fa-2x" aria-hidden="true"></i></button>
+            <nav class="navbar navbar1">
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false"
+                    aria-label="Toggle navigation" style="margin-left: 10px;">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+
                 <% if (roomNumber === 'מטבח'){ %>
                 <h3 style="font-size: 28px; margin-left: 20px;"><%= roomNumber %></h3>
                 <% } else { %>
                 <h3 style="font-size: 28px; margin-left: 20px;">חדר <%= roomNumber %></h3>
                 <% } %>
-                <a class="nav-link active drop-down-to-room-form-link" href="#" aria-current="page">עריכה</a>
+
+
+                <button class="back-btn"><i class="fa fa-home fa-2x" aria-hidden="true"></i></button>
+
+
+
+                <div class="collapse navbar-collapse" id="navbarNavDropdown">
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <a class="nav-link active room-schedule-link" href="#" aria-current="page">טבלת
+                                חדרים</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active drop-down-to-room-form-link" href="#"
+                                aria-current="page">עריכה</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active cat-link" href="#" aria-current="page">הודעות</a>
+                        </li>
+                    </ul>
+                </div>
+
             </nav>
+
             <div class="background-container">
                 <div class="calendar-container">
                     <div class="calender-item">
@@ -75,6 +98,9 @@
 
         <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script> -->
         <script src='https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js'></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+            crossorigin="anonymous"></script>
         <script src="/script.js"></script>
     </body>
 

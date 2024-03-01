@@ -18,7 +18,7 @@
     margin-top: 20px;
     display: flex;
     justify-content: right;
-    gap: 33%;
+    /* gap: 33%; */
     padding: 10px;
     color: rgb(135, 192, 155);
 }
@@ -32,7 +32,7 @@
     padding: 5px;
     color: rgb(135, 192, 155);
     border-color: rgb(5, 239, 107);
-
+    margin-left: 20px;
     /* Add your custom styles here */
 }
 
@@ -72,6 +72,10 @@ p {
     font-size: larger;
 }
 
+.navbar-toggler {
+    margin-right: 20px;
+}
+
 @media screen and (max-width: 700px) {
 
     .background-container {
@@ -108,15 +112,15 @@ p {
         margin-top: 100px;
         display: flex;
         justify-content: right;
-        gap: 5%;
+        /* gap: 5%; */
         padding: 10px;
         color: rgb(135, 192, 155);
     }
 
     h3 {
-        font-size: 16px !important;
+        font-size: 18px !important;
         padding: 8px;
-        margin-right: 25px;
+        /* margin-right: 25px; */
     }
 
     a {
