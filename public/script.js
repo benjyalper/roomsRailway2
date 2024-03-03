@@ -1,6 +1,32 @@
 $(document).ready(function () {
     let currentRoomNumber;
 
+    $('.sign-out-link').on('click', function () {
+        const signOutConfirmation = confirm('האם להתנתק?');
+        if (signOutConfirmation) {
+            $.ajax({
+                type: 'GET',
+                url: '/logout', // Adjust the URL based on your server configuration
+                xhrFields: {
+                    withCredentials: true // Include credentials (cookies) in the request
+                },
+                success: function (data) {
+                    // If the logout is successful, you might want to redirect to a login page or update the UI
+                    window.location.href = '/signin'; // Redirect to your login page
+                },
+                error: function (error) {
+                    // Handle the case where logout was not successful
+                    console.error('Logout failed:', error.statusText);
+                }
+            });
+        } else {
+            console.log("same user");
+        }
+
+
+    });
+
+
     $('.room').on('click', function () {
         const room = $(this).closest('.room');
         currentRoomNumber = $(room).data('room-number');
@@ -66,7 +92,6 @@ async function submitDate() {
 
     // Update end time options based on the selected start time
     updateEndTimeOptions();
-
 }
 
 // Function to update end time options based on the selected start time
@@ -78,7 +103,7 @@ function updateEndTimeOptions() {
     endTimeSelect.empty();
 
     // Assuming you have a fixed set of available end times, adjust as needed
-    const availableEndTimes = ['08:30', '09:00', '09:30', '10:00', '10:30', '11:00', '11:30', '12:00', '12:30', '13:00', '13:30', '14:00', '14:30', '15:00', '15:30', '16:00', '16:30', '17:00', '17:30', '18:00', '18:30', '19:00'];
+    const availableEndTimes = ['08:30', '09:00', '09:30', '10:00', '10:30', '11:00', '11:30', '12:00', '12:30', '13:00', '13:30', '14:00', '14:30', '15:00', '15:30', '16:00', '16:30', '17:00', '17:30', '18:00', '18:30', '19:00', '23:30'];
 
     // Filter available end times based on the selected start time
     const filteredEndTimes = availableEndTimes.filter(endTime => moment(endTime, 'HH:mm').isAfter(moment(startTime, 'HH:mm')));
@@ -159,8 +184,20 @@ async function fetchDataByDate() {
                                 method: 'DELETE',
                             });
 
+
+                            if (response.ok) {
+                                // Handle successful deletion, if needed
+                                console.log('Entry deleted successfully');
+                            } else {
+                                const errorMessage = await response.text();
+                                // Display the error message on the page or handle it in your application
+                                console.error(`Error deleting entry: ${response.status} - ${errorMessage}`);
+                                // Example: Display the error message in an alert
+                                alert(`Error deleting entry: ${errorMessage}`);
+                            }
                         } catch (error) {
-                            console.error(error);
+                            console.error('Network error:', error);
+                            // Handle network errors, if needed
                             throw error;
                         }
                     }
@@ -199,27 +236,6 @@ async function dateData() {
     }
 }
 
-
-// Function to check if the current time is within a specified range
-// function isCurrentTimeInRange(startTime, endTime) {
-//     const now = new Date().toLocaleString('en-US', { timeZone: 'Asia/Jerusalem' });
-//     const nowDateTime = new Date(now);
-
-//     const [startHours, startMinutes, startSeconds] = startTime.split(':').map(Number);
-//     const startDateTime = new Date(nowDateTime.getFullYear(), nowDateTime.getMonth(), nowDateTime.getDate(), startHours, startMinutes, startSeconds);
-
-//     const [endHours, endMinutes, endSeconds] = endTime.split(':').map(Number);
-//     const endDateTime = new Date(nowDateTime.getFullYear(), nowDateTime.getMonth(), nowDateTime.getDate(), endHours, endMinutes, endSeconds);
-
-//     console.log(startDateTime, endDateTime)
-//     return nowDateTime >= startDateTime && nowDateTime <= endDateTime;
-// }
-
-
-// Other functions and code in your script.js file
-// $(document).ready(function () {
-//     $('#lookupDate').val(new Date().toLocaleString('en-US', { timeZone: 'Asia/Jerusalem' }).slice(0, 10));
-// });
 
 // Function to delete colored cells and corresponding row from the database
 async function deleteColoredCells(roomNumber, startTime, endTime) {

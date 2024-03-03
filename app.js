@@ -10,40 +10,57 @@ import dotenv from 'dotenv';
 import fs from 'fs/promises'; // Import the 'fs' module for file operations
 dotenv.config();
 
-
-
-// // Create a connection to the database using the promise version
-// const connection = await mysql.createConnection({
-//     host: 'roundhouse.proxy.rlwy.net',
-//     user: 'root',
-//     password: 'bg5Da-GC1aA5B1bDCCAf1bd3b65Gg2a6', // replace with your actual password
-//     database: 'railway',
-// });
-
-// try {
-//     console.log('Connected to the database');
-
-//     // Simple test query
-//     const [results, fields] = await connection.execute('SELECT * FROM selected_dates_2');
-//     console.log('Query results:', results);
-// } catch (error) {
-//     console.error('Error executing query:', error);
-// } finally {
-//     // Close the database connection
-//     await connection.end();
-// }
+import passport from 'passport';
+import { Strategy as LocalStrategy } from 'passport-local';
+import session from 'express-session';
+import flash from 'express-flash';
 
 
 const app = express();
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const port = process.env.PORT || 3000;
-// Create a connection to the database using the promise version
-// const connection = await mysql.createConnection({
-//     host: 'database-1.cdo2qwkw8yqi.eu-north-1.rds.amazonaws.com',
-//     user: 'Benjyalper',
-//     password: 'Ag1ag1ag1$', // replace with your actual password
-//     database: 'selected_dates_2',
-// });
+
+app.use(session({ secret: process.env.SESSION_SECRET, resave: false, saveUninitialized: false }));
+app.use(passport.initialize());
+app.use(passport.session());
+app.use(flash());
+
+const users = [
+    { id: 1, username: 'benjyalper', password: 'Ag1ag1ag1$', role: 'admin' },
+    { id: 2, username: 'adar', password: 'parrot', role: 'user' },
+    { id: 3, username: 'yahav', password: 'pizi', role: 'user' }
+];
+
+passport.use(new LocalStrategy((username, password, done) => {
+    const user = users.find(u => u.username === username && u.password === password);
+    if (!user) {
+        return done(null, false, { message: 'Incorrect username or password.' });
+    }
+    return done(null, user);
+}));
+
+passport.serializeUser((user, done) => {
+    done(null, user.id);
+});
+
+passport.deserializeUser((id, done) => {
+    const user = users.find(u => u.id === id);
+    done(null, user);
+});
+
+function isAuthenticated(req, res, next) {
+    if (req.isAuthenticated()) {
+        return next();
+    }
+    res.redirect('/home.html');
+}
+
+function isAdmin(req, res, next) {
+    if (req.isAuthenticated() && req.user.role === 'admin') {
+        return next();
+    }
+    res.status(403).send('Permission denied.');
+}
 
 
 const pool = mysql.createPool({
@@ -52,6 +69,7 @@ const pool = mysql.createPool({
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
     port: process.env.DB_PORT,
+    secret: process.env.SESSION_SECRET,
     waitForConnections: true,
     connectionLimit: 10,
     queueLimit: 0,
@@ -68,26 +86,39 @@ app.set('view engine', 'ejs');
 
 app.use(express.static('public'));
 
-app.get('/public/', (req, res) => {
-    res.sendFile(__dirname + '/index.html');
+app.get('/signin', (req, res) => {
+    res.redirect('/index.html');
 });
 
-app.post('/signin', (req, res) => {
-    const { username, password } = req.body;
-
-    // For simplicity, validate against hardcoded values (replace this with a database check)
-    if (username === 'benjyalper' && password === 'Ag1ag1ag1$') {
-        // req.session.user = username; // Store user in session
-        res.redirect('/home.html'); // Redirect to dashboard or any other page
-    } else {
-        res.redirect('/index.html')
-    }
+app.get('/admin', isAuthenticated, isAdmin, (req, res) => {
+    res.send('Admin Page');
 });
+
+app.post('/signin',
+    passport.authenticate('local', { successRedirect: '/home.html', failureRedirect: '/signin', failureFlash: true })
+);
+
+app.get('/logout', (req, res) => {
+    req.logout((err) => {
+        if (err) {
+            console.error('Logout error:', err);
+            return res.status(500).send('Internal Server Error');
+        }
+        res.redirect('/index.html'); // Redirect to your login page
+    });
+});
+
 
 
 // Express route to submit date, names, and color
 app.post('/submit', async (req, res) => {
     try {
+
+        if (!req.user || req.user.role !== 'admin') {
+            res.setHeader('Content-Type', 'text/plain; charset=utf-8');
+            return res.status(403).send('למשתמש זה אין הרשאה לעריכה, יש לפנות למנהל.');
+        }
+
         const selectedDate = req.body.selectedDate;
         const names = req.body.names;
         const selectedColor = req.body.selectedColor;
@@ -129,11 +160,16 @@ app.post('/submit', async (req, res) => {
 
 
 app.delete('/deleteEntry', async (req, res) => {
+
     const { roomNumber, startTime } = req.query;
 
     // Validate parameters
     if (!roomNumber || !startTime) {
         return res.status(400).send('Bad Request: Missing parameters.');
+    }
+
+    if (!req.user || req.user.role !== 'admin') {
+        return res.status(403).send('למשתמש זה אין הרשאה לעריכה, יש לפנות למנהל.');
     }
 
     try {
