@@ -58,7 +58,7 @@ $(document).ready(function () {
         alert("חתלתוללללל....!");
     });
 
-    fetchDataByDate();
+    $('#lookupDate').val(moment().format('YYYY-MM-DD'));
 
     // Update end time options when start time changes
     $('#startTime').on('change', function () {
