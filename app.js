@@ -172,7 +172,7 @@ app.delete('/deleteEntry', async (req, res) => {
         const connection = await pool.getConnection();
 
         // Directly delete the row with the specified parameters using parameterized query
-        const query = 'DELETE FROM selected_dates WHERE selected_date_2 = ? AND roomNumber = ? AND startTime = ?';
+        const query = 'DELETE FROM selected_dates_2 WHERE selected_date = ? AND roomNumber = ? AND startTime = ?';
         const [result] = await connection.execute(query, [selected_date, roomNumber, startTime]);
 
         console.log('Deletion result:', result);
