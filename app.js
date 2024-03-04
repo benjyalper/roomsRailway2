@@ -160,33 +160,34 @@ app.post('/submit', async (req, res) => {
 
 
 app.delete('/deleteEntry', async (req, res) => {
+    const { selected_date, roomNumber, startTime } = req.body;
 
-    const { roomNumber, startTime } = req.query;
+    console.log('Received request to delete entry:', { selected_date, roomNumber, startTime });
 
-    // Validate parameters
-    if (!roomNumber || !startTime) {
+    if (!selected_date || !roomNumber || !startTime) {
         return res.status(400).send('Bad Request: Missing parameters.');
-    }
-
-    if (!req.user || req.user.role !== 'admin') {
-        return res.status(403).send('למשתמש זה אין הרשאה לעריכה, יש לפנות למנהל.');
     }
 
     try {
         const connection = await pool.getConnection();
 
-        // Execute a DELETE query in your database
-        await connection.execute('DELETE FROM selected_dates_2 WHERE roomNumber = ? AND startTime = ?', [roomNumber, startTime]);
+        // Directly delete the row with the specified parameters using parameterized query
+        const query = 'DELETE FROM selected_dates WHERE selected_date_2 = ? AND roomNumber = ? AND startTime = ?';
+        const [result] = await connection.execute(query, [selected_date, roomNumber, startTime]);
+
+        console.log('Deletion result:', result);
 
         connection.release();
 
-        return res.sendStatus(200); // OK status for successful deletion
+        return res.sendStatus(200);
+
     } catch (error) {
         console.error('Error deleting entry from the database:', error);
-        return res.status(500).send('Internal Server Error');
+        return res.status(500).send(`Internal Server Error: ${error.message}`);
     }
-
 });
+
+
 
 app.get('/room/:roomNumber', async (req, res) => {
     const roomNumber = req.params.roomNumber;
