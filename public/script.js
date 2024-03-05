@@ -210,6 +210,8 @@ async function deleteEntry(selected_date, roomNumber, startTime) {
         // Clear the grid cells after successful deletion
         clearGridCells();
 
+        fetchDataByDate()
+
         alert('האירוע נמחק בהצלחה');
     } catch (error) {
         console.error('Error deleting entry:', error);
