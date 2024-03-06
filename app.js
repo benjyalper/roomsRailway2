@@ -126,6 +126,7 @@ app.post('/submit', async (req, res) => {
         const endTime = req.body.endTime;
         const roomNumber = req.body.roomNumber;
         const recurringEvent = req.body.recurringEvent || false;
+        const recurringNum = req.body.recurringNum;
 
         // Validate inputs (if needed)
 
@@ -134,13 +135,13 @@ app.post('/submit', async (req, res) => {
 
         try {
             // Insert the main event
-            await connection.execute('INSERT INTO selected_dates_2 (selected_date, names, color, startTime, endTime, roomNumber, recurringEvent) VALUES (?, ?, ?, ?, ?, ?, ?)', [selectedDate, names, selectedColor, startTime, endTime, roomNumber, recurringEvent]);
+            await connection.execute('INSERT INTO selected_dates_2 (selected_date, names, color, startTime, endTime, roomNumber, recurringEvent, recurringNum) VALUES (?, ?, ?, ?, ?, ?, ?, ?)', [selectedDate, names, selectedColor, startTime, endTime, roomNumber, recurringEvent, recurringNum]);
 
             if (recurringEvent) {
                 // Insert the recurring events for the next 4 weeks (adjust as needed)
-                for (let i = 1; i <= 4; i++) {
+                for (let i = 1; i <= `${recurringNum}`; i++) {
                     const nextDate = moment(selectedDate).add(i, 'weeks').format('YYYY-MM-DD');
-                    await connection.execute('INSERT INTO selected_dates_2 (selected_date, names, color, startTime, endTime, roomNumber, recurringEvent) VALUES (?, ?, ?, ?, ?, ?, ?)', [nextDate, names, selectedColor, startTime, endTime, roomNumber, recurringEvent]);
+                    await connection.execute('INSERT INTO selected_dates_2 (selected_date, names, color, startTime, endTime, roomNumber, recurringEvent, recurringNum) VALUES (?, ?, ?, ?, ?, ?, ?, ?)', [nextDate, names, selectedColor, startTime, endTime, roomNumber, recurringEvent, recurringNum]);
                 }
             }
 
