@@ -210,8 +210,9 @@ function updateGridCells(result) {
                 for (let i = 0; i <= checkResult.recurringNum; i++) {
                     const nextDate = moment(selectedDate).add(i, 'weeks').format('YYYY-MM-DD');
                     await deleteEntry(nextDate, result.roomNumber, result.startTime);
-                    alert('האירועים שנבחרו הוסרו בהצלחה!');
                 }
+                alert('האירועים שנבחרו הוסרו בהצלחה!');
+
             } else if (recurringDeleteConfirmation === 'ל') {
                 await deleteEntry(selectedDate, result.roomNumber, result.startTime);
                 alert('האירועים שנבחרו הוסרו בהצלחה!');
@@ -278,7 +279,7 @@ async function checkRecurringEvent(selected_date, roomNumber, startTime, recurri
         console.log('checkRecurringEvent result:', result, recurringNum);
 
         // Add an alert with recurringNum
-        alert(`Recurring Number: ${result.recurringNum}`);
+        // alert(`Recurring Number: ${result.recurringNum}`);
 
 
         return result;
