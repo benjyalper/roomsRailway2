@@ -131,7 +131,6 @@ function updateEndTimeOptions() {
     });
 }
 
-
 // Function to fetch data by date
 async function fetchDataByDate() {
     const lookupDate = $('#lookupDate').val();
@@ -194,18 +193,37 @@ function updateGridCells(result) {
         html: true
     });
 
-    cellsToColor.off('click').on('click', function handleClick() {
+    cellsToColor.off('click').on('click', async function handleClick() {
         const selectedDate = $('#lookupDate').val(); // Use the selected date from the UI
-        console.log(selectedDate);
 
         const deleteConfirmation = confirm('האם להסיר פגישה זו?');
-        if (deleteConfirmation) {
-            deleteEntry(selectedDate, result.roomNumber, result.startTime);
-            // Unbind the click event to avoid multiple executions
-            cellsToColor.off('click', handleClick);
-        } else {
-            console.log("No changes made to schedule");
+
+        // Call checkRecurringEvent function with relevant parameters
+        const checkResult = await checkRecurringEvent(selectedDate, result.roomNumber, result.startTime, result.recurringNum);
+
+        // Assuming that checkResult is an object containing information about the recurring event
+        if (checkResult.isRecurring) {
+            const recurringDeleteConfirmation = confirm(`זהו אירוע חוזר. האם למחוק את כל האירועים החוזרים?`);
+
+            if (recurringDeleteConfirmation) {
+                // Delete all instances of the recurring event
+                for (let i = 0; i <= checkResult.recurringNum; i++) {
+                    const nextDate = moment(selectedDate).add(i, 'weeks').format('YYYY-MM-DD');
+                    await deleteEntry(nextDate, result.roomNumber, result.startTime);
+                }
+            } else {
+                console.log("No changes made to schedule");
+            }
+        } else if (deleteConfirmation) {
+            // Perform the deletion only if it's a single event
+            await deleteEntry(selectedDate, result.roomNumber, result.startTime);
         }
+
+        alert('האירועים שנבחרו הוסרו בהצלחה!');
+
+        // Unbind the click event to avoid multiple executions
+        cellsToColor.off('click', handleClick);
+        fetchDataByDate()
     });
 
 }
@@ -228,10 +246,42 @@ async function deleteEntry(selected_date, roomNumber, startTime) {
 
         fetchDataByDate()
 
-        alert('האירוע נמחק בהצלחה');
     } catch (error) {
         console.error('Error deleting entry:', error);
         throw error;
+    }
+}
+
+async function checkRecurringEvent(selected_date, roomNumber, startTime, recurringNum) {
+    try {
+        console.log('Checking recurring event:', { selected_date, roomNumber, startTime, recurringNum });
+
+        const response = await fetch('/checkRecurringEvent', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ selected_date, roomNumber, startTime, recurringNum }),
+        });
+
+        if (!response.ok) {
+            throw new Error(`Server responded with status ${response.status}`);
+        }
+
+        const result = await response.json();
+
+        // Log the result to the console for debugging
+        console.log('checkRecurringEvent result:', result, recurringNum);
+
+        // Add an alert with recurringNum
+        alert(`Recurring Number: ${result.recurringNum}`);
+
+
+        return result;
+    } catch (error) {
+        console.error('Error checking recurring event:', error.message);
+        // Handle the error, e.g., show an alert to the user
+        return { isRecurring: false, isNonRecurring: false }; // Assuming a default value in case of an error
     }
 }
 
