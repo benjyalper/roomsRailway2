@@ -203,11 +203,11 @@ app.post('/checkRecurringEvent', async (req, res) => {
         console.log('Received parameters:', { selected_date, roomNumber, startTime, recurringNum });
 
         // Check if there is any recurring event for the given parameters
-        const recurringQuery = 'SELECT * FROM selected_dates WHERE selected_date = ? AND roomNumber = ? AND startTime = ? AND recurringEvent = true';
+        const recurringQuery = 'SELECT * FROM selected_dates_2 WHERE selected_date = ? AND roomNumber = ? AND startTime = ? AND recurringEvent = true';
         const [recurringResult] = await connection.execute(recurringQuery, [selected_date, roomNumber, startTime]);
 
         // Check if there is any non-recurring event for the given parameters
-        const nonRecurringQuery = 'SELECT * FROM selected_dates WHERE selected_date = ? AND roomNumber = ? AND startTime = ? AND recurringEvent = false';
+        const nonRecurringQuery = 'SELECT * FROM selected_dates_2 WHERE selected_date = ? AND roomNumber = ? AND startTime = ? AND recurringEvent = false';
         const [nonRecurringResult] = await connection.execute(nonRecurringQuery, [selected_date, roomNumber, startTime]);
 
         connection.release();
