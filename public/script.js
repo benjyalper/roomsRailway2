@@ -220,7 +220,7 @@ function updateGridCells(result) {
             } else {
                 console.log("No changes made to schedule");
             }
-        } else if (deleteConfirmation) {
+        } else {
             // Perform the deletion only if it's a single event
             await deleteEntry(selectedDate, result.roomNumber, result.startTime);
             alert('האירועים שנבחרו הוסרו בהצלחה!');
