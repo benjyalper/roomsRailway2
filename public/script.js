@@ -203,22 +203,34 @@ function updateGridCells(result) {
 
         // Assuming that checkResult is an object containing information about the recurring event
         if (checkResult.isRecurring) {
-            const recurringDeleteConfirmation = prompt(` זהו אירוע חוזר. האם למחוק את כל האירועים החוזרים (כ) ? או רק את האירוע הזה (ל)`);
+            const recurringDeleteConfirmation = await Swal.fire({
+                title: 'זהו אירוע חוזר',
+                showCancelButton: true,
+                showDenyButton: true,
+                confirmButtonText: 'מחק את כל האירועים',
+                denyButtonText: 'מחק אירוע זה בלבד',
+            });
 
-            if (recurringDeleteConfirmation === 'כ') {
-                // Delete all instances of the recurring event
-                for (let i = 0; i <= checkResult.recurringNum; i++) {
-                    const nextDate = moment(selectedDate).add(i, 'weeks').format('YYYY-MM-DD');
-                    await deleteEntry(nextDate, result.roomNumber, result.startTime);
-                }
-                alert('האירועים שנבחרו הוסרו בהצלחה!');
-
-            } else if (recurringDeleteConfirmation === 'ל') {
-                await deleteEntry(selectedDate, result.roomNumber, result.startTime);
-                alert('האירועים שנבחרו הוסרו בהצלחה!');
-
-            } else {
+            if (recurringDeleteConfirmation.isDismissed) {
+                // User clicked "Cancel" or closed the modal without choosing a specific option
                 console.log("No changes made to schedule");
+            } else {
+                // User clicked on one of the custom buttons
+                const confirmedOption = recurringDeleteConfirmation.isConfirmed ? 'deleteAll' : 'deleteThis';
+                if (confirmedOption === 'deleteAll') {
+                    // Delete all instances of the recurring event
+                    for (let i = 0; i <= checkResult.recurringNum; i++) {
+                        const nextDate = moment(selectedDate).add(i, 'weeks').format('YYYY-MM-DD');
+                        await deleteEntry(nextDate, result.roomNumber, result.startTime);
+                    }
+                    alert('האירועים שנבחרו הוסרו בהצלחה!');
+                } else if (confirmedOption === 'deleteThis') {
+                    // Delete only this instance of the recurring event
+                    await deleteEntry(selectedDate, result.roomNumber, result.startTime);
+                    alert('האירוע שנבחר הוסר בהצלחה!');
+                } else {
+                    console.log("No changes made to schedule");
+                }
             }
         } else if (deleteConfirmation) {
             // Perform the deletion only if it's a single event
@@ -228,8 +240,8 @@ function updateGridCells(result) {
 
         // Unbind the click event to avoid multiple executions
         cellsToColor.off('click', handleClick);
-
     });
+
 
 }
 
