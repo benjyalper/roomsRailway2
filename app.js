@@ -134,8 +134,6 @@ app.post('/submit', async (req, res) => {
         await connection.beginTransaction();
 
         try {
-            // Insert the main event
-            await connection.execute('INSERT INTO selected_dates_2 (selected_date, names, color, startTime, endTime, roomNumber, recurringEvent, recurringNum) VALUES (?, ?, ?, ?, ?, ?, ?, ?)', [selectedDate, names, selectedColor, startTime, endTime, roomNumber, recurringEvent, recurringNum]);
 
             if (recurringEvent) {
                 // Insert the recurring events for the next 4 weeks (adjust as needed)
@@ -143,6 +141,10 @@ app.post('/submit', async (req, res) => {
                     const nextDate = moment(selectedDate).add(i, 'weeks').format('YYYY-MM-DD');
                     await connection.execute('INSERT INTO selected_dates_2 (selected_date, names, color, startTime, endTime, roomNumber, recurringEvent, recurringNum) VALUES (?, ?, ?, ?, ?, ?, ?, ?)', [nextDate, names, selectedColor, startTime, endTime, roomNumber, recurringEvent, recurringNum]);
                 }
+            } else {
+                // Insert the main event
+                await connection.execute('INSERT INTO selected_dates_2 (selected_date, names, color, startTime, endTime, roomNumber, recurringEvent) VALUES (?, ?, ?, ?, ?, ?, ?)', [selectedDate, names, selectedColor, startTime, endTime, roomNumber, recurringEvent]);
+
             }
 
             await connection.commit();
