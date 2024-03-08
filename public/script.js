@@ -205,10 +205,11 @@ function updateGridCells(result) {
         if (checkResult.isRecurring) {
             const recurringDeleteConfirmation = await Swal.fire({
                 title: 'זהו אירוע חוזר',
-                showCancelButton: true,
                 showDenyButton: true,
                 confirmButtonText: 'מחק את כל האירועים',
                 denyButtonText: 'מחק אירוע זה בלבד',
+                showCancelButton: true,
+                cancelButtonText: 'בטל',
             });
 
             if (recurringDeleteConfirmation.isDismissed) {
