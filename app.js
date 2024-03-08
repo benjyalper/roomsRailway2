@@ -137,7 +137,7 @@ app.post('/submit', async (req, res) => {
 
             if (recurringEvent) {
                 // Insert the recurring events for the next 4 weeks (adjust as needed)
-                for (let i = 1; i < `${recurringNum}`; i++) {
+                for (let i = 0; i < `${recurringNum}`; i++) {
                     const nextDate = moment(selectedDate).add(i, 'weeks').format('YYYY-MM-DD');
                     await connection.execute('INSERT INTO selected_dates_2 (selected_date, names, color, startTime, endTime, roomNumber, recurringEvent, recurringNum) VALUES (?, ?, ?, ?, ?, ?, ?, ?)', [nextDate, names, selectedColor, startTime, endTime, roomNumber, recurringEvent, recurringNum]);
                 }
