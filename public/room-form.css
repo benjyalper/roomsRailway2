@@ -95,24 +95,12 @@ select {
     height: 2rem;
 }
 
-/* #selectedDate {
-    width: 12rem;
-} */
 
-#heading {
-    /* margin: auto; */
-    text-align: center;
-    /* margin-top: 60px; */
-    font-size: 28px;
-    color: rgb(19, 86, 39);
-    background-color: rgb(241, 249, 239);
-    /* width: 100%; */
-    /* Set the width to the same value as the navbar */
-    /* max-width: 1200px; */
-    /* Set a max-width to prevent it from expanding indefinitely */
-    padding: 10px;
-}
+@media (max-width: 1100px) {}
 
-.navbar-toggler {
-    margin-right: 20px;
+
+@media (max-width: 500px) {
+    #selectedDate {
+        width: 190px;
+    }
 }
