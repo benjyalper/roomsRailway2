@@ -231,7 +231,7 @@ select {
     }
 
     #recurringEvent {
-        margin-left: 70px;
+        justify-self: center;
     }
 
     #submitBtn {
