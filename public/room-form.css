@@ -87,7 +87,7 @@ select {
 
 #selectedColor {
     height: 2rem;
-    width: 12rem;
+    /* width: 12rem; */
     color: #0a054d;
 }
 
@@ -95,9 +95,9 @@ select {
     height: 2rem;
 }
 
-#selectedDate {
+/* #selectedDate {
     width: 12rem;
-}
+} */
 
 #heading {
     /* margin: auto; */
