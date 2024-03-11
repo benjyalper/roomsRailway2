@@ -166,9 +166,12 @@ select {
     }
 
     #back-btn {
-        width: 40px;
+        width: 60px;
     }
 
+    #navbar-toggler {
+        width: 60px !important;
+    }
 
 }
 
@@ -232,6 +235,10 @@ select {
     }
 
     #back-btn {
-        width: 40px;
+        width: 60px;
+    }
+
+    #navbar-toggler {
+        width: 60px !important;
     }
 }
