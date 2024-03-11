@@ -200,6 +200,8 @@ app.delete('/deleteEntry', async (req, res) => {
 
 app.post('/checkRecurringEvent', async (req, res) => {
     try {
+        const user = req.user;
+        const userClinic = user ? user.clinic : 'default'; // Use 'default' as a fallback
         const { selected_date, roomNumber, startTime, recurringNum } = req.body;
 
         if (!selected_date || !roomNumber || !startTime) {
@@ -246,6 +248,8 @@ app.get('/room/:roomNumber', async (req, res) => {
     const roomNumber = req.params.roomNumber;
 
     try {
+        const user = req.user;
+        const userClinic = user ? user.clinic : 'default'; // Use 'default' as a fallback
         // Retrieve room schedule data from MySQL database
         const connection = await pool.getConnection();
         const [roomRows] = await connection.execute(`SELECT * FROM selected_dates_2_${userClinic} WHERE roomNumber = ?`, [roomNumber]);
@@ -270,6 +274,8 @@ app.get('/room/:roomNumber', async (req, res) => {
 // Express route to fetch all data for a specific date
 app.get('/fetchDataByDate', async (req, res) => {
     try {
+        const user = req.user;
+        const userClinic = user ? user.clinic : 'default'; // Use 'default' as a fallback
         const lookupDate = req.query.date || moment().format('YYYY-MM-DD');
 
         const connection = await pool.getConnection();
