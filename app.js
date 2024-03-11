@@ -26,9 +26,9 @@ app.use(passport.session());
 app.use(flash());
 
 const users = [
-    { id: 1, username: 'admin', password: 'admin', role: 'admin' },
-    { id: 2, username: 'adar', password: 'parrot', role: 'user' },
-    { id: 3, username: 'yahav', password: 'pizi', role: 'user' }
+    { id: 1, username: 'admin', password: 'admin', role: 'admin', clinic: 'clalit' },
+    { id: 2, username: 'admin1', password: 'admin1', role: 'admin', clinic: 'marbah' },
+    { id: 3, username: 'user2', password: 'user2', role: 'user', clinic: 'green' }
 ];
 
 passport.use(new LocalStrategy((username, password, done) => {
@@ -114,6 +114,10 @@ app.get('/logout', (req, res) => {
 app.post('/submit', async (req, res) => {
     try {
 
+        // Retrieve user's clinic
+        const user = req.user;
+        const userClinic = user ? user.clinic : 'default'; // Use 'default' as a fallback
+
         if (!req.user || req.user.role !== 'admin') {
             res.setHeader('Content-Type', 'text/plain; charset=utf-8');
             return res.status(403).send('למשתמש זה אין הרשאה לעריכה, יש לפנות למנהל.');
@@ -139,11 +143,11 @@ app.post('/submit', async (req, res) => {
                 // Insert the recurring events for the next 4 weeks (adjust as needed)
                 for (let i = 0; i < `${recurringNum}`; i++) {
                     const nextDate = moment(selectedDate).add(i, 'weeks').format('YYYY-MM-DD');
-                    await connection.execute('INSERT INTO selected_dates_2 (selected_date, names, color, startTime, endTime, roomNumber, recurringEvent, recurringNum) VALUES (?, ?, ?, ?, ?, ?, ?, ?)', [nextDate, names, selectedColor, startTime, endTime, roomNumber, recurringEvent, recurringNum]);
+                    await connection.execute('INSERT INTO selected_dates_2_${userClinic} (selected_date, names, color, startTime, endTime, roomNumber, recurringEvent, recurringNum) VALUES (?, ?, ?, ?, ?, ?, ?, ?)', [nextDate, names, selectedColor, startTime, endTime, roomNumber, recurringEvent, recurringNum]);
                 }
             } else {
                 // Insert the main event
-                await connection.execute('INSERT INTO selected_dates_2 (selected_date, names, color, startTime, endTime, roomNumber, recurringEvent) VALUES (?, ?, ?, ?, ?, ?, ?)', [selectedDate, names, selectedColor, startTime, endTime, roomNumber, recurringEvent]);
+                await connection.execute('INSERT INTO selected_dates_2_${userClinic} (selected_date, names, color, startTime, endTime, roomNumber, recurringEvent) VALUES (?, ?, ?, ?, ?, ?, ?)', [selectedDate, names, selectedColor, startTime, endTime, roomNumber, recurringEvent]);
 
             }
 
@@ -172,10 +176,13 @@ app.delete('/deleteEntry', async (req, res) => {
     }
 
     try {
+        // Retrieve user's clinic
+        const user = req.user;
+        const userClinic = user ? user.clinic : 'default'; // Use 'default' as a fallback
         const connection = await pool.getConnection();
 
         // Directly delete the row with the specified parameters using parameterized query
-        const query = 'DELETE FROM selected_dates_2 WHERE selected_date = ? AND roomNumber = ? AND startTime = ?';
+        const query = 'DELETE FROM selected_dates_2_${userClinic} WHERE selected_date = ? AND roomNumber = ? AND startTime = ?';
         const [result] = await connection.execute(query, [selected_date, roomNumber, startTime]);
 
         console.log('Deletion result:', result);
@@ -205,11 +212,11 @@ app.post('/checkRecurringEvent', async (req, res) => {
         console.log('Received parameters:', { selected_date, roomNumber, startTime, recurringNum });
 
         // Check if there is any recurring event for the given parameters
-        const recurringQuery = 'SELECT * FROM selected_dates_2 WHERE selected_date = ? AND roomNumber = ? AND startTime = ? AND recurringEvent = true';
+        const recurringQuery = 'SELECT * FROM selected_dates_2_${userClinic} WHERE selected_date = ? AND roomNumber = ? AND startTime = ? AND recurringEvent = true';
         const [recurringResult] = await connection.execute(recurringQuery, [selected_date, roomNumber, startTime]);
 
         // Check if there is any non-recurring event for the given parameters
-        const nonRecurringQuery = 'SELECT * FROM selected_dates_2 WHERE selected_date = ? AND roomNumber = ? AND startTime = ? AND recurringEvent = false';
+        const nonRecurringQuery = 'SELECT * FROM selected_dates_2_${userClinic} WHERE selected_date = ? AND roomNumber = ? AND startTime = ? AND recurringEvent = false';
         const [nonRecurringResult] = await connection.execute(nonRecurringQuery, [selected_date, roomNumber, startTime]);
 
         connection.release();
@@ -241,11 +248,11 @@ app.get('/room/:roomNumber', async (req, res) => {
     try {
         // Retrieve room schedule data from MySQL database
         const connection = await pool.getConnection();
-        const [roomRows] = await connection.execute('SELECT * FROM selected_dates_2 WHERE roomNumber = ?', [roomNumber]);
+        const [roomRows] = await connection.execute('SELECT * FROM selected_dates_2_${userClinic} WHERE roomNumber = ?', [roomNumber]);
 
         // Fetch data for today
         const nowMoment = moment().format('YYYY-MM-DD');
-        const [dateRows] = await connection.execute('SELECT names, color, startTime, endTime, roomNumber FROM selected_dates_2 WHERE selected_date = ?', [nowMoment]);
+        const [dateRows] = await connection.execute('SELECT names, color, startTime, endTime, roomNumber FROM selected_dates_2_${userClinic} WHERE selected_date = ?', [nowMoment]);
 
         connection.release();
 
@@ -266,7 +273,7 @@ app.get('/fetchDataByDate', async (req, res) => {
         const lookupDate = req.query.date || moment().format('YYYY-MM-DD');
 
         const connection = await pool.getConnection();
-        const [rows] = await connection.execute('SELECT selected_date, names, color, startTime, endTime, roomNumber FROM selected_dates_2 WHERE selected_date = ?', [lookupDate]);
+        const [rows] = await connection.execute('SELECT selected_date, names, color, startTime, endTime, roomNumber FROM selected_dates_2_${userClinic} WHERE selected_date = ?', [lookupDate]);
         connection.release();
 
         if (rows.length > 0) {
