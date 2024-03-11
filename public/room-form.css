@@ -156,6 +156,10 @@ select {
         height: 40px;
     }
 
+    #recurringEvent {
+        justify-self: center;
+    }
+
     #submitBtn {
         width: 100%;
         height: 40px;
@@ -201,13 +205,17 @@ select {
     }
 
     #selectedDate {
-        width: 100%;
+        width: 200px;
         height: 40px;
     }
 
     #selectedColor {
         width: 100%;
         height: 40px;
+    }
+
+    #recurringEvent {
+        justify-self: center;
     }
 
     #submitBtn {
