@@ -173,6 +173,10 @@ select {
         width: 60px !important;
     }
 
+    .navbar-toggler-icon {
+        width: 25px;
+    }
+
 }
 
 
@@ -240,5 +244,9 @@ select {
 
     #navbar-toggler {
         width: 60px !important;
+    }
+
+    .navbar-toggler-icon {
+        width: 25px;
     }
 }
