@@ -28,7 +28,7 @@ app.use(flash());
 const users = [
     { id: 1, username: 'admin', password: 'admin', role: 'admin', clinic: 'clalit' },
     { id: 2, username: 'admin1', password: 'admin1', role: 'admin', clinic: 'marbah' },
-    { id: 3, username: 'user2', password: 'user2', role: 'user', clinic: 'green' }
+    { id: 3, username: 'user', password: 'user', role: 'user', clinic: 'green' }
 ];
 
 passport.use(new LocalStrategy((username, password, done) => {
