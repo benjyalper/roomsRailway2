@@ -171,7 +171,6 @@ app.delete('/deleteEntry', async (req, res) => {
 
     if (!req.user || req.user.role !== 'admin') {
         res.setHeader('Content-Type', 'text/plain; charset=utf-8');
-        alert('למשתמש זה אין הרשאה לעריכה, יש לפנות למנהל.')
         return res.status(403).send('למשתמש זה אין הרשאה לעריכה, יש לפנות למנהל.');
     }
 
