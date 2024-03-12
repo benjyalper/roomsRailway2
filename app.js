@@ -26,8 +26,8 @@ app.use(passport.session());
 app.use(flash());
 
 const users = [
-    { id: 1, username: 'admin', password: 'admin', role: 'admin', clinic: 'clalit' },
-    { id: 2, username: 'admin1', password: 'admin1', role: 'admin', clinic: 'marbah' },
+    { id: 1, username: 'admin', password: 'admin', role: 'admin', clinic: 'marbah' },
+    { id: 2, username: 'admin1', password: 'admin1', role: 'admin', clinic: 'clalit' },
     { id: 3, username: 'user', password: 'user', role: 'user', clinic: 'green' }
 ];
 
