@@ -168,6 +168,12 @@ app.post('/submit', async (req, res) => {
 
 
 app.delete('/deleteEntry', async (req, res) => {
+
+    if (!req.user || req.user.role !== 'admin') {
+        res.setHeader('Content-Type', 'text/plain; charset=utf-8');
+        return res.status(403).send('למשתמש זה אין הרשאה לעריכה, יש לפנות למנהל.');
+    }
+
     const { selected_date, roomNumber, startTime } = req.body;
 
     console.log('Received request to delete entry:', { selected_date, roomNumber, startTime });
