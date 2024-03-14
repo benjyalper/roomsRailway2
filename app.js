@@ -144,15 +144,17 @@ app.post('/submit', async (req, res) => {
         await connection.beginTransaction();
 
         try {
+
             if (recurringEvent) {
                 // Insert the recurring events for the next 4 weeks (adjust as needed)
-                for (let i = 0; i < recurringNum; i++) {
+                for (let i = 0; i < `${recurringNum}`; i++) {
                     const nextDate = moment(selectedDate).add(i, 'weeks').format('YYYY-MM-DD');
                     await connection.execute(`INSERT INTO selected_dates_2_${userClinic} (selected_date, names, color, startTime, endTime, roomNumber, recurringEvent, recurringNum) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`, [nextDate, names, selectedColor, startTime, endTime, roomNumber, recurringEvent, recurringNum]);
                 }
             } else {
                 // Insert the main event
                 await connection.execute(`INSERT INTO selected_dates_2_${userClinic} (selected_date, names, color, startTime, endTime, roomNumber, recurringEvent) VALUES (?, ?, ?, ?, ?, ?, ?)`, [selectedDate, names, selectedColor, startTime, endTime, roomNumber, recurringEvent]);
+
             }
 
             await connection.commit();
@@ -168,6 +170,7 @@ app.post('/submit', async (req, res) => {
         res.status(500).send('Internal Server Error');
     }
 });
+
 
 app.delete('/deleteEntry', async (req, res) => {
 
