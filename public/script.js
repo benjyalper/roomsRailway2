@@ -51,7 +51,7 @@ $(document).ready(function () {
     });
 
     $('.cat-link').click(function () {
-        window.location.href = '/cat.html';
+        window.location.href = '/messages.html';
     });
 
     $('.cat').on('click', function () {
@@ -79,6 +79,15 @@ $(document).ready(function () {
             $(recurringNoLabel).css('visibility', 'hidden');
         }
     });
+
+    // Handle form submission
+    $('form').submit(function (event) {
+        event.preventDefault(); // Prevent the default form submission
+        submitMessage(); // Call the submitMessage function
+    });
+
+    // Call the function to display the last 10 messages when the page is loaded
+    displayLast10Messages();
 
 });
 
@@ -312,6 +321,172 @@ async function getDataByDate(date) {
     } catch (error) {
         console.error('Error fetching data by date:', error);
         throw error;
+    }
+}
+
+
+//mesages section
+
+async function displayLast10Messages() {
+    try {
+        const response = await fetch('/get_last_messages');
+
+        if (!response.ok) {
+            throw new Error(`Server responded with status ${response.status}`);
+        }
+
+        const { messages, messageIds } = await response.json();
+
+        // Check if 'messages' and 'messageIds' are arrays
+        if (!Array.isArray(messages) || !Array.isArray(messageIds) || messages.length !== messageIds.length) {
+            throw new Error('Invalid response format: messages or messageIds is not a valid array');
+        }
+
+        // Assuming messages is an array of message strings
+        const toDoItems = $(".to-do-items");
+
+        // Clear existing messages
+        toDoItems.empty();
+
+        $('.to-do-items').on('click', '.fa-trash', async function () {
+            const divParent = $(this).closest('.item');
+            const index = divParent.attr('data-index');
+
+            // Confirm deletion with the user
+            const confirmation = confirm('האם למחוק את ההודעה?');
+
+            if (confirmation) {
+                const messageId = messageIds[index];
+
+                // Remove the message from the database
+                console.log('Deleting message with ID:', messageId);
+                const response = await fetch('/delete_message', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ messageId: messageId.toString() }),
+                });
+
+                if (response.ok) {
+                    // Remove the message from the UI
+                    divParent.addClass('animate__slideOutLeft');
+                    setTimeout(function () {
+                        location.reload();
+                    }, 1200);
+                } else {
+                    alert('שגיאה במחיקת ההודעה');
+                }
+            }
+        });
+
+        // Display the last 10 messages
+        messages.forEach((message, index) => {
+            const divParent = $("<div>").addClass("item").addClass("animate__animated").html('<div>' + message + '</div>');
+            const checkIcon = $("<i>").addClass("fas fa-check-square").css("color", "lightgray").on("click", function () {
+                $(this).css("color", "limegreen");
+            });
+
+            const trashIcon = $("<i>").addClass("fas fa-trash").css("color", "darkgrey")
+
+            const divChild = $("<div>").append(checkIcon, trashIcon);
+            divParent.append(divChild);
+
+            // Set data-index attribute with the index
+            divParent.attr('data-index', index);
+
+            toDoItems.append(divParent);
+        });
+
+    } catch (error) {
+        console.error('Error fetching or displaying messages:', error);
+        alert('Error fetching or displaying messages');
+    }
+}
+
+
+
+
+async function submitMessage() {
+    const messageInput = $("#input").val();
+
+    // Check if the message is not empty
+    if (messageInput.trim() === "") {
+        alert("הודעה לא יכולה להיות ריקה");
+        return;
+    }
+
+    const response = await fetch('/submit_message', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ input: messageInput }),
+    });
+
+    const result = await response.json(); // Parse the response JSON
+
+    // Display the submitted message
+    const toDoItems = $(".to-do-items");
+    const divParent = $("<div>").addClass("item").addClass("animate__animated animate__bounce").html('<div>' + messageInput + '</div>');
+    const checkIcon = $("<i>").addClass("fas fa-check-square").css("color", "lightgray").on("click", function () {
+        $(this).css("color", "limegreen")
+    });
+
+
+    const trashIcon = $("<i>").addClass("fas fa-trash").css("color", "darkgrey").on("click", function () {
+        const messageId = result.messageId; // Get the messageId from the result
+        divParent.attr('data-id', messageId); // Set the data-id attribute
+        deleteMessage(messageId, divParent);
+    });
+
+    const divChild = $("<div>").append(checkIcon, trashIcon);
+    divParent.append(divChild);
+
+    // Prepend the new message at the top
+    toDoItems.prepend(divParent);
+
+    // Clear the input field
+    $("#input").val('');
+}
+
+
+// Function to delete a message
+async function deleteMessage(messageId, divParent) {
+    try {
+        console.log('Deleting message with ID:', messageId);
+
+        // Check if messageId is available
+        if (messageId) {
+            const response = await fetch('/delete_message', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ messageId: parseInt(messageId, 10) }), // Convert to integer
+            });
+
+            if (response.ok) {
+                // Remove the message from the UI if it exists
+                const divParent = $(".to-do-items").find(`[data-id="${messageId}"]`);
+                if (divParent.length > 0) {
+                    divParent.addClass('animate__slideOutLeft');
+                    setTimeout(function () {
+                        location.reload();
+                    }, 1200);
+                }
+            } else {
+                // Log the error details
+                console.error('Error deleting the message:', response.status, response.statusText);
+                alert('Error deleting the message');
+            }
+        } else {
+            console.error('Invalid messageId:', messageId);
+            alert('Error deleting the message');
+        }
+    } catch (error) {
+        console.error('Unexpected error during message deletion:', error);
+        alert('Unexpected error during message deletion');
     }
 }
 

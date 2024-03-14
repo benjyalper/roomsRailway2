@@ -300,6 +300,118 @@ app.get('/fetchDataByDate', async (req, res) => {
     }
 });
 
+//messages routes
+
+app.post('/submit_message', async (req, res) => {
+    try {
+        // Check for authentication if needed
+        // if (!req.user || req.user.role !== 'admin') {
+        //     return res.status(403).send('למשתמש זה אין הרשאה לעריכה, יש לפנות למנהל.');
+        // }
+
+        const message = req.body.input;
+
+        const connection = await pool.getConnection();
+        await connection.beginTransaction();
+
+        try {
+            // Fix the table name from 'messsages' to 'messages'
+            const [result] = await connection.execute('INSERT INTO messages_marbah (message) VALUES (?)', [message]);
+
+            // Get the inserted message ID
+            const messageId = result.insertId;
+
+            // Commit the transaction
+            await connection.commit();
+
+            // Send a success response with the messageId
+            res.status(200).json({ messageId: messageId });
+        } catch (error) {
+            // Rollback the transaction in case of an error
+            await connection.rollback();
+
+            // Log the detailed error for debugging purposes
+            console.error('Error inserting message:', error);
+
+            // Send a detailed error response
+            res.status(500).json({ error: error.message || 'Internal Server Error' });
+        } finally {
+            // Release the database connection
+            connection.release();
+        }
+    } catch (error) {
+        // Catch any errors that occur during the initial try block
+        console.error(error);
+
+        // Send a detailed error response
+        res.status(500).json({ error: error.message || 'Internal Server Error' });
+    }
+});
+
+// Express route to delete a message
+app.post('/delete_message', async (req, res) => {
+    try {
+        const messageId = req.body.messageId;
+        console.log(messageId)
+
+        // Validate messageId (add your validation logic here)
+        if (!messageId || isNaN(messageId)) {
+            return res.status(400).send('Invalid message ID');
+        }
+
+        const connection = await pool.getConnection();
+        await connection.beginTransaction();
+
+        try {
+            // Use correct table name 'messages' in the SQL query
+            await connection.execute('DELETE FROM messages_marbah WHERE id = ?', [parseInt(messageId)]);
+
+            // Commit the transaction
+            await connection.commit();
+
+            // Send a success response
+            res.status(200).send('Message deleted successfully!');
+        } catch (error) {
+            // Rollback the transaction in case of an error
+            await connection.rollback();
+
+            // Log the error for debugging purposes
+            console.error(error);
+
+            // Send an error response
+            res.status(500).send('Internal Server Error');
+        } finally {
+            // Release the database connection
+            connection.release();
+        }
+    } catch (error) {
+        // Catch any errors that occur during the initial try block
+        console.error(error);
+
+        // Send an error response
+        res.status(500).send('Internal Server Error');
+    }
+});
+// Server-side route to get the last 10 messages
+app.get('/get_last_messages', async (req, res) => {
+    try {
+        const [rows] = await pool.query('SELECT * FROM messages_marbah ORDER BY id DESC LIMIT 10');
+        const messages = rows.map(row => row.message); // Extract the 'message' field
+        const messageIds = rows.map(row => row.id);
+
+        console.log('Messages retrieved:', messages);
+        console.log('Message IDs retrieved:', messageIds);
+
+        // Send an array of objects containing both messages and corresponding IDs
+        res.status(200).json({ messages, messageIds });
+    } catch (error) {
+        console.error('Error fetching last messages:', error);
+        console.error(error.stack); // Log the stack trace
+        res.status(500).json({ error: error.message || 'Internal Server Error' });
+    }
+});
+
+
 app.listen(port, '0.0.0.0', () => {
     console.log(`Server is running on http://0.0.0.0:${port}`);
 });
