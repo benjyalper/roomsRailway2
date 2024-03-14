@@ -189,12 +189,12 @@ form {
         margin: 10px 0;
     }
 
-    .user-input {
+    /* .user-input {
         width: 100%;
-    }
+    } */
 
     .to-do-items {
-        width: 100%;
+        width: 250px;
     }
 }
 
@@ -213,7 +213,12 @@ form {
     .user-input {
         width: 74%;
     }
+
+    .to-do-items {
+        width: 200px;
+    }
 }
+
 
 @media(max-width:320px) {
     .user-input {
