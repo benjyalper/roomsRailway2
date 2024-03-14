@@ -175,6 +175,11 @@ form {
 }
 
 @media(max-width:768px) {
+    .form-container {
+        margin-top: 1vh;
+
+    }
+
     .nav {
         align-items: center;
         flex-direction: auto;
@@ -194,6 +199,17 @@ form {
 }
 
 @media(max-width:480px) {
+
+    .form-container {
+        width: 90%;
+
+    }
+
+    .navbar {
+        width: 70%;
+        gap: 10px;
+    }
+
     .user-input {
         width: 74%;
     }
