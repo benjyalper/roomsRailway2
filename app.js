@@ -310,6 +310,9 @@ app.get('/fetchDataByDate', async (req, res) => {
 app.post('/submit_message', async (req, res) => {
     try {
 
+        const user = req.user;
+        const userClinic = user ? user.clinic : 'default'; // Use 'default' as a fallback
+
         //Check for authentication if needed
         // if (!req.user || req.user.role !== 'admin') {
         //     return res.status(403).send('למשתמש זה אין הרשאה לעריכה, יש לפנות למנהל.');
@@ -321,8 +324,10 @@ app.post('/submit_message', async (req, res) => {
         await connection.beginTransaction();
 
         try {
+
+
             // Fix the table name from 'messsages' to 'messages'
-            const [result] = await connection.execute('INSERT INTO messages_marbah (message) VALUES (?)', [message]);
+            const [result] = await connection.execute(`INSERT INTO messages_${userClinic} (message) VALUES (?)`, [message]);
 
             // Get the inserted message ID
             const messageId = result.insertId;
@@ -358,6 +363,9 @@ app.post('/submit_message', async (req, res) => {
 app.post('/delete_message', async (req, res) => {
     try {
 
+        const user = req.user;
+        const userClinic = user ? user.clinic : 'default'; // Use 'default' as a fallback
+
         if (!req.user || req.user.role !== 'admin') {
             res.setHeader('Content-Type', 'text/plain; charset=utf-8');
             return res.status(403).send('למשתמש זה אין הרשאה לעריכה, יש לפנות למנהל.');
@@ -376,7 +384,7 @@ app.post('/delete_message', async (req, res) => {
 
         try {
             // Use correct table name 'messages' in the SQL query
-            await connection.execute('DELETE FROM messages_marbah WHERE id = ?', [parseInt(messageId)]);
+            await connection.execute(`DELETE FROM messages_${userClinic} WHERE id = ?`, [parseInt(messageId)]);
 
             // Commit the transaction
             await connection.commit();
@@ -407,7 +415,11 @@ app.post('/delete_message', async (req, res) => {
 // Server-side route to get the last 10 messages
 app.get('/get_last_messages', async (req, res) => {
     try {
-        const [rows] = await pool.query('SELECT * FROM messages_marbah ORDER BY id DESC LIMIT 10');
+
+        const user = req.user;
+        const userClinic = user ? user.clinic : 'default'; // Use 'default' as a fallback
+
+        const [rows] = await pool.query(`SELECT * FROM messages_${userClinic} ORDER BY id DESC LIMIT 10`);
         const messages = rows.map(row => row.message); // Extract the 'message' field
         const messageIds = rows.map(row => row.id);
 
