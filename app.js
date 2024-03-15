@@ -134,7 +134,7 @@ app.post('/submit', async (req, res) => {
         const recurringEvent = req.body.recurringEvent || false;
         let recurringNum = parseInt(req.body.recurringNum);
 
-        if (isNaN(recurringNum) || recurringNum < 1 || recurringNum > 12) {
+        if (isNaN(recurringNum) || recurringNum < 1 || recurringNum > 40) {
             return res.status(400).send('Invalid recurringNum. Must be a number between 1 and 12.');
         }
 
