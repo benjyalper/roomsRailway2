@@ -309,7 +309,8 @@ app.get('/fetchDataByDate', async (req, res) => {
 
 app.post('/submit_message', async (req, res) => {
     try {
-        // Check for authentication if needed
+
+        //Check for authentication if needed
         // if (!req.user || req.user.role !== 'admin') {
         //     return res.status(403).send('למשתמש זה אין הרשאה לעריכה, יש לפנות למנהל.');
         // }
@@ -356,6 +357,12 @@ app.post('/submit_message', async (req, res) => {
 // Express route to delete a message
 app.post('/delete_message', async (req, res) => {
     try {
+
+        if (!req.user || req.user.role !== 'admin') {
+            res.setHeader('Content-Type', 'text/plain; charset=utf-8');
+            return res.status(403).send('למשתמש זה אין הרשאה לעריכה, יש לפנות למנהל.');
+        }
+
         const messageId = req.body.messageId;
         console.log(messageId)
 
