@@ -117,8 +117,8 @@ app.post('/submit', async (req, res) => {
 
         // Retrieve user's clinic
         const user = req.user;
-        const userClinic = user && user.clinic;
-        // Use 'default' as a fallback
+        const userClinic = user ? user.clinic : 'default'; // Use 'default' as a fallback
+        // Use 'default' as a fallback אולי זה יוצר באג
 
         if (!req.user || req.user.role !== 'admin') {
             res.setHeader('Content-Type', 'text/plain; charset=utf-8');
