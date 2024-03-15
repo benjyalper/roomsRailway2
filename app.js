@@ -135,7 +135,7 @@ app.post('/submit', async (req, res) => {
         let recurringNum = parseInt(req.body.recurringNum);
 
         if (isNaN(recurringNum) || recurringNum < 1 || recurringNum > 40) {
-            return res.status(400).send('Invalid recurringNum. Must be a number between 1 and 12.');
+            return res.status(400).send('מספר החזרות המירבי הוא 40.');
         }
 
         // Validate inputs (if needed)
