@@ -105,7 +105,7 @@ async function submitDate() {
     // Check if names is equal to "פנוי"
     if (names === "פנוי") {
         // Construct the message to be submitted
-        const messageInput = `${roomNumber} פנוי בתאריך ${selectedDate} בשעות ${startTime} - ${endTime}`;
+        const messageInput = `חדר ${roomNumber} פנוי בתאריך ${selectedDate} בשעות ${startTime} - ${endTime}`;
 
         // Submit the message
         await submitMessageWithMessage(messageInput);
