@@ -151,7 +151,7 @@ async function submitMessageWithMessage(messageInput) {
 
 // Function to update end time options based on the selected start time
 function updateEndTimeOptions() {
-    const startTime = $('#startTime').val();
+    const startTime = $('#startTime');
     const endTimeSelect = $('#endTime');
 
     // Clear existing options
