@@ -96,7 +96,7 @@ async function submitDate() {
     const selectedDate = $('#selectedDate').val();
     const names = $('#names').val();
     const selectedColor = $('#selectedColor').val();
-    const startTime = $('#startTime');
+    const startTime = $('#startTime').val();
     const endTime = $('#endTime').val();
     const roomNumber = $('#roomNumber').val();
     const recurringEvent = $('#recurringEvent').is(':checked');
