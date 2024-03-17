@@ -194,10 +194,10 @@ function updateGridCells(result) {
 
     if (result.names === "פנוי") {
 
-        const middleContent = '<div class="therapist-name" style="font-size: 28px; color: black;">' + result.names + '</div>';
+        const middleContent = '<div class="therapist-name" style="font-size: 24px; color: black;">' + result.names + '</div>';
         middleCell.html(middleContent);
     } else {
-        const middleContent = '<div class="therapist-name" "style="font-size: 28px;">' + result.names + '</div>';
+        const middleContent = '<div class="therapist-name" style="font-size: 24px;">' + result.names + '</div>';
         middleCell.html(middleContent);
     }
 
