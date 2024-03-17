@@ -134,9 +134,6 @@ app.post('/submit', async (req, res) => {
         const recurringEvent = req.body.recurringEvent || false;
         let recurringNum = parseInt(req.body.recurringNum);
 
-        if (isNaN(recurringNum) || recurringNum < 1 || recurringNum > 40) {
-            return res.status(400).send('מספר החזרות המירבי הוא 40.');
-        }
 
         // Validate inputs (if needed)
 
@@ -146,6 +143,10 @@ app.post('/submit', async (req, res) => {
         try {
 
             if (recurringEvent) {
+                if (isNaN(recurringNum) || recurringNum < 1 || recurringNum > 40) {
+                    return res.status(400).send('מספר החזרות המירבי הוא 40.');
+                }
+
                 // Insert the recurring events for the next 4 weeks (adjust as needed)
                 for (let i = 0; i < `${recurringNum}`; i++) {
                     const nextDate = moment(selectedDate).add(i, 'weeks').format('YYYY-MM-DD');
