@@ -192,9 +192,16 @@ function updateGridCells(result) {
     const middleCellIndex = Math.floor(cellsToColor.length / 2);
     const middleCell = cellsToColor.eq(middleCellIndex);
 
+    if (result.names === "פנוי") {
+
+        const middleContent = '<div class="therapist-name" style="font-size: 28px; color: black;">' + result.names + '</div>';
+        middleCell.html(middleContent);
+    } else {
+        const middleContent = '<div class="therapist-name" "style="font-size: 28px;">' + result.names + '</div>';
+        middleCell.html(middleContent);
+    }
+
     // Add content to the cell
-    const middleContent = '<div class="therapist-name" "style="font-size: 28px;">' + result.names + '</div>';
-    middleCell.html(middleContent);
 
     cellsToColor.tooltip({
         title: 'מטפל/ת: ' + result.names + ' ' + 'חדר: ' + result.roomNumber + '<br>' + 'לחצ/י להסרה',
