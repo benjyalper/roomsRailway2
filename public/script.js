@@ -102,6 +102,16 @@ async function submitDate() {
     const recurringEvent = $('#recurringEvent').is(':checked');
     const recurringNum = $('#recurringNum').val();
 
+    // Check if names is equal to "פנוי"
+    if (names === "פנוי") {
+        // Construct the message to be submitted
+        const messageInput = `${names} מפנה את חדר ${roomNumber} בתאריך ${selectedDate} בשעות ${startTime} - ${endTime}`;
+
+        // Submit the message
+        await submitMessageWithMessage(messageInput);
+    }
+
+    // Submit the date as usual
     const response = await fetch('/submit', {
         method: 'POST',
         headers: {
@@ -119,6 +129,25 @@ async function submitDate() {
     // Update end time options based on the selected start time
     updateEndTimeOptions();
 }
+
+async function submitMessageWithMessage(messageInput) {
+    // Check if the message is not empty
+    if (messageInput.trim() === "") {
+        alert("הודעה לא יכולה להיות ריקה");
+        return;
+    }
+
+    const response = await fetch('/submit_message', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ input: messageInput }),
+    });
+
+    // Handle the response if needed
+}
+
 
 // Function to update end time options based on the selected start time
 function updateEndTimeOptions() {
@@ -193,7 +222,6 @@ function updateGridCells(result) {
     const middleCell = cellsToColor.eq(middleCellIndex);
 
     if (result.names === "פנוי") {
-
         const middleContent = '<div class="therapist-name" style="font-size: 24px; color: black;">' + result.names + '</div>';
         middleCell.html(middleContent);
     } else {

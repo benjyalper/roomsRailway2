@@ -310,23 +310,21 @@ app.get('/fetchDataByDate', async (req, res) => {
 
 app.post('/submit_message', async (req, res) => {
     try {
+        // Extract the message input directly from the function argument
+        const message = req.body.input;
+
+        // Check if the message is not empty
+        if (!message || message.trim() === "") {
+            return res.status(400).json({ error: 'Message cannot be empty' });
+        }
 
         const user = req.user;
         const userClinic = user ? user.clinic : 'default'; // Use 'default' as a fallback
-
-        //Check for authentication if needed
-        // if (!req.user || req.user.role !== 'admin') {
-        //     return res.status(403).send('למשתמש זה אין הרשאה לעריכה, יש לפנות למנהל.');
-        // }
-
-        const message = req.body.input;
 
         const connection = await pool.getConnection();
         await connection.beginTransaction();
 
         try {
-
-
             // Fix the table name from 'messsages' to 'messages'
             const [result] = await connection.execute(`INSERT INTO messages_${userClinic} (message) VALUES (?)`, [message]);
 
