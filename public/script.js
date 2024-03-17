@@ -222,10 +222,10 @@ function updateGridCells(result) {
     const middleCell = cellsToColor.eq(middleCellIndex);
 
     if (result.names === "פנוי") {
-        const middleContent = '<div class="therapist-name" style="font-size: 24px; color: black;">' + result.names + '</div>';
+        const middleContent = '<div class="therapist-name" style="font-size: 18px; color: black;">' + result.names + '</div>';
         middleCell.html(middleContent);
     } else {
-        const middleContent = '<div class="therapist-name" style="font-size: 24px;">' + result.names + '</div>';
+        const middleContent = '<div class="therapist-name" style="font-size: 18px;">' + result.names + '</div>';
         middleCell.html(middleContent);
     }
 
