@@ -15,7 +15,7 @@
 .navbar1 {
     background-color: rgb(241, 249, 239);
     width: calc(31vw + 120px);
-    margin-top: 20px;
+    /* margin-top: 20px; */
     display: flex;
     justify-content: right;
     /* gap: 33%; */
