@@ -72,28 +72,28 @@
                         </ul>
                     </div>
 
-                    <div class="calendar-container">
-                        <div class="calender-item">
-                            <%= new Date().toLocaleString('he-IL', { timeZone: 'Asia/Jerusalem', hour12: true, hour: 'numeric', minute: 'numeric' }) %>
-                        </div>
-                        <div>
-                            <!-- Display data for today -->
-                            <% let therapistAvailable = false; %>
-                            <% data.forEach(row => { %>
-                            <% if (row.roomNumber === roomNumber && isCurrentTimeInRange(row.startTime, row.endTime)) { %>
-                            <!-- Format endTime to display only hours and minutes -->
-                            <span style="color: green;"><%= row.names %> בטיפול עד
-                                <%= parseTime(row.endTime).toLocaleTimeString('he-IL', { hour12: true, hour: 'numeric', minute: 'numeric' }) %></span>
-                            <% therapistAvailable = true; %>
-                            <% } %>
-                            <% }); %>
-                            <% if (!therapistAvailable) { %>
-                            <p>החדר פנוי</p>
-                            <% } %>
-                        </div>
-                    </div>
                 </nav>
 
+                <div class="calendar-container">
+                    <div class="calender-item">
+                        <%= new Date().toLocaleString('he-IL', { timeZone: 'Asia/Jerusalem', hour12: true, hour: 'numeric', minute: 'numeric' }) %>
+                    </div>
+                    <div>
+                        <!-- Display data for today -->
+                        <% let therapistAvailable = false; %>
+                        <% data.forEach(row => { %>
+                        <% if (row.roomNumber === roomNumber && isCurrentTimeInRange(row.startTime, row.endTime)) { %>
+                        <!-- Format endTime to display only hours and minutes -->
+                        <span style="color: green;"><%= row.names %> בטיפול עד
+                            <%= parseTime(row.endTime).toLocaleTimeString('he-IL', { hour12: true, hour: 'numeric', minute: 'numeric' }) %></span>
+                        <% therapistAvailable = true; %>
+                        <% } %>
+                        <% }); %>
+                        <% if (!therapistAvailable) { %>
+                        <p>החדר פנוי</p>
+                        <% } %>
+                    </div>
+                </div>
             </div>
         </div>
 
