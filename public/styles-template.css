@@ -21,6 +21,7 @@
     /* gap: 33%; */
     padding: 10px;
     color: rgb(135, 192, 155);
+    position: fixed !important;
 }
 
 
@@ -79,7 +80,7 @@ p {
     .background-container {
         background-image: url('/room-image.png');
         background-size: cover;
-        height: 34vh;
+        height: 50vh;
         width: 250px;
         display: flex;
         flex-direction: column;
@@ -88,7 +89,7 @@ p {
     }
 
     .calendar-container {
-        /* margin-top: 230px; */
+        margin-top: 230px;
         display: flex;
         flex-direction: column;
         align-items: center;
