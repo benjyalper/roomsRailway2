@@ -144,7 +144,7 @@ $(document).ready(function () {
     });
 
     $('.room-schedule-link').click(function () {
-        window.location.href = '/newRoomSchedule.html';
+        window.location.href = '/room-schedule.html';
     });
 
     $('.drop-down-to-room-form-link').click(function () {
