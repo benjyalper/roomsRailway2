@@ -1,104 +1,104 @@
 $(document).ready(function () {
 
-    const numberOfRows = 18;
-    const numberOfColumns = 10;
-    $('.grid-container').css('--num-columns', `${numberOfColumns}`)
-    $('.grid-container').css('--num-rows', `${numberOfRows}`)
-    let num = 0;
-    let roomNum = 0;
-    let hour = 7;
-    let halfy = numberOfColumns * 3;
-    let columnNumber = -1;
-    let togler = true;
+    // const numberOfRows = 18;
+    // const numberOfColumns = 10;
+    // $('.grid-container').css('--num-columns', `${numberOfColumns}`)
+    // $('.grid-container').css('--num-rows', `${numberOfRows}`)
+    // let num = 0;
+    // let roomNum = 0;
+    // let hour = 7;
+    // let halfy = numberOfColumns * 3;
+    // let columnNumber = -1;
+    // let togler = true;
 
-    const toglerFnc = function () {
-        if (togler === true) {
-            togler = false;
-        } else {
-            togler = true;
-        }
-    }
-
-
-
-    for (let i = 0; i < numberOfColumns * numberOfRows * 2; i++) {
-        $('.grid-container').append(`<div class="grid-cell grid-cell${num}" style="border: 2px solid black;"></div>`)
+    // const toglerFnc = function () {
+    //     if (togler === true) {
+    //         togler = false;
+    //     } else {
+    //         togler = true;
+    //     }
+    // }
 
 
-        if (i % numberOfColumns === 0) {
-            toglerFnc()
-        }
-        if (togler === false) {
-            $(`.grid-cell${num}`).addClass(`halfHour${num}`)
-        } else {
-            $(`.grid-cell${num}`).addClass(`wholeHour${num}`)
-        }
 
-        if (columnNumber < numberOfColumns) {
-            columnNumber++;
-        } else {
-            columnNumber = 1;
-        }
-        num++;
+    // for (let i = 0; i < numberOfColumns * numberOfRows * 2; i++) {
+    //     $('.grid-container').append(`<div class="grid-cell grid-cell${num}" style="border: 2px solid black;"></div>`)
 
 
-        //color frame
-        if (num <= numberOfColumns || num % numberOfColumns - 1 === 0) {
-            $(`.grid-cell${num - 1}`).addClass('frame')
-            $(`.grid-cell${num - 1}`).css('background-color', 'rgb(235, 237, 236)')
-        }
+    //     if (i % numberOfColumns === 0) {
+    //         toglerFnc()
+    //     }
+    //     if (togler === false) {
+    //         $(`.grid-cell${num}`).addClass(`halfHour${num}`)
+    //     } else {
+    //         $(`.grid-cell${num}`).addClass(`wholeHour${num}`)
+    //     }
 
-        //color non-frame
-        if (num > numberOfColumns && num % numberOfColumns - 1 !== 0) {
-            //continue here with data
-
-            if (hour < 10) {
-                $(`.wholeHour${num - 1}`).data('room-hour', `${columnNumber} 0${hour}:00`)
-                $(`.halfHour${num - 1}`).data('room-hour', `${columnNumber} 0${hour - 1}:30`)
-                $(`.wholeHour${num - 1}`).data('hour', `0${hour}:00`)
-                $(`.halfHour${num - 1}`).data('hour', `0${hour - 1}:30`)
-                $(`.wholeHour${num - 1}`).data('room', `${columnNumber}`)
-                $(`.halfHour${num - 1}`).data('room', `${columnNumber}`)
-
-            } else {
-                $(`.wholeHour${num - 1}`).data('room-hour', `${columnNumber} ${hour}:00`)
-                $(`.halfHour${num - 1}`).data('room-hour', `${columnNumber} ${hour - 1}:30`)
-                $(`.wholeHour${num - 1}`).data('hour', `${hour}:00`)
-                $(`.halfHour${num - 1}`).data('hour', `${hour - 1}:30`)
-                $(`.wholeHour${num - 1}`).data('room', `${columnNumber}`)
-                $(`.halfHour${num - 1}`).data('room', `${columnNumber}`)
-            }
-            $(`.grid-cell${num - 1}`).on('click', function () {
-                alert($(this).data('hour'))
-            })
-
-            $(`.grid-cell${num - 1}`).css('background-color', 'white')
-        }
-
-        //create a halfhour class
-
-        //inumerate rooms
-        if (num <= numberOfColumns) {
-            $(`.grid-cell${num - 1}`).addClass('room')
-            $(`.grid-cell${num - 1}`).html(`חדר ${roomNum}`)
-            roomNum++;
-        }
+    //     if (columnNumber < numberOfColumns) {
+    //         columnNumber++;
+    //     } else {
+    //         columnNumber = 1;
+    //     }
+    //     num++;
 
 
-        //hours display
-        if (num === numberOfColumns) {
-            //corner cell empty
-            $(`.grid-cell${0}`).html(null)
+    //     //color frame
+    //     if (num <= numberOfColumns || num % numberOfColumns - 1 === 0) {
+    //         $(`.grid-cell${num - 1}`).addClass('frame')
+    //         $(`.grid-cell${num - 1}`).css('background-color', 'rgb(235, 237, 236)')
+    //     }
 
-        } else if (num === halfy) {
-            $(`.grid-cell${num - numberOfColumns}`).html(hour - 1 + ':30')
-            halfy = halfy + numberOfColumns * 2
+    //     //color non-frame
+    //     if (num > numberOfColumns && num % numberOfColumns - 1 !== 0) {
+    //         //continue here with data
 
-        } else if (num % numberOfColumns === 0) {
-            $(`.grid-cell${num - numberOfColumns}`).html(hour + ':00')
-            hour++
-        }
-    }
+    //         if (hour < 10) {
+    //             $(`.wholeHour${num - 1}`).data('room-hour', `${columnNumber} 0${hour}:00`)
+    //             $(`.halfHour${num - 1}`).data('room-hour', `${columnNumber} 0${hour - 1}:30`)
+    //             $(`.wholeHour${num - 1}`).data('hour', `0${hour}:00`)
+    //             $(`.halfHour${num - 1}`).data('hour', `0${hour - 1}:30`)
+    //             $(`.wholeHour${num - 1}`).data('room', `${columnNumber}`)
+    //             $(`.halfHour${num - 1}`).data('room', `${columnNumber}`)
+
+    //         } else {
+    //             $(`.wholeHour${num - 1}`).data('room-hour', `${columnNumber} ${hour}:00`)
+    //             $(`.halfHour${num - 1}`).data('room-hour', `${columnNumber} ${hour - 1}:30`)
+    //             $(`.wholeHour${num - 1}`).data('hour', `${hour}:00`)
+    //             $(`.halfHour${num - 1}`).data('hour', `${hour - 1}:30`)
+    //             $(`.wholeHour${num - 1}`).data('room', `${columnNumber}`)
+    //             $(`.halfHour${num - 1}`).data('room', `${columnNumber}`)
+    //         }
+    //         $(`.grid-cell${num - 1}`).on('click', function () {
+    //             alert($(this).data('hour'))
+    //         })
+
+    //         $(`.grid-cell${num - 1}`).css('background-color', 'white')
+    //     }
+
+    //     //create a halfhour class
+
+    //     //inumerate rooms
+    //     if (num <= numberOfColumns) {
+    //         $(`.grid-cell${num - 1}`).addClass('room')
+    //         $(`.grid-cell${num - 1}`).html(`חדר ${roomNum}`)
+    //         roomNum++;
+    //     }
+
+
+    //     //hours display
+    //     if (num === numberOfColumns) {
+    //         //corner cell empty
+    //         $(`.grid-cell${0}`).html(null)
+
+    //     } else if (num === halfy) {
+    //         $(`.grid-cell${num - numberOfColumns}`).html(hour - 1 + ':30')
+    //         halfy = halfy + numberOfColumns * 2
+
+    //     } else if (num % numberOfColumns === 0) {
+    //         $(`.grid-cell${num - numberOfColumns}`).html(hour + ':00')
+    //         hour++
+    //     }
+    // }
 
     let currentRoomNumber;
 
