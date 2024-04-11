@@ -43,13 +43,13 @@ $(document).ready(function () {
         window.location.href = '/dateData/';
     });
 
-    // $('.room-schedule-link').click(function () {
-    //     window.location.href = '/room-schedule.html';
-    // });
-
     $('.room-schedule-link').click(function () {
-        window.location.href = '/newRoomSchedule.html';
+        window.location.href = '/room-schedule.html';
     });
+
+    // $('.room-schedule-link').click(function () {
+    //     window.location.href = '/newRoomSchedule.html';
+    // });
 
     $('.drop-down-to-room-form-link').click(function () {
         window.location.href = '/room-form.html';
