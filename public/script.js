@@ -1,105 +1,5 @@
 $(document).ready(function () {
 
-    // const numberOfRows = 18;
-    // const numberOfColumns = 10;
-    // $('.grid-container').css('--num-columns', `${numberOfColumns}`)
-    // $('.grid-container').css('--num-rows', `${numberOfRows}`)
-    // let num = 0;
-    // let roomNum = 0;
-    // let hour = 7;
-    // let halfy = numberOfColumns * 3;
-    // let columnNumber = -1;
-    // let togler = true;
-
-    // const toglerFnc = function () {
-    //     if (togler === true) {
-    //         togler = false;
-    //     } else {
-    //         togler = true;
-    //     }
-    // }
-
-
-
-    // for (let i = 0; i < numberOfColumns * numberOfRows * 2; i++) {
-    //     $('.grid-container').append(`<div class="grid-cell grid-cell${num}" style="border: 2px solid black;"></div>`)
-
-
-    //     if (i % numberOfColumns === 0) {
-    //         toglerFnc()
-    //     }
-    //     if (togler === false) {
-    //         $(`.grid-cell${num}`).addClass(`halfHour${num}`)
-    //     } else {
-    //         $(`.grid-cell${num}`).addClass(`wholeHour${num}`)
-    //     }
-
-    //     if (columnNumber < numberOfColumns) {
-    //         columnNumber++;
-    //     } else {
-    //         columnNumber = 1;
-    //     }
-    //     num++;
-
-
-    //     //color frame
-    //     if (num <= numberOfColumns || num % numberOfColumns - 1 === 0) {
-    //         $(`.grid-cell${num - 1}`).addClass('frame')
-    //         $(`.grid-cell${num - 1}`).css('background-color', 'rgb(235, 237, 236)')
-    //     }
-
-    //     //color non-frame
-    //     if (num > numberOfColumns && num % numberOfColumns - 1 !== 0) {
-    //         //continue here with data
-
-    //         if (hour < 10) {
-    //             $(`.wholeHour${num - 1}`).data('room-hour', `${columnNumber} 0${hour}:00`)
-    //             $(`.halfHour${num - 1}`).data('room-hour', `${columnNumber} 0${hour - 1}:30`)
-    //             $(`.wholeHour${num - 1}`).data('hour', `0${hour}:00`)
-    //             $(`.halfHour${num - 1}`).data('hour', `0${hour - 1}:30`)
-    //             $(`.wholeHour${num - 1}`).data('room', `${columnNumber}`)
-    //             $(`.halfHour${num - 1}`).data('room', `${columnNumber}`)
-
-    //         } else {
-    //             $(`.wholeHour${num - 1}`).data('room-hour', `${columnNumber} ${hour}:00`)
-    //             $(`.halfHour${num - 1}`).data('room-hour', `${columnNumber} ${hour - 1}:30`)
-    //             $(`.wholeHour${num - 1}`).data('hour', `${hour}:00`)
-    //             $(`.halfHour${num - 1}`).data('hour', `${hour - 1}:30`)
-    //             $(`.wholeHour${num - 1}`).data('room', `${columnNumber}`)
-    //             $(`.halfHour${num - 1}`).data('room', `${columnNumber}`)
-    //         }
-    //         $(`.grid-cell${num - 1}`).on('click', function () {
-    //             alert($(this).data('hour'))
-    //         })
-
-    //         $(`.grid-cell${num - 1}`).css('background-color', 'white')
-    //     }
-
-    //     //create a halfhour class
-
-    //     //inumerate rooms
-    //     if (num <= numberOfColumns) {
-    //         $(`.grid-cell${num - 1}`).addClass('room')
-    //         $(`.grid-cell${num - 1}`).html(`חדר ${roomNum}`)
-    //         roomNum++;
-    //     }
-
-
-    //     //hours display
-    //     if (num === numberOfColumns) {
-    //         //corner cell empty
-    //         $(`.grid-cell${0}`).html(null)
-
-    //     } else if (num === halfy) {
-    //         $(`.grid-cell${num - numberOfColumns}`).html(hour - 1 + ':30')
-    //         halfy = halfy + numberOfColumns * 2
-
-    //     } else if (num % numberOfColumns === 0) {
-    //         $(`.grid-cell${num - numberOfColumns}`).html(hour + ':00')
-    //         hour++
-    //     }
-    // }
-
     let currentRoomNumber;
 
     $('.sign-out-link').on('click', function () {
@@ -143,8 +43,12 @@ $(document).ready(function () {
         window.location.href = '/dateData/';
     });
 
+    // $('.room-schedule-link').click(function () {
+    //     window.location.href = '/room-schedule.html';
+    // });
+
     $('.room-schedule-link').click(function () {
-        window.location.href = '/room-schedule.html';
+        window.location.href = '/newRoomScedule.html';
     });
 
     $('.drop-down-to-room-form-link').click(function () {
@@ -190,7 +94,79 @@ $(document).ready(function () {
     // Call the function to display the last 10 messages when the page is loaded
     displayLast10Messages();
 
+    buildGrid();
+
+    fetchDataByDate();
+
 });
+
+async function buildGrid() {
+    const numberOfRows = 20;
+    const numberOfColumns = 15;
+
+    $('.grid-container').css('--num-columns', numberOfColumns);
+    $('.grid-container').css('--num-rows', numberOfRows);
+
+    let num = 0;
+    let roomNum = 1;
+    let hour = 7;
+    let halfy = numberOfColumns * 3;
+    let columnNumber = 0;
+    let togler = true;
+
+    function toggleFunc() {
+        togler = !togler;
+    }
+
+    for (let i = 0; i < numberOfRows * numberOfColumns * 2; i++) {
+        const currentCellClass = togler ? 'wholeHour' : 'halfHour';
+        const formattedHour = hour < 10 ? `0${hour}` : `${hour}`;
+        const roomHour = `${columnNumber} ${formattedHour}:00:00`;
+        const halfHourRoomHour = `${columnNumber} ${formattedHour - 1}:30:00`;
+
+        // Append the grid cell with data-room-hour attribute
+        const cellHtml = `<div class="grid-cell grid-cell${num}" data-room-hour="${currentCellClass === 'wholeHour' ? roomHour : halfHourRoomHour}"></div>`;
+        $('.grid-container').append(cellHtml);
+
+        console.log(`Loop iteration: ${i}, num: ${num}, hour: ${hour}, columnNumber: ${columnNumber}, togler: ${togler}, currentCellClass: ${currentCellClass}`);
+
+        if (i % numberOfColumns === 0) {
+            toggleFunc();
+            console.log(`Toggler changed: ${togler}`);
+        }
+
+        $(`.grid-cell${num}`).addClass(currentCellClass);
+
+        if (columnNumber < numberOfColumns) {
+            columnNumber++;
+        } else {
+            columnNumber = 1;
+        }
+
+        if (num < numberOfColumns || num % numberOfColumns === 0) {
+            $(`.grid-cell${num}`).addClass('frame');
+            $(`.grid-cell${num}`).css('background-color', 'rgb(235, 237, 236)');
+        }
+
+        if (num < numberOfColumns) {
+            $(`.grid-cell${num}`).addClass('room');
+            $(`.grid-cell${num}`).html(`חדר ${roomNum}`);
+            roomNum++;
+        }
+
+        if (num === 0) {
+            $(`.grid-cell${num}`).html(null);
+        } else if (num === halfy) {
+            $(`.grid-cell${num - numberOfColumns}`).html(`${hour - 1}:30`);
+            halfy += numberOfColumns * 2;
+        } else if (num % numberOfColumns === 0) {
+            $(`.grid-cell${num - numberOfColumns}`).html(`${hour}:00`);
+            hour++;
+        }
+
+        num++;
+    }
+}
 
 // Function to submit date
 async function submitDate() {
