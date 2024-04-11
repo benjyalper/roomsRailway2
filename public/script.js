@@ -48,7 +48,7 @@ $(document).ready(function () {
     // });
 
     $('.room-schedule-link').click(function () {
-        window.location.href = '/newRoomScedule.html';
+        window.location.href = '/newRoomSchedule.html';
     });
 
     $('.drop-down-to-room-form-link').click(function () {
