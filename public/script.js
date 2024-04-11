@@ -94,7 +94,7 @@ $(document).ready(function () {
     // Call the function to display the last 10 messages when the page is loaded
     displayLast10Messages();
 
-    buildGrid();
+    // buildGrid();
 
     fetchDataByDate();
 
