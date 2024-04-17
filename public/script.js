@@ -368,20 +368,23 @@ function updateGridCells(result) {
 }
 
 // Function to delete an entry
-async function deleteEntry(selected_date, roomNumber, startTime) {
+async function deleteEntry(selected_date, roomNumber, startTime, endTime) {
     try {
-        console.log('Deleting entry:', { selected_date, roomNumber, startTime });
+        console.log('Deleting entry:', { selected_date, roomNumber, startTime, endTime });
 
         await fetch('/deleteEntry', {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ selected_date, roomNumber, startTime }),
+            body: JSON.stringify({ selected_date, roomNumber, startTime, endTime }),
         });
 
         // Clear the grid cells after successful deletion
-        clearGridCells();
+        // clearGridCells();
+
+        // Clear the specific grid cells associated with the deleted entry
+        clearGridCellsByEntry(roomNumber, startTime, endTime);
 
         fetchDataByDate()
 
@@ -391,39 +394,27 @@ async function deleteEntry(selected_date, roomNumber, startTime) {
     }
 }
 
-async function checkRecurringEvent(selected_date, roomNumber, startTime, recurringNum) {
-    try {
-        console.log('Checking recurring event:', { selected_date, roomNumber, startTime, recurringNum });
+// Function to clear specific grid cells based on the entry being deleted
+function clearGridCellsByEntry(roomNumber, startTime, endTime) {
+    const startMoment = moment(startTime, 'HH:mm');
+    const endMoment = moment(endTime, 'HH:mm');
 
-        const response = await fetch('/checkRecurringEvent', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ selected_date, roomNumber, startTime, recurringNum }),
-        });
+    // Iterate over grid cells and clear those matching the entry's time frame and room number
+    $('.grid-cell').each(function () {
+        const cell = $(this);
+        const cellRoom = cell.data('room');
+        const cellHour = moment(cell.data('room-hour'), 'HH:mm:ss');
 
-        if (!response.ok) {
-            throw new Error(`Server responded with status ${response.status}`);
+        if (cellRoom === roomNumber && cellHour.isSameOrAfter(startMoment) && cellHour.isBefore(endMoment)) {
+            // Clear the cell's content and styling
+            cell.css({
+                'background-color': 'white',
+                'border': '1px solid black',
+            });
+            cell.empty();
         }
-
-        const result = await response.json();
-
-        // Log the result to the console for debugging
-        console.log('checkRecurringEvent result:', result, recurringNum);
-
-        // Add an alert with recurringNum
-        // alert(`Recurring Number: ${result.recurringNum}`);
-
-
-        return result;
-    } catch (error) {
-        console.error('Error checking recurring event:', error.message);
-        // Handle the error, e.g., show an alert to the user
-        return { isRecurring: false, isNonRecurring: false }; // Assuming a default value in case of an error
-    }
+    });
 }
-
 // Function to fetch data by date from the server
 async function getDataByDate(date) {
     try {
