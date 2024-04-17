@@ -415,6 +415,40 @@ function clearGridCellsByEntry(roomNumber, startTime, endTime) {
         }
     });
 }
+
+async function checkRecurringEvent(selected_date, roomNumber, startTime, recurringNum) {
+    try {
+        console.log('Checking recurring event:', { selected_date, roomNumber, startTime, recurringNum });
+
+        const response = await fetch('/checkRecurringEvent', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ selected_date, roomNumber, startTime, recurringNum }),
+        });
+
+        if (!response.ok) {
+            throw new Error(`Server responded with status ${response.status}`);
+        }
+
+        const result = await response.json();
+
+        // Log the result to the console for debugging
+        console.log('checkRecurringEvent result:', result, recurringNum);
+
+        // Add an alert with recurringNum
+        // alert(`Recurring Number: ${result.recurringNum}`);
+
+
+        return result;
+    } catch (error) {
+        console.error('Error checking recurring event:', error.message);
+        // Handle the error, e.g., show an alert to the user
+        return { isRecurring: false, isNonRecurring: false }; // Assuming a default value in case of an error
+    }
+}
+
 // Function to fetch data by date from the server
 async function getDataByDate(date) {
     try {
