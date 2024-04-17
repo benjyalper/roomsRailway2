@@ -51,9 +51,17 @@ $(document).ready(function () {
         window.location.href = '/dateData/';
     });
 
-    $('.room-schedule-link').click(function () {
+    // Attach event listener to the room schedule link
+    $('.room-schedule-link').click(function (event) {
+        // Prevent the default link behavior to allow the next line to execute
+        event.preventDefault();
+
+        // Navigate to the room-schedule.html page
         window.location.href = '/room-schedule.html';
     });
+
+    // Update the heading based on the current date
+    updateHeadingBasedOnDate();
 
     // $('.room-schedule-link').click(function () {
     //     window.location.href = '/newRoomSchedule.html';
