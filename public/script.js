@@ -1,5 +1,13 @@
 $(document).ready(function () {
 
+    // Update the heading initially based on the default selected date
+    updateHeadingBasedOnDate();
+
+    // Attach event listener to the date input to update the heading on change
+    $('#lookupDate').on('change', function () {
+        updateHeadingBasedOnDate();
+    });
+
     let currentRoomNumber;
 
     $('.sign-out-link').on('click', function () {
@@ -99,6 +107,27 @@ $(document).ready(function () {
     fetchDataByDate();
 
 });
+
+// Function to update the heading based on the selected date
+function updateHeadingBasedOnDate() {
+    // Get the selected date from the input field
+    const selectedDate = $('#lookupDate').val();
+
+    // Use Moment.js to parse the selected date
+    const momentDate = moment(selectedDate);
+
+    // Get the day of the week (0 = Sunday, 1 = Monday, ..., 6 = Saturday)
+    const dayOfWeek = momentDate.day();
+
+    // Define an array of day names in Hebrew (starting from Sunday)
+    const hebrewDayNames = ['ראשון', 'שני', 'שלישי', 'רביעי', 'חמישי', 'שישי', 'שבת'];
+
+    // Get the corresponding Hebrew day name based on the day of the week
+    const currentDayName = hebrewDayNames[dayOfWeek];
+
+    // Update the heading element with the current day
+    $('#heading').text(`טבלת חדרים יום ${currentDayName}`);
+}
 
 async function buildGrid() {
     const numberOfRows = 20;
