@@ -30,6 +30,7 @@ const users = [
     { id: 2, username: 'admin1', password: 'admin1', role: 'admin', clinic: 'clalit' },
     { id: 3, username: 'user', password: 'user', role: 'user', clinic: 'marbah' },
     { id: 4, username: 'user1', password: 'user1', role: 'user', clinic: 'clalit' },
+    { id: 5, username: 'user2', password: 'user3', role: 'user', clinic: 'marbah' },
 ];
 
 passport.use(new LocalStrategy((username, password, done) => {
