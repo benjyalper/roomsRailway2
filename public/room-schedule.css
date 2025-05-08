@@ -61,7 +61,7 @@ body {
 .grid-container {
     display: grid;
     grid-template-columns: repeat(11, 1fr);
-    grid-template-rows: repeat(25, 1fr);
+    grid-template-rows: repeat(27, 1fr);
     grid-gap: 0;
     padding: 20px;
     background-color: aliceblue;
