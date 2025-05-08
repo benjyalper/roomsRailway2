@@ -310,15 +310,19 @@ async function fetchDataByDate() {
 }
 // Function to clear the grid cells
 function clearGridCells() {
+    // reset backgrounds & borders
     $('.grid-cell').css({
         'background-color': 'white',
         'border': '1px solid black',
     });
-
     $('.frame').css({
         'background-color': 'rgb(235, 237, 236)'
     });
+
+    // remove any names/tooltips that were injected last time
+    $('.grid-cell').not('.frame').empty();
 }
+
 
 // Function to update the grid cells based on the result
 function updateGridCells(result) {
