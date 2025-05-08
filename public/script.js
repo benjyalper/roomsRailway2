@@ -324,7 +324,7 @@ function clearGridCells() {
 function updateGridCells(result) {
     const cell = $(`.grid-cell[data-room-hour="${result.roomNumber} ${result.startTime}"]`);
     const nextCell = $(`.grid-cell[data-room-hour="${result.roomNumber} ${result.endTime}"]`);
-    const cellsToColor = cell.nextUntil(nextCell).addBack().filter(`[data-room-hour^="${result.roomNumber}"]`);
+    const cellsToColor = cell.nextUntil(nextCell).addBack().filter(`[data-room-number="${result.roomNumber}"]`);
 
     // Color the grid cells
     cellsToColor.css({
