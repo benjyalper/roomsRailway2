@@ -97,81 +97,87 @@ body {
     cursor: pointer;
 }
 
-.cell8 {
+.cell7 {
     grid-row-start: 2;
     grid-row-end: 4;
     border: 1px solid black;
 }
 
-.cell9 {
+.cell8 {
     grid-row-start: 4;
     grid-row-end: 6;
     border: 1px solid black;
 }
 
-.cell10 {
+.cell9 {
     grid-row-start: 6;
     grid-row-end: 8;
     border: 1px solid black;
 }
 
-.cell11 {
+.cell10 {
     grid-row-start: 8;
     grid-row-end: 10;
     border: 1px solid black;
 }
 
-.cell12 {
+.cell11 {
     grid-row-start: 10;
     grid-row-end: 12;
     border: 1px solid black;
 }
 
-.cell13 {
+.cell12 {
     grid-row-start: 12;
     grid-row-end: 14;
     border: 1px solid black;
 }
 
-.cell14 {
+.cell13 {
     grid-row-start: 14;
     grid-row-end: 16;
     border: 1px solid black;
 }
 
-.cell15 {
+.cell14 {
     grid-row-start: 16;
     grid-row-end: 18;
     border: 1px solid black;
 }
 
-.cell16 {
+.cell15 {
     grid-row-start: 18;
     grid-row-end: 20;
     border: 1px solid black;
 }
 
-.cell17 {
+.cell16 {
     grid-row-start: 20;
     grid-row-end: 22;
     border: 1px solid black;
 }
 
-.cell18 {
+.cell17 {
     grid-row-start: 22;
     grid-row-end: 24;
     border: 1px solid black;
 }
 
-.cell19 {
+.cell18 {
     grid-row-start: 24;
     grid-row-end: 26;
     border: 1px solid black;
 }
 
-.cell20 {
+.cell19 {
     grid-row-start: 26;
     grid-row-end: 28;
+    border: 1px solid black;
+}
+
+.cell20 {
+    grid-row-start: 28;
+    grid-row-end: 30;
     border: 1px solid black;
 }
 
