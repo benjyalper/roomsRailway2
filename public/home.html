@@ -4,41 +4,105 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Room Scheduler</title>
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+        <title>Room Scheduling App</title>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+        <!-- Add this line inside the <head> tag of your HTML -->
         <link rel="stylesheet" href="style.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+            integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+        <meta property="og:image" content="/room-image.png">
     </head>
 
     <body>
-        <nav class="navbar navbar-expand-lg fixed-top bg-light border-bottom">
-            <div class="container-fluid justify-content-between">
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <div class="container-fluid">
+            <!-- Content here -->
+            <nav class="navbar navbar1">
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false"
+                    aria-label="Toggle navigation" style="margin-left: 10px;">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="collapse navbar-collapse" id="navbarNav">
+
+
+                <div class="collapse navbar-collapse" id="navbarNavDropdown">
                     <ul class="navbar-nav">
-                        <li class="nav-item"><a class="nav-link" href="#" id="nav-schedule">טבלת חדרים</a></li>
-                        <li class="nav-item"><a class="nav-link" href="#" id="nav-edit">עריכה</a></li>
-                        <li class="nav-item"><a class="nav-link" href="#" id="nav-messages">הודעות</a></li>
-                        <li class="nav-item"><a class="nav-link" href="#" id="nav-signout">התנתק/י</a></li>
+                        <li class="nav-item">
+                            <a class="nav-link active room-schedule-link" href="#" aria-current="page">טבלת
+                                חדרים</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active drop-down-to-room-form-link" href="#"
+                                aria-current="page">עריכה</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active cat-link" href="#" aria-current="page">הודעות</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active sign-out-link" href="#" aria-current="page">התנתק/י</a>
+                        </li>
                     </ul>
                 </div>
-            </div>
-        </nav>
 
-        <div class="container mt-5 pt-5">
-            <h1 class="text-center my-4" id="home-heading">סידור חדרים</h1>
-            <div id="room-grid" class="room-grid container"></div>
+            </nav>
+
+            <h1 id="homeHeading">סידור חדרים</h1>
+
+            <div class="room-grid">
+                <!-- <img id="knock" class="animate__animated animate__heartBeat" src="/knockOnDoorColored.png"> -->
+                <div class="room animate__animated" data-room-number="1">
+
+                    <h2 class="room-number">1</h2>
+                </div>
+                <div class="room animate__animated" data-room-number="2">
+
+                    <h2 class="room-number">2</h2>
+                </div>
+                <div class="room animate__animated" data-room-number="3">
+
+                    <h2 class="room-number">3</h2>
+                </div>
+                <div class="room animate__animated" data-room-number="4">
+
+                    <h2 class="room-number">4</h2>
+                </div>
+                <div class="room animate__animated" data-room-number="5">
+
+                    <h2 class="room-number">5</h2>
+                </div>
+                <div class="room animate__animated" data-room-number="6">
+
+                    <h2 class="room-number">6</h2>
+                </div>
+                <div class="room animate__animated" data-room-number="7">
+
+                    <h2 class="room-number">7</h2>
+                </div>
+                <div class="room animate__animated" data-room-number="15">
+
+                    <h2 class="room-number">15</h2>
+                </div>
+                <div class="room animate__animated" data-room-number="מטבח">
+
+                    <h2 class="room-number">מטבח</h2>
+                </div>
+                <div class="room animate__animated" data-room-number="מטבח">
+
+                    <h2 class="room-number">מקלט</h2>
+                </div>
+
+            </div>
         </div>
 
-        <img id="knock" src="/knockOnDoorColored.png" alt="Knock Icon" class="animate__animated animate__heartBeat">
 
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script src='https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js'></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+            crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+
         <script src="script.js"></script>
+        <!-- <script src="app.js"></script> -->
     </body>
 
 </html>

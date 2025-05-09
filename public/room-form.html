@@ -4,86 +4,170 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>עריכת חדרים</title>
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+        <title>Room Scheduling App</title>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+        <link rel="stylesheet" href="style.css">
+        <!-- Add this line inside the <head> tag of your HTML -->
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-        <link rel="stylesheet" href="room-form.css">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+            integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+
     </head>
 
     <body>
-        <nav class="navbar navbar-expand-lg fixed-top bg-light border-bottom">
-            <div class="container-fluid justify-content-between">
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <div class="form-container">
+            <nav class="navbar navbar-room-schedule ">
+                <!-- <div id="lookupResult" style="display: none;"></div> -->
+
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false"
+                    aria-label="Toggle navigation" style="margin-left: 10px;">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="collapse navbar-collapse" id="navbarNav">
+                <h3>סידור חדרים</h3>
+                <button class="back-btn"><i class="fa fa-home fa-1x" aria-hidden="true"></i></button>
+                <div class="collapse navbar-collapse" id="navbarNavDropdown">
                     <ul class="navbar-nav">
-                        <li class="nav-item"><a class="nav-link" href="#" id="nav-schedule">טבלת חדרים</a></li>
-                        <li class="nav-item"><a class="nav-link active" href="#" id="nav-edit">עריכה</a></li>
-                        <li class="nav-item"><a class="nav-link" href="#" id="nav-messages">הודעות</a></li>
-                        <li class="nav-item"><a class="nav-link" href="#" id="nav-signout">התנתק/י</a></li>
+                        <li class="nav-item">
+                            <a class="nav-link active room-schedule-link" href="#" aria-current="page">טבלת חדרים</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active drop-down-to-room-form-link" href="#"
+                                aria-current="page">עריכה</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active cat-link" href="#" aria-current="page">הודעות</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active sign-out-link" href="#" aria-current="page">התנתק/י</a>
+                        </li>
                     </ul>
                 </div>
-            </div>
-        </nav>
 
-        <div class="container mt-5 pt-4">
-            <h2 class="text-center my-3">טופס עריכת חדרים</h2>
-            <form id="roomForm" class="p-4 border rounded bg-light">
-                <div class="row g-3">
-                    <div class="col-md-4">
-                        <label for="selectedDate" class="form-label">תאריך</label>
-                        <input type="date" class="form-control" id="selectedDate" required>
-                    </div>
 
-                    <div class="col-md-4">
-                        <label for="roomNumber" class="form-label">מספר חדר</label>
-                        <input type="text" class="form-control" id="roomNumber" required>
-                    </div>
+            </nav>
 
-                    <div class="col-md-4">
-                        <label for="names" class="form-label">מטפל/ת</label>
-                        <input type="text" class="form-control" id="names" placeholder="שם המטפל/ת">
-                    </div>
+            <form id="dateForm">
+                <label for="selectedDate">בחר/י תאריך</label>
+                <input type="date" id="selectedDate" required>
 
-                    <div class="col-md-4">
-                        <label for="startTime" class="form-label">שעת התחלה</label>
-                        <input type="time" class="form-control" id="startTime" required>
-                    </div>
+                <label for="startTime">שעת התחלה:</label>
+                <select id="startTime" name="startTime" required>
+                    <option value="07:00:00">7:00</option>
+                    <option value="07:30:00">7:30</option>
+                    <option value="08:00:00">8:00</option>
+                    <option value="08:30:00">8:30</option>
+                    <option value="09:00:00">9:00</option>
+                    <option value="09:30:00">9:30</option>
+                    <option value="10:00:00">10:00</option>
+                    <option value="10:30:00">10:30</option>
+                    <option value="11:00:00">11:00</option>
+                    <option value="11:30:00">11:30</option>
+                    <option value="12:00:00">12:00</option>
+                    <option value="12:30:00">12:30</option>
+                    <option value="13:00:00">13:00</option>
+                    <option value="13:30:00">13:30</option>
+                    <option value="14:00:00">14:00</option>
+                    <option value="14:30:00">14:30</option>
+                    <option value="15:00:00">15:00</option>
+                    <option value="15:30:00">15:30</option>
+                    <option value="16:00:00">16:00</option>
+                    <option value="16:30:00">16:30</option>
+                    <option value="17:00:00">17:00</option>
+                    <option value="17:30:00">17:30</option>
+                    <option value="18:00:00">18:00</option>
+                    <option value="18:30:00">18:30</option>
+                </select>
 
-                    <div class="col-md-4">
-                        <label for="endTime" class="form-label">שעת סיום</label>
-                        <select id="endTime" class="form-select" required></select>
-                    </div>
+                <label for="endTime">שעת סיום:</label>
+                <select id="endTime" name="endTime" required>
+                    <option value="08:30:00">8:30</option>
+                    <option value="09:00:00">9:00</option>
+                    <option value="09:30:00">9:30</option>
+                    <option value="10:00:00">10:00</option>
+                    <option value="10:30:00">10:30</option>
+                    <option value="11:00:00">11:00</option>
+                    <option value="11:30:00">11:30</option>
+                    <option value="12:00:00">12:00</option>
+                    <option value="12:30:00">12:30</option>
+                    <option value="13:00:00">13:00</option>
+                    <option value="13:30:00">13:30</option>
+                    <option value="14:00:00">14:00</option>
+                    <option value="14:30:00">14:30</option>
+                    <option value="15:00:00">15:00</option>
+                    <option value="15:30:00">15:30</option>
+                    <option value="16:00:00">16:00</option>
+                    <option value="16:30:00">16:30</option>
+                    <option value="17:00:00">17:00</option>
+                    <option value="17:30:00">17:30</option>
+                    <option value="18:00:00">18:00</option>
+                    <option value="18:30:00">18:30</option>
+                    <option value="19:00:00">19:00</option>
+                    <option value="23:30:00">23:30</option>
+                </select>
 
-                    <div class="col-md-4">
-                        <label for="selectedColor" class="form-label">צבע</label>
-                        <input type="color" class="form-control form-control-color" id="selectedColor" value="#79c2b3">
-                    </div>
+                <label for="names">:שם המטפל</label>
+                <input type="text" id="names" name="names" required></input>
 
-                    <div class="col-md-6">
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" id="recurringEvent">
-                            <label class="form-check-label" for="recurringEvent">האם אירוע חוזר?</label>
-                        </div>
-                    </div>
+                <label for="selectedColor">בחר/י צבע</label>
+                <select id="selectedColor" required>
+                    <option value="blue">כחול</option>
+                    <option value="green">ירוק</option>
+                    <option value="red">אדום</option>
+                    <option value="aqua">תכלת</option>
+                    <option value="beige">בז'</option>
+                    <option value="blueviolet">סגול</option>
+                    <option value="brown">חום</option>
+                    <option value="orange">כתום</option>
+                    <option value="olive">זית</option>
+                    <option value="CornflowerBlue">כחול בהיר</option>
+                    <option value="Chocolate">שוקולד</option>
+                    <option value="DarkCyan">תורכיז</option>
+                    <option value="DarkSalmon">סלמון</option>
+                    <option value="DeepPink">ורוד</option>
+                    <option value="DimGrey">אפור</option>
+                    <option value="BurlyWood">עץ</option>
+                    <option value="White">לבן</option>
+                </select>
 
-                    <div class="col-md-6" id="recurringOptions" style="visibility: hidden;">
-                        <label for="recurringNum" class="form-label">כמה שבועות לחזור</label>
-                        <input type="number" id="recurringNum" class="form-control" min="1" max="52">
-                    </div>
+                <label for="roomNumber">חדר מספר:</label>
+                <select id="roomNumber" placeholder="מספרים 1-7 או מטבח" required>
+                    <option value="1">חדר 1</option>
+                    <option value="2">חדר 2</option>
+                    <option value="3">חדר 3</option>
+                    <option value="4">חדר 4</option>
+                    <option value="5">חדר 5</option>
+                    <option value="6">חדר 6</option>
+                    <option value="7">חדר 7</option>
+                    <option value="15">חדר 15</option>
+                    <option value="מטבח">מטבח</option>
+                    <option value="מקלט">מקלט</option>
+                </select>
 
-                    <div class="col-12 d-flex justify-content-center mt-4">
-                        <button type="submit" class="btn btn-success">שמור</button>
-                    </div>
-                </div>
+                <label for="recurringEvent">אירוע קבוע</label>
+                <input type="checkbox" id="recurringEvent" name="recurringEvent">
+
+                <label for="recurringNum" style="visibility:hidden;"></label>
+                <input type="number" max="40" id="recurringNum" style="visibility:hidden;"
+                    placeholder="מספר חזרות מירבי: 40"></input>
+
+                <label for="submitBtn"></label>
+                <button id="submitBtn" type="button" onclick="submitDate()">שלח/י</button>
             </form>
-        </div>
 
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-        <script src="room-form.js"></script>
+            <div id="message"></div>
+        </div>
+    </body>
+
+
+    <script src='https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js'></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <script src="script.js"></script>
+    <!-- <script src="app.js"></script> -->
+
     </body>
 
 </html>
