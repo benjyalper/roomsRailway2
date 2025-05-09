@@ -72,22 +72,15 @@ h2 {
 /* Schedule grid */
 .grid-container {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    grid-template-columns: repeat(10, 1fr);
     gap: 1px;
-    margin-top: 2rem;
-    overflow-x: auto;
 }
 
 .grid-cell {
-    min-height: 60px;
-    border: 1px solid #dee2e6;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 0.9rem;
-    background-color: #fff;
-    transition: background-color 0.3s;
+    height: 50px;
+    border: 1px solid #ccc;
 }
+
 
 .grid-cell.frame {
     background-color: #eaecec;
