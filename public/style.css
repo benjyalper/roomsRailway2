@@ -24,19 +24,19 @@ h2 {
 }
 
 .room {
-    background-color: #ffffff;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    height: 150px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: relative;
     background-image: url('/newRoom.PNG');
+    background-repeat: no-repeat;
     background-size: cover;
-    background-position: center;
-    transition: transform 0.2s, box-shadow 0.2s;
+    background-position: center center;
+    border-radius: 10px;
+    height: 160px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s;
+    cursor: pointer;
 }
+
 
 .room:hover {
     transform: scale(1.05);
