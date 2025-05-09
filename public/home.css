@@ -126,7 +126,7 @@ body {
     position: relative;
     height: 22rem;
     width: 22rem;
-    background-image: url('/newRoom.png');
+    background-image: url('/newRoom.PNG');
     background-size: cover;
     z-index: 1;
 }
