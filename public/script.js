@@ -49,6 +49,11 @@ function buildScheduleGrid() {
     ];
     const roomCount = 10;
     const $grid = $('#scheduleGrid');
+    $grid.css({
+        display: 'grid',
+        gridTemplateColumns: `repeat(${roomCount}, 1fr)`,
+        gap: '1px'
+    });
     $grid.empty();
 
     for (const time of times) {
@@ -112,6 +117,7 @@ function deleteEntry(date, room, start, end) {
 }
 
 function initRoomForm() {
+    updateEndTimeOptions();
     $('#startTime').on('change', updateEndTimeOptions);
     $('#recurringEvent').on('change', () => {
         $('#recurringOptions').css('visibility', $('#recurringEvent').is(':checked') ? 'visible' : 'hidden');
@@ -135,11 +141,13 @@ function initRoomForm() {
         });
         Swal.fire('נשמר!', '', 'success');
         $('#roomForm')[0].reset();
+        updateEndTimeOptions();
     });
 }
 
 function updateEndTimeOptions() {
     const start = $('#startTime').val();
+    if (!start) return;
     const options = ['08:30', '09:00', '09:30', '10:00', '10:30', '11:00', '11:30', '12:00', '12:30', '13:00', '13:30', '14:00', '14:30', '15:00', '15:30', '16:00', '16:30', '17:00', '17:30', '18:00', '18:30', '19:00', '23:30'];
     const valid = options.filter(t => moment(t, 'HH:mm').isAfter(moment(start, 'HH:mm')));
     $('#endTime').empty().append(valid.map(t => `<option value="${t}">${t}</option>`));
