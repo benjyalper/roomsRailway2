@@ -15,6 +15,7 @@ const app = express();
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const port = process.env.PORT || 3000;
 
+// Serve static files
 app.use(express.static('public'));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -22,8 +23,12 @@ app.use(session({ secret: process.env.SESSION_SECRET, resave: false, saveUniniti
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
-app.set('view engine', 'ejs');
 
+// View engine
+app.set('view engine', 'ejs');
+app.set('views', './views');
+
+// In-memory users
 const users = [
     { id: 1, username: 'marbah', password: 'junior', role: 'admin', clinic: 'marbah' },
     { id: 2, username: 'admin1', password: 'admin1', role: 'admin', clinic: 'clalit' },
@@ -34,25 +39,21 @@ const users = [
 
 passport.use(new LocalStrategy((username, password, done) => {
     const user = users.find(u => u.username === username && u.password === password);
-    return user ? done(null, user) : done(null, false, { message: 'Incorrect username or password.' });
+    return user ? done(null, user) : done(null, false, { message: 'Incorrect credentials.' });
 }));
-
-passport.serializeUser((user, done) => done(null, user.id));
+passport.serializeUser((u, done) => done(null, u.id));
 passport.deserializeUser((id, done) => done(null, users.find(u => u.id === id)));
 
 function isAuthenticated(req, res, next) {
     if (req.isAuthenticated()) return next();
-    if (req.xhr || (req.headers.accept && req.headers.accept.includes('application/json'))) {
-        return res.status(401).json({ error: 'Unauthorized' });
-    }
-    res.redirect('/index.html');
+    res.redirect('/signin');
 }
-
 function isAdmin(req, res, next) {
     if (req.isAuthenticated() && req.user.role === 'admin') return next();
     res.status(403).send('Permission denied.');
 }
 
+// DB pool
 const pool = mysql.createPool({
     host: process.env.DB_HOST,
     user: process.env.DB_USER,
@@ -64,35 +65,39 @@ const pool = mysql.createPool({
     queueLimit: 0
 });
 
-app.get('/signin', (req, res) => res.redirect('/index.html'));
-
+// Auth routes
+app.get('/signin', (req, res) => res.render('index'));
 app.post('/signin', passport.authenticate('local', {
-    successRedirect: '/home.html',
+    successRedirect: '/home',
     failureRedirect: '/signin',
     failureFlash: true
 }));
-
 app.get('/logout', (req, res) => {
-    req.logout(err => err ? res.status(500).send('Logout failed') : res.redirect('/index.html'));
+    req.logout(err => err ? res.status(500).send('Logout failed') : res.redirect('/signin'));
 });
 
+// Page routes
+app.get('/home', isAuthenticated, (req, res) => res.render('home'));
+app.get('/room-schedule', isAuthenticated, (req, res) => res.render('room-schedule'));
+app.get('/room-form', isAuthenticated, (req, res) => res.render('room-form'));
+app.get('/messages', isAuthenticated, (req, res) => res.render('messages'));
+
+// Fetch schedule data
 app.get('/fetchDataByDate', isAuthenticated, async (req, res) => {
     try {
         const clinic = req.user.clinic;
         const date = req.query.date || moment().tz('Asia/Jerusalem').format('YYYY-MM-DD');
         const conn = await pool.getConnection();
         const [rows] = await conn.execute(
-            `SELECT selected_date, names, color, startTime, endTime, roomNumber FROM selected_dates_2_${clinic} WHERE selected_date = ?`,
+            `SELECT selected_date,names,color,startTime,endTime,roomNumber FROM selected_dates_2_${clinic} WHERE selected_date=?`,
             [date]
         );
         conn.release();
         res.json(rows);
-    } catch (e) {
-        console.error(e);
-        res.status(500).json({ error: e.message });
-    }
+    } catch (e) { console.error(e); res.status(500).json({ error: e.message }); }
 });
 
+// Submit booking
 app.post('/submit', isAuthenticated, isAdmin, async (req, res) => {
     try {
         const { selectedDate, names, selectedColor, startTime, endTime, roomNumber, recurringEvent, recurringNum } = req.body;
@@ -104,44 +109,68 @@ app.post('/submit', isAuthenticated, isAdmin, async (req, res) => {
             for (let i = 0; i < times; i++) {
                 const next = moment(selectedDate).add(i, 'weeks').format('YYYY-MM-DD');
                 await conn.execute(
-                    `INSERT INTO selected_dates_2_${clinic} (selected_date,names,color,startTime,endTime,roomNumber,recurringEvent,recurringNum)
-           VALUES (?,?,?,?,?,?,?,?)`,
+                    `INSERT INTO selected_dates_2_${clinic}(selected_date,names,color,startTime,endTime,roomNumber,recurringEvent,recurringNum) VALUES(?,?,?,?,?,?,?,?)`,
                     [next, names, selectedColor, startTime, endTime, roomNumber, true, times]
                 );
             }
         } else {
             await conn.execute(
-                `INSERT INTO selected_dates_2_${clinic} (selected_date,names,color,startTime,endTime,roomNumber,recurringEvent)
-         VALUES (?,?,?,?,?,?,?)`,
+                `INSERT INTO selected_dates_2_${clinic}(selected_date,names,color,startTime,endTime,roomNumber,recurringEvent) VALUES(?,?,?,?,?,?,?)`,
                 [selectedDate, names, selectedColor, startTime, endTime, roomNumber, false]
             );
         }
         await conn.commit();
         conn.release();
-        res.send('סידור חדרים עודכן בהצלחה.');
-    } catch (e) {
-        console.error(e);
-        res.status(500).send(e.message);
-    }
+        res.send('Room scheduled successfully.');
+    } catch (e) { console.error(e); res.status(500).send(e.message); }
 });
 
+// Delete booking
 app.delete('/deleteEntry', isAuthenticated, isAdmin, async (req, res) => {
     try {
         const { selected_date, roomNumber, startTime } = req.body;
         const clinic = req.user.clinic;
         const conn = await pool.getConnection();
         await conn.execute(
-            `DELETE FROM selected_dates_2_${clinic} WHERE selected_date = ? AND roomNumber = ? AND startTime = ?`,
+            `DELETE FROM selected_dates_2_${clinic} WHERE selected_date=? AND roomNumber=? AND startTime=?`,
             [selected_date, roomNumber, startTime]
         );
         conn.release();
         res.sendStatus(200);
-    } catch (e) {
-        console.error(e);
-        res.status(500).send(e.message);
-    }
+    } catch (e) { console.error(e); res.status(500).send(e.message); }
 });
 
+// Messages API
+app.get('/get_last_messages', isAuthenticated, async (req, res) => {
+    try {
+        const clinic = req.user.clinic;
+        const [rows] = await pool.query(`SELECT * FROM messages_${clinic} ORDER BY id DESC LIMIT 10`);
+        res.json({ messages: rows.map(r => r.message), messageIds: rows.map(r => r.id) });
+    } catch (e) { console.error(e); res.status(500).json({ error: e.message }); }
+});
+app.post('/submit_message', isAuthenticated, async (req, res) => {
+    try {
+        const message = req.body.input;
+        if (!message) return res.status(400).json({ error: 'Empty' });
+        const clinic = req.user.clinic;
+        const conn = await pool.getConnection();
+        const [r] = await conn.execute(`INSERT INTO messages_${clinic}(message) VALUES(?)`, [message]);
+        conn.release();
+        res.json({ messageId: r.insertId });
+    } catch (e) { console.error(e); res.status(500).json({ error: e.message }); }
+});
+app.post('/delete_message', isAuthenticated, isAdmin, async (req, res) => {
+    try {
+        const { messageId } = req.body;
+        const clinic = req.user.clinic;
+        const conn = await pool.getConnection();
+        await conn.execute(`DELETE FROM messages_${clinic} WHERE id=?`, [parseInt(messageId, 10)]);
+        conn.release();
+        res.send('Deleted');
+    } catch (e) { console.error(e); res.status(500).send(e.message); }
+});
+
+// Dynamic room view
 app.get('/room/:roomNumber', isAuthenticated, async (req, res) => {
     try {
         const roomNumber = req.params.roomNumber;
@@ -149,7 +178,7 @@ app.get('/room/:roomNumber', isAuthenticated, async (req, res) => {
         const today = moment().tz('Asia/Jerusalem').format('YYYY-MM-DD');
         const conn = await pool.getConnection();
         const [rows] = await conn.execute(
-            `SELECT * FROM selected_dates_2_${clinic} WHERE selected_date = ? AND roomNumber = ?`,
+            `SELECT * FROM selected_dates_2_${clinic} WHERE selected_date=? AND roomNumber=?`,
             [today, roomNumber]
         );
         conn.release();
@@ -164,51 +193,11 @@ app.get('/room/:roomNumber', isAuthenticated, async (req, res) => {
             }
         }
         res.render('room', { roomNumber, currentTherapist, data: rows, moment });
-    } catch (e) {
-        console.error(e);
-        res.status(500).send(e.message);
-    }
+    } catch (e) { console.error(e); res.status(500).send(e.message); }
 });
 
-app.get('/get_last_messages', isAuthenticated, async (req, res) => {
-    try {
-        const clinic = req.user.clinic;
-        const [rows] = await pool.query(`SELECT * FROM messages_${clinic} ORDER BY id DESC LIMIT 10`);
-        res.json({ messages: rows.map(r => r.message), messageIds: rows.map(r => r.id) });
-    } catch (e) {
-        console.error(e);
-        res.status(500).json({ error: e.message });
-    }
-});
-
-app.post('/submit_message', isAuthenticated, async (req, res) => {
-    try {
-        const message = req.body.input;
-        if (!message) return res.status(400).json({ error: 'Empty' });
-        const clinic = req.user.clinic;
-        const conn = await pool.getConnection();
-        const [r] = await conn.execute(`INSERT INTO messages_${clinic} (message) VALUES (?)`, [message]);
-        conn.release();
-        res.json({ messageId: r.insertId });
-    } catch (e) {
-        console.error(e);
-        res.status(500).json({ error: e.message });
-    }
-});
-
-app.post('/delete_message', isAuthenticated, isAdmin, async (req, res) => {
-    try {
-        const { messageId } = req.body;
-        const clinic = req.user.clinic;
-        const conn = await pool.getConnection();
-        await conn.execute(`DELETE FROM messages_${clinic} WHERE id=?`, [parseInt(messageId, 10)]);
-        conn.release();
-        res.send('Deleted');
-    } catch (e) {
-        console.error(e);
-        res.status(500).send(e.message);
-    }
-});
-
+// Favicon
 app.get('/favicon.ico', (req, res) => res.status(204));
-app.listen(port, '0.0.0.0', () => console.log(`Server listening on port ${port}`));
+
+// Start server
+app.listen(port, '0.0.0.0', () => console.log(`Listening on port ${port}`));
