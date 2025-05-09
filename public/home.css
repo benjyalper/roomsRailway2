@@ -109,14 +109,13 @@ body {
         margin-top: 65px;
     }
 
-    #knock {
+    /* #knock {
         position: fixed;
         height: 50px;
         margin-top: 100px;
         margin-right: 170px;
         z-index: 20000;
-        /* background-color: peachpuff; */
-    }
+    } */
 }
 
 .room {
@@ -127,7 +126,7 @@ body {
     position: relative;
     height: 22rem;
     width: 22rem;
-    background-image: url('/door_image.png');
+    background-image: url('/newRoom.png');
     background-size: cover;
     z-index: 1;
 }
