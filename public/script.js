@@ -26,6 +26,17 @@ function setupNavigation() {
 }
 
 function initHome() {
+    const $grid = $('#room-grid');
+    $grid.empty();
+    for (let i = 1; i <= 10; i++) {
+        const $room = $(`
+            <div class="room" data-room-number="${i}" style="background-image: url('/newRoom.png');">
+                <div class="room-number">חדר ${i}</div>
+            </div>
+        `);
+        $grid.append($room);
+    }
+
     $('.room').on('click', function () {
         const roomNumber = $(this).data('room-number');
         window.location.href = `/room/${roomNumber}`;
@@ -41,10 +52,9 @@ function initSchedule() {
 
 function buildScheduleGrid() {
     const times = [
-        "08:00:00", "08:30:00", "09:00:00", "09:30:00",
-        "10:00:00", "10:30:00", "11:00:00", "11:30:00",
-        "12:00:00", "12:30:00", "13:00:00", "13:30:00",
-        "14:00:00", "14:30:00", "15:00:00", "15:30:00",
+        "07:00:00", "07:30:00", "08:00:00", "08:30:00", "09:00:00", "09:30:00",
+        "10:00:00", "10:30:00", "11:00:00", "11:30:00", "12:00:00", "12:30:00",
+        "13:00:00", "13:30:00", "14:00:00", "14:30:00", "15:00:00", "15:30:00",
         "16:00:00", "16:30:00", "17:00:00", "17:30:00"
     ];
     const roomCount = 10;
@@ -68,9 +78,15 @@ function buildScheduleGrid() {
 function fetchDataByDate() {
     const date = $('#lookupDate').val();
     fetch(`/fetchDataByDate?date=${encodeURIComponent(date)}`)
-        .then(res => res.json())
+        .then(res => {
+            if (!res.ok) throw new Error(`HTTP ${res.status}`);
+            return res.json();
+        })
         .then(results => updateScheduleGrid(results))
-        .catch(err => console.error('Error fetching data:', err));
+        .catch(err => {
+            console.error('Error fetching data:', err);
+            Swal.fire('שגיאה בטעינת נתוני החדרים');
+        });
 }
 
 function updateScheduleGrid(results) {
@@ -148,7 +164,7 @@ function initRoomForm() {
 function updateEndTimeOptions() {
     const start = $('#startTime').val();
     if (!start) return;
-    const options = ['08:30', '09:00', '09:30', '10:00', '10:30', '11:00', '11:30', '12:00', '12:30', '13:00', '13:30', '14:00', '14:30', '15:00', '15:30', '16:00', '16:30', '17:00', '17:30', '18:00', '18:30', '19:00', '23:30'];
+    const options = ['07:30', '08:00', '08:30', '09:00', '09:30', '10:00', '10:30', '11:00', '11:30', '12:00', '12:30', '13:00', '13:30', '14:00', '14:30', '15:00', '15:30', '16:00', '16:30', '17:00', '17:30', '18:00', '18:30', '19:00', '23:30'];
     const valid = options.filter(t => moment(t, 'HH:mm').isAfter(moment(start, 'HH:mm')));
     $('#endTime').empty().append(valid.map(t => `<option value="${t}">${t}</option>`));
 }
