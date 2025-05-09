@@ -18,30 +18,47 @@ h2 {
 /* Room grid */
 .room-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
     gap: 1rem;
-    padding: 1rem;
 }
 
 .room {
-    background-image: url('/newRoom.PNG');
-    background-repeat: no-repeat;
+    background-image: url('/newRoom.png');
+    background-position: center;
     background-size: cover;
-    background-position: center center;
-    border-radius: 10px;
-    height: 160px;
+    background-repeat: no-repeat;
+    height: 140px;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: transform 0.2s;
+    border-radius: 8px;
     cursor: pointer;
+    transition: transform .2s;
 }
-
 
 .room:hover {
     transform: scale(1.05);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-    cursor: pointer;
+}
+
+.grid-container,
+#scheduleGrid {
+    display: grid;
+    gap: 1px;
+}
+
+#scheduleGrid {
+    grid-template-columns: auto repeat(10, 1fr);
+}
+
+.grid-cell {
+    border: 1px solid #ccc;
+    min-height: 40px;
+}
+
+.header-cell {
+    background: #f0f0f0;
+    text-align: center;
+    font-weight: bold;
 }
 
 .room-number {

@@ -5,9 +5,9 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Room Scheduler</title>
+        <link rel="stylesheet" href="/style.css">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-        <link rel="stylesheet" href="style.css">
     </head>
 
     <body>
@@ -27,49 +27,16 @@
             </div>
         </nav>
 
-        <div class="container mt-5 pt-5">
-            <h1 class="text-center my-4" id="home-heading">סידור חדרים</h1>
-            <div id="room-grid" class="room-grid container">
-                <div class="room" data-room-number="1">
-                    <div class="room-number">חדר 1</div>
-                </div>
-                <div class="room" data-room-number="2">
-                    <div class="room-number">חדר 2</div>
-                </div>
-                <div class="room" data-room-number="3">
-                    <div class="room-number">חדר 3</div>
-                </div>
-                <div class="room" data-room-number="4">
-                    <div class="room-number">חדר 4</div>
-                </div>
-                <div class="room" data-room-number="5">
-                    <div class="room-number">חדר 5</div>
-                </div>
-                <div class="room" data-room-number="6">
-                    <div class="room-number">חדר 6</div>
-                </div>
-                <div class="room" data-room-number="7">
-                    <div class="room-number">חדר 7</div>
-                </div>
-                <div class="room" data-room-number="8">
-                    <div class="room-number">חדר 8</div>
-                </div>
-                <div class="room" data-room-number="9">
-                    <div class="room-number">חדר 9</div>
-                </div>
-                <div class="room" data-room-number="10">
-                    <div class="room-number">חדר 10</div>
-                </div>
-            </div>
+        <div class="container mt-5 pt-5 text-center">
+            <h1 class="my-4">סידור חדרים</h1>
+            <div id="room-grid" class="room-grid"></div>
         </div>
-
-        <img id="knock" src="/knockOnDoorColored.png" alt="Knock Icon" class="animate__animated animate__heartBeat">
 
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
-        <script src="script.js"></script>
+        <script src="/script.js"></script>
     </body>
 
 </html>
