@@ -83,14 +83,20 @@ function fetchDataByDate() {
 function updateScheduleGrid(rows) {
     $('.grid-cell').removeAttr('style').empty();
     (rows || []).forEach(r => {
-        const sel = `[data-room-hour="${r.roomNumber} ${r.startTime}"]`;
-        const end = `[data-room-hour="${r.roomNumber} ${r.endTime}"]`;
-        const $s = $(sel), $e = $(end);
-        const $cells = $s.nextUntil($e).addBack();
-        $cells.css({ backgroundColor: r.color, border: `2px solid ${r.color}` });
-        $cells.eq(Math.floor($cells.length / 2)).html(`<div class="therapist-name">${r.names}</div>`);
-        $cells.attr('title', `מטפל/ת: ${r.names}\nחדר: ${r.roomNumber}`).tooltip();
-        $cells.click(() => confirmDelete(r, $('#lookupDate').val()));
+        const cells = $('.grid-cell').filter(function () {
+            const attr = $(this).attr('data-room-hour');
+            if (!attr) return false;
+            const parts = attr.split(' ');
+            const roomNum = parts.shift();
+            const time = parts.join(' ');
+            return roomNum === String(r.roomNumber) && time >= r.startTime && time < r.endTime;
+        });
+        cells.css({ backgroundColor: r.color, border: `2px solid ${r.color}` });
+        const middle = cells.eq(Math.floor(cells.length / 2));
+        middle.html(`<div class="therapist-name">${r.names}</div>`);
+        cells.attr('title', `מטפל/ת: ${r.names}
+חדר: ${r.roomNumber}`).tooltip();
+        cells.off('click').on('click', () => confirmDelete(r, $('#lookupDate').val()));
     });
 }
 
