@@ -1,61 +1,101 @@
-/* General resets and layout */
+/* Calm Sea Palette & Soft Styling */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
+
+:root {
+    --sea-deep: #1F4F5B;
+    --sea-medium: #3A8D9C;
+    --sea-light: #A7D8DE;
+    --sand: #F2E8CF;
+    --white: #FFFFFF;
+    --gray-light: #F7F7F7;
+    --gray: #E0E0E0;
+    --text-dark: #2E3A3F;
+}
+
 body {
-    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #f8f9fa;
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--gray-light);
+    color: var(--text-dark);
     margin: 0;
     padding: 0;
 }
 
-h1,
-h2 {
-    color: #155724;
+/* Navbar */
+.calm-navbar {
+    background-color: var(--white);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    padding: 0.5rem 1rem;
+    font-weight: 500;
 }
 
-.container {
-    max-width: 1200px;
+.calm-navbar .navbar-brand i {
+    font-size: 1.5rem;
+    color: var(--sea-deep);
 }
 
-/* Room grid */
+.calm-navbar .nav-link {
+    color: var(--sea-deep);
+    margin: 0 0.5rem;
+    transition: color 0.2s;
+}
+
+.calm-navbar .nav-link:hover {
+    color: var(--sea-medium);
+}
+
+/* Home Grid */
 .room-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
     gap: 1rem;
+    padding: 1rem;
 }
 
 .room {
-    background: url('/images/newRoom.png') center/cover no-repeat;
+    background: url('/images/newRoom.png') center/contain no-repeat;
+    background-color: var(--white);
     height: 140px;
+    border-radius: 12px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
     display: flex;
-    align-items: center;
+    align-items: flex-end;
     justify-content: center;
-    border-radius: 8px;
     cursor: pointer;
     transition: transform 0.2s;
+    padding-bottom: 0.5rem;
 }
 
 .room:hover {
-    transform: scale(1.05);
+    transform: translateY(-3px);
 }
 
-.grid-container,
+.room-number {
+    background-color: rgba(255, 255, 255, 0.8);
+    padding: 0.2rem 0.5rem;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+/* Schedule Grid */
 #scheduleGrid {
     display: grid;
     gap: 1px;
+    border-radius: 8px;
+    overflow: hidden;
 }
 
-#scheduleGrid {
-    grid-template-columns: auto repeat(10, 1fr);
-}
-
-.header-cell {
-    background: #f0f0f0;
+#scheduleGrid .header-cell {
+    background-color: var(--sea-deep);
+    color: var(--white);
     text-align: center;
-    font-weight: bold;
-    padding: 4px;
+    padding: 0.75rem 0.5rem;
+    font-weight: 600;
+    font-size: 0.9rem;
 }
 
-.grid-cell {
-    background: white;
+#scheduleGrid .grid-cell {
+    background-color: var(--white);
     min-height: 40px;
     position: relative;
 }
@@ -65,129 +105,72 @@ h2 {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    color: #000;
-    font-weight: bold;
-}
-
-
-.grid-cell {
-    border: 1px solid #ccc;
-    min-height: 40px;
-}
-
-.header-cell {
-    background: #f0f0f0;
-    text-align: center;
-    font-weight: bold;
-}
-
-.room-number {
-    font-size: 1.4rem;
-    color: #353287;
-    background: rgba(255, 255, 255, 0.7);
-    padding: 0.3rem 1rem;
-    border-radius: 6px;
-}
-
-#home-heading,
-#heading {
-    background-color: #e6f4ec;
-    padding: 0.75rem;
-    border-radius: 5px;
-    margin-top: 2rem;
-}
-
-/* Knock icon */
-#knock {
-    position: fixed;
-    top: 80px;
-    right: 20px;
-    width: 60px;
-    z-index: 999;
-}
-
-/* Schedule grid */
-.grid-container {
-    display: grid;
-    grid-template-columns: repeat(10, 1fr);
-    gap: 1px;
-}
-
-.grid-cell {
-    height: 50px;
-    border: 1px solid #ccc;
-}
-
-
-.grid-cell.frame {
-    background-color: #eaecec;
-    font-weight: bold;
-}
-
-.therapist-name {
-    font-size: 0.9rem;
-    color: #000;
     font-weight: 500;
+    color: var(--text-dark);
 }
 
-/* Message List */
-.to-do-items .item {
-    background-color: #ffffff;
-    border: 1px solid #ced4da;
-    border-radius: 6px;
-    padding: 0.75rem;
-    margin-bottom: 0.5rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+/* Form Styling */
+form#roomForm {
+    background-color: var(--white);
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
-.to-do-items .item i {
-    margin-left: 0.75rem;
-    cursor: pointer;
+form#roomForm .form-label {
+    font-weight: 500;
+    color: var(--sea-deep);
 }
 
-/* Responsive overrides */
+form#roomForm .form-control,
+form#roomForm .form-select {
+    border-radius: 8px;
+    border: 1px solid var(--gray);
+    box-shadow: none;
+    font-size: 0.9rem;
+}
+
+form#roomForm .form-check-input {
+    border-radius: 4px;
+}
+
+form#roomForm button.btn {
+    background-color: var(--sea-medium);
+    border: none;
+    padding: 0.6rem 1.5rem;
+    border-radius: 8px;
+    font-size: 1rem;
+}
+
+form#roomForm button.btn:hover {
+    background-color: var(--sea-deep);
+}
+
+/* Room Detail Page */
+.room-detail-page {
+    background: url('/room_image.png') no-repeat center center;
+    background-size: cover;
+}
+
+.status-container {
+    background-color: rgba(31, 79, 91, 0.7);
+    color: var(--white);
+    padding: 1rem;
+    border-radius: 8px;
+    font-size: 1.1rem;
+}
+
+/* Responsive */
 @media (max-width: 768px) {
     .room {
         height: 120px;
     }
 
-    .grid-cell {
-        font-size: 0.75rem;
+    .therapist-name {
+        font-size: 0.8rem;
     }
 
-    .navbar .form-control {
-        width: 100px !important;
+    form#roomForm {
+        padding: 1rem;
     }
-
-    #knock {
-        top: 60px;
-        width: 40px;
-    }
-}
-
-.calm-navbar {
-    background-color: #ffffff;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
-    transition: background-color 0.3s ease, box-shadow 0.3s ease;
-    font-weight: 500;
-}
-
-.calm-navbar .navbar-brand,
-.calm-navbar .nav-link {
-    color: #555555;
-    transition: color 0.2s ease;
-}
-
-.calm-navbar .nav-link:hover {
-    color: #333333;
-}
-
-.calm-navbar .navbar-toggler {
-    border-color: transparent;
-}
-
-.calm-navbar .navbar-toggler-icon {
-    filter: invert(40%);
 }
