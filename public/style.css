@@ -166,3 +166,28 @@ h2 {
         width: 40px;
     }
 }
+
+.calm-navbar {
+    background-color: #ffffff;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    font-weight: 500;
+}
+
+.calm-navbar .navbar-brand,
+.calm-navbar .nav-link {
+    color: #555555;
+    transition: color 0.2s ease;
+}
+
+.calm-navbar .nav-link:hover {
+    color: #333333;
+}
+
+.calm-navbar .navbar-toggler {
+    border-color: transparent;
+}
+
+.calm-navbar .navbar-toggler-icon {
+    filter: invert(40%);
+}
