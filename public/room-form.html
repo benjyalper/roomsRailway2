@@ -33,7 +33,7 @@
                 <div class="row g-3">
                     <div class="col-md-4">
                         <label for="selectedDate" class="form-label">תאריך</label>
-                        <input type="date" class="form-control" id="selectedDate" required>
+                        <input type="date" class="form-control" id="selectedDate" required value="">
                     </div>
 
                     <div class="col-md-4">
@@ -48,7 +48,8 @@
 
                     <div class="col-md-4">
                         <label for="startTime" class="form-label">שעת התחלה</label>
-                        <input type="time" class="form-control" id="startTime" required>
+                        <input type="time" class="form-control" id="startTime" value="07:00" min="07:00" max="19:00"
+                            step="1800" required>
                     </div>
 
                     <div class="col-md-4">
