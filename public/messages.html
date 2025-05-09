@@ -13,23 +13,7 @@
     <body>
         <!-- Put this immediately inside <body> on home.html, room-schedule.html, room-form.html, room.ejs, messages.html, etc. -->
 
-        <nav class="navbar navbar-expand-lg calm-navbar fixed-top">
-            <div class="container-fluid">
-                <a class="navbar-brand" href="/home.html"><i class="fa fa-home"></i></a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="mainNav">
-                    <ul class="navbar-nav ms-auto">
-                        <li class="nav-item"><a class="nav-link" id="nav-schedule">טבלת חדרים</a></li>
-                        <li class="nav-item"><a class="nav-link" id="nav-edit">עריכה</a></li>
-                        <li class="nav-item"><a class="nav-link" id="nav-messages">הודעות</a></li>
-                        <li class="nav-item"><a class="nav-link" id="nav-signout">התנתק/י</a></li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
-        <div style="height: 56px;"><!-- spacer for fixed navbar height --></div>
+        <% include partials/navbar %>
 
 
         <div class="container mt-5 pt-4">
