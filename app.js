@@ -16,7 +16,6 @@ const app = express();
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const port = process.env.PORT || 3000;
 
-// Middleware
 app.use(express.static('public'));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -25,10 +24,8 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
 
-// View engine (optional)
 app.set('view engine', 'ejs');
 
-// Dummy user store
 const users = [
     { id: 1, username: 'marbah', password: 'junior', role: 'admin', clinic: 'marbah' },
     { id: 2, username: 'admin1', password: 'admin1', role: 'admin', clinic: 'clalit' },
@@ -47,6 +44,10 @@ passport.deserializeUser((id, done) => done(null, users.find(u => u.id === id)))
 
 function isAuthenticated(req, res, next) {
     if (req.isAuthenticated()) return next();
+    const acceptsJson = req.headers.accept && req.headers.accept.includes('application/json');
+    if (acceptsJson) {
+        return res.status(401).json({ error: 'Unauthorized' });
+    }
     res.redirect('/index.html');
 }
 
@@ -66,7 +67,6 @@ const pool = mysql.createPool({
     queueLimit: 0
 });
 
-// Routes
 app.get('/signin', (req, res) => res.redirect('/index.html'));
 
 app.post('/signin', passport.authenticate('local', {
@@ -183,7 +183,6 @@ app.post('/delete_message', isAuthenticated, isAdmin, async (req, res) => {
     }
 });
 
-// Suppress favicon.ico 404
 app.get('/favicon.ico', (req, res) => res.status(204));
 
 app.listen(port, '0.0.0.0', () => {
