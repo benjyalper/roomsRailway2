@@ -1,107 +1,23 @@
-<!DOCTYPE html>
-<html lang="he" dir="rtl">
+<div class="container-lg">
+    <div class="background-container">
+        <nav class="navbar navbar1">
+            <h3 style="font-size: 28px;">חדר <%= roomNumber %></h3>
+            <button class="back-btn"><i class="fa fa-home fa-1x"></i></button>
+        </nav>
 
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Room <%= roomNumber %> - Schedule</title>
-        <link rel="stylesheet" href="/styles-template.css">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
-            integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
-
-        <!-- Include Moment.js -->
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
-    </head>
-
-    <body>
-        <% function isCurrentTimeInRange(startTime, endTime) { %>
-        <% const now = new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Jerusalem' })); %>
-        <% const start = parseTime(startTime); %>
-        <% const end = parseTime(endTime); %>
-
-        <% return now >= start && now <= end; %>
-        <% } %>
-
-
-        <% function parseTime(timeString) { %>
-        <% const parts = timeString.split(':'); %>
-        <% const hours = parseInt(parts[0], 10); %>
-        <% const minutes = parseInt(parts[1], 10); %>
-        <!-- Remove seconds since they are not needed -->
-        <% const result = new Date(); %>
-        <% result.setHours(hours, minutes); %>
-
-        <% return result; %>
-        <% } %>
-        <div class="container-lg">
-
-            <div class="background-container">
-                <nav class="navbar navbar1">
-                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                        data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false"
-                        aria-label="Toggle navigation" style="margin-left: 10px;">
-                        <span class="navbar-toggler-icon"></span>
-                    </button>
-
-
-                    <% if (roomNumber === 'מטבח'){ %>
-                    <h3 style="font-size: 28px; margin-left: 20px;"><%= roomNumber %></h3>
-                    <% } else { %>
-                    <h3 style="font-size: 28px; margin-left: 20px;">חדר <%= roomNumber %></h3>
-                    <% } %>
-
-                    <button class="back-btn"><i class="fa fa-home fa-1x" aria-hidden="true"></i></button>
-
-                    <div class="collapse navbar-collapse" id="navbarNavDropdown">
-                        <ul class="navbar-nav">
-                            <li class="nav-item">
-                                <a class="nav-link active room-schedule-link" href="#" aria-current="page">טבלת
-                                    חדרים</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link active drop-down-to-room-form-link" href="#"
-                                    aria-current="page">עריכה</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link active cat-link" href="#" aria-current="page">הודעות</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link active sign-out-link" href="#" aria-current="page">התנתק/י</a>
-                            </li>
-                        </ul>
-                    </div>
-                </nav>
-                <div class="calendar-container">
-                    <div class="calender-item">
-                        <%= new Date().toLocaleString('he-IL', { timeZone: 'Asia/Jerusalem', hour12: true, hour: 'numeric', minute: 'numeric' }) %>
-                    </div>
-                    <div>
-                        <!-- Display data for today -->
-                        <% let therapistAvailable = false; %>
-                        <% data.forEach(row => { %>
-                        <% if (row.roomNumber === roomNumber && isCurrentTimeInRange(row.startTime, row.endTime)) { %>
-                        <!-- Format endTime to display only hours and minutes -->
-                        <span style="color: green;"><%= row.names %> בטיפול עד
-                            <%= parseTime(row.endTime).toLocaleTimeString('he-IL', { hour12: true, hour: 'numeric', minute: 'numeric' }) %></span>
-                        <% therapistAvailable = true; %>
-                        <% } %>
-                        <% }); %>
-                        <% if (!therapistAvailable) { %>
-                        <p>החדר פנוי</p>
-                        <% } %>
-                    </div>
-                </div>
+        <div class="calendar-container">
+            <div class="calender-item">
+                <%= new Date().toLocaleString('he-IL', { timeZone: 'Asia/Jerusalem', hour12: true, hour: 'numeric', minute: 'numeric' }) %>
             </div>
 
+            <div>
+                <% if (currentTherapist) { %>
+                <span style="color: green;"><%= currentTherapist.name %> בטיפול עד
+                    <%= currentTherapist.endTime %></span>
+                <% } else { %>
+                <p>החדר פנוי</p>
+                <% } %>
+            </div>
         </div>
-
-        <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script> -->
-        <script src='https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js'></script>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
-            integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
-            crossorigin="anonymous"></script>
-        <script src="/script.js"></script>
-    </body>
-
-</html>
+    </div>
+</div>
