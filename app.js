@@ -77,7 +77,18 @@ app.get('/logout', (req, res) => {
 });
 
 // Page routes
-app.get('/home', isAuthenticated, (req, res) => res.render('home'));
+app.get('/home', isAuthenticated, (req, res) => {
+    res.render('home', {}, (err, html) => {
+        if (err) {
+            console.error('❌ Error rendering home.ejs:', err);
+            return res
+                .status(500)
+                .send(`Template render error: ${err.message}`);
+        }
+        res.send(html);
+    });
+});
+
 app.get('/room-schedule', isAuthenticated, (req, res) => res.render('room-schedule'));
 app.get('/room-form', isAuthenticated, (req, res) => res.render('room-form'));
 app.get('/messages', isAuthenticated, (req, res) => res.render('messages'));
@@ -198,6 +209,12 @@ app.get('/room/:roomNumber', isAuthenticated, async (req, res) => {
 
 // Favicon
 app.get('/favicon.ico', (req, res) => res.status(204));
+
+// catch-all error handler
+app.use((err, req, res, next) => {
+    console.error('Unhandled error:', err.stack);
+    res.status(500).send(`Server error: ${err.message}`);
+});
 
 // Start server
 app.listen(port, '0.0.0.0', () => console.log(`Listening on port ${port}`));
