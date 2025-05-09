@@ -2,13 +2,14 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
 
 :root {
-    --sea-deep: #1F4F5B;
-    --sea-medium: #3A8D9C;
-    --sea-light: #A7D8DE;
-    --sand: #F2E8CF;
-    --white: #FFFFFF;
-    --gray-light: #F7F7F7;
-    --gray: #E0E0E0;
+    --sea-deep: #247794;
+    --sea-medium: #018594;
+    --sea-light: #e2dcc3;
+    --sand-medium: #b7a18b;
+    --sand-light: #ded9ce;
+    --white: #ffffff;
+    --gray-light: #f7f7f7;
+    --gray: #e0e0e0;
     --text-dark: #2E3A3F;
 }
 
@@ -20,12 +21,12 @@ body {
     padding: 0;
 }
 
-/* Navbar */
 .calm-navbar {
     background-color: var(--white);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     padding: 0.5rem 1rem;
     font-weight: 500;
+    z-index: 1050;
 }
 
 .calm-navbar .navbar-brand i {
@@ -37,13 +38,13 @@ body {
     color: var(--sea-deep);
     margin: 0 0.5rem;
     transition: color 0.2s;
+    cursor: pointer;
 }
 
 .calm-navbar .nav-link:hover {
     color: var(--sea-medium);
 }
 
-/* Home Grid */
 .room-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
@@ -60,9 +61,9 @@ body {
     display: flex;
     align-items: flex-end;
     justify-content: center;
-    cursor: pointer;
     transition: transform 0.2s;
     padding-bottom: 0.5rem;
+    cursor: pointer;
 }
 
 .room:hover {
@@ -77,7 +78,6 @@ body {
     font-size: 1rem;
 }
 
-/* Schedule Grid */
 #scheduleGrid {
     display: grid;
     gap: 1px;
@@ -85,7 +85,7 @@ body {
     overflow: hidden;
 }
 
-#scheduleGrid .header-cell {
+.header-cell {
     background-color: var(--sea-deep);
     color: var(--white);
     text-align: center;
@@ -94,7 +94,7 @@ body {
     font-size: 0.9rem;
 }
 
-#scheduleGrid .grid-cell {
+.grid-cell {
     background-color: var(--white);
     min-height: 40px;
     position: relative;
@@ -109,7 +109,6 @@ body {
     color: var(--text-dark);
 }
 
-/* Form Styling */
 form#roomForm {
     background-color: var(--white);
     padding: 2rem;
@@ -130,26 +129,24 @@ form#roomForm .form-select {
     font-size: 0.9rem;
 }
 
-form#roomForm .form-check-input {
-    border-radius: 4px;
-}
-
 form#roomForm button.btn {
     background-color: var(--sea-medium);
     border: none;
     padding: 0.6rem 1.5rem;
     border-radius: 8px;
     font-size: 1rem;
+    transition: background-color 0.2s;
 }
 
 form#roomForm button.btn:hover {
     background-color: var(--sea-deep);
 }
 
-/* Room Detail Page */
 .room-detail-page {
     background: url('/room_image.png') no-repeat center center;
     background-size: cover;
+    min-height: 100vh;
+    padding-top: 56px;
 }
 
 .status-container {
@@ -160,7 +157,6 @@ form#roomForm button.btn:hover {
     font-size: 1.1rem;
 }
 
-/* Responsive */
 @media (max-width: 768px) {
     .room {
         height: 120px;
