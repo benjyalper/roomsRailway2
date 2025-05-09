@@ -1,3 +1,4 @@
+// Main JavaScript for all pages
 $(document).ready(function () {
     setupNavigation();
     if ($('#room-grid').length) initHome();
@@ -16,9 +17,7 @@ function setupNavigation() {
             showCancelButton: true,
             confirmButtonText: 'כן',
             cancelButtonText: 'לא'
-        }).then(r => {
-            if (r.isConfirmed) window.location.href = '/signin';
-        });
+        }).then(r => { if (r.isConfirmed) window.location.href = '/signin'; });
     });
     $('#backHome').click(() => { window.location.href = '/home.html'; });
 }
@@ -40,14 +39,18 @@ function initSchedule() {
 }
 
 function buildScheduleGrid() {
-    const times = [
-        "07:00:00", "07:30:00", "08:00:00", "08:30:00",
-        "09:00:00", "09:30:00", "10:00:00", "10:30:00",
-        "11:00:00", "11:30:00", "12:00:00", "12:30:00",
-        "13:00:00", "13:30:00", "14:00:00", "14:30:00",
-        "15:00:00", "15:30:00", "16:00:00", "16:30:00",
-        "17:00:00", "17:30:00"
-    ];
+    const startHour = 7;
+    const endHour = 19;
+    const interval = 30; // minutes
+    const times = [];
+    for (let h = startHour; h <= endHour; h++) {
+        for (let m = 0; m < 60; m += interval) {
+            if (h === endHour && m > 0) continue;
+            const hh = String(h).padStart(2, '0');
+            const mm = String(m).padStart(2, '0');
+            times.push(`${hh}:${mm}:00`);
+        }
+    }
     const rooms = 10;
     const $g = $('#scheduleGrid').empty().css({
         display: 'grid',
@@ -72,7 +75,7 @@ function fetchDataByDate() {
     fetch(`/fetchDataByDate?date=${encodeURIComponent($('#lookupDate').val())}`, {
         headers: { Accept: 'application/json' }
     })
-        .then(r => r.ok ? r.json() : Promise.reject(r.status))
+        .then(r => (r.ok ? r.json() : Promise.reject(r.status)))
         .then(updateScheduleGrid)
         .catch(() => Swal.fire('שגיאה בטעינת נתוני החדרים'));
 }
@@ -137,6 +140,40 @@ function initRoomForm() {
 
 function updateEndTimeOptions() {
     const s = $('#startTime').val();
-    const opts = ['07:30', '08:00', '08:30', '09:00', '09:30', '10:00', '10:30', '11:00', '11:30', '12:00', '12:30', '13:00', '13:30', '14:00', '14:30', '15:00', '15:30', '16:00', '16:30', '17:00', '17:30'];
-    $('#endTime').empty().append(opts.filter(t => moment(t, 'HH:mm').isAfter(moment(s, 'HH:mm'))).map(t => `<option>${t}</option>`));
+    const opts = ['07:30', '08:00', '08:30', '09:00', '09:30', '10:00', '10:30', '11:00', '11:30', '12:00', '12:30', '13:00', '13:30', '14:00', '14:30', '15:00', '15:30', '16:00', '16:30', '17:00', '17:30', '18:00', '18:30', '19:00'];
+    $('#endTime').empty().append(opts.filter(t => moment(t, 'HH:mm').isAfter(moment(s, 'HH:mm'))).map(t => `<option value="${t}">${t}</option>`));
+}
+
+function displayLast10Messages() {
+    fetch('/get_last_messages').then(r => r.json()).then(data => {
+        const list = $('#messageList').empty();
+        data.messages.forEach((msg, i) => {
+            const item = $(`<div class="item list-group-item animate__fadeInRight" data-index="${i}"><div>${msg}</div></div>`);
+            const check = $('<i class="fas fa-check-square" style="color:lightgray;"></i>').click(() => check.css('color', 'limegreen'));
+            const trash = $('<i class="fas fa-trash" style="color:darkgray;"></i>').click(() => deleteMessage(data.messageIds[i], item));
+            item.append($('<div>').append(check, trash));
+            list.append(item);
+        });
+    });
+}
+
+function submitMessage() {
+    const input = $('#input').val().trim();
+    if (!input) return Swal.fire('אי אפשר לשלוח הודעה ריקה');
+    fetch('/submit_message', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ input }) })
+        .then(r => r.json())
+        .then(res => {
+            const list = $('#messageList');
+            const item = $(`<div class="item animate__animated animate__bounce"><div>${input}</div></div>`);
+            const check = $('<i class="fas fa-check-square" style="color:lightgray;"></i>').click(() => check.css('color', 'limegreen'));
+            const trash = $('<i class="fas fa-trash" style="color:darkgray;"></i>').click(() => deleteMessage(res.messageId, item));
+            item.append($('<div>').append(check, trash)).attr('data-id', res.messageId);
+            list.prepend(item);
+            $('#input').val('');
+        });
+}
+
+function deleteMessage(messageId, item) {
+    fetch('/delete_message', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ messageId }) })
+        .then(r => { if (r.ok) item.addClass('animate__slideOutLeft') && setTimeout(() => item.remove(), 1000); else Swal.fire('שגיאה במחיקת ההודעה'); });
 }
