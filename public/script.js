@@ -35,7 +35,29 @@ function initHome() {
 function initSchedule() {
     $('#lookupDate').val(moment().format('YYYY-MM-DD'));
     $('#lookupDate').on('change', fetchDataByDate);
+    buildScheduleGrid();
     fetchDataByDate();
+}
+
+function buildScheduleGrid() {
+    const times = [
+        "08:00:00", "08:30:00", "09:00:00", "09:30:00",
+        "10:00:00", "10:30:00", "11:00:00", "11:30:00",
+        "12:00:00", "12:30:00", "13:00:00", "13:30:00",
+        "14:00:00", "14:30:00", "15:00:00", "15:30:00",
+        "16:00:00", "16:30:00", "17:00:00", "17:30:00"
+    ];
+    const roomCount = 10;
+    const $grid = $('#scheduleGrid');
+    $grid.empty();
+
+    for (const time of times) {
+        for (let room = 1; room <= roomCount; room++) {
+            const $cell = $('<div class="grid-cell"></div>');
+            $cell.attr('data-room-hour', `${room} ${time}`);
+            $grid.append($cell);
+        }
+    }
 }
 
 function fetchDataByDate() {
@@ -47,6 +69,10 @@ function fetchDataByDate() {
 }
 
 function updateScheduleGrid(results) {
+    if (!Array.isArray(results)) {
+        console.error("Expected array, got:", results);
+        return;
+    }
     $('.grid-cell').removeAttr('style').empty();
     results.forEach(r => {
         const start = `[data-room-hour="${r.roomNumber} ${r.startTime}"]`;
