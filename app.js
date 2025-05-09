@@ -163,7 +163,7 @@ app.get('/room/:roomNumber', isAuthenticated, async (req, res) => {
                 break;
             }
         }
-        res.render('room', { roomNumber, currentTherapist, data: rows });
+        res.render('room', { roomNumber, currentTherapist, data: rows, moment });
     } catch (e) {
         console.error(e);
         res.status(500).send(e.message);
