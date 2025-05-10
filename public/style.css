@@ -21,6 +21,7 @@ body {
     padding: 0;
 }
 
+/* Navbar */
 .calm-navbar {
     background-color: var(--white);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
@@ -84,7 +85,7 @@ body {
 .room-number {
     position: absolute;
     top: calc(15% + 3px);
-    left: calc(50% - 5px);
+    left: 50%;
     transform: translateX(-50%);
     background-color: transparent;
     padding: 0.2rem 0.5rem;
@@ -121,21 +122,14 @@ body {
     box-sizing: border-box;
 }
 
-
-/* header cells (the “frame”) */
 .header-cell {
-    background-color: #018594;
-    /* sea-medium */
-    color: white;
+    background-color: var(--sea-medium);
+    color: var(--white);
     text-align: center;
     padding: 0.75rem 0.5rem;
     font-weight: 600;
     font-size: 0.9rem;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
 }
-
 
 .therapist-name {
     position: absolute;
@@ -181,6 +175,22 @@ form#roomForm button.btn:hover {
     background-color: var(--sea-deep);
 }
 
+/* Sign-in form enlarge */
+@media (max-width: 768px) {
+    .form-container {
+        width: 90%;
+        margin: 2rem auto;
+        padding: 2rem !important;
+    }
+}
+
+@media (max-width: 576px) {
+    .form-container {
+        width: 95%;
+        padding: 2.5rem !important;
+    }
+}
+
 /* Room detail */
 .room-detail-page {
     background: url('/room_image.png') no-repeat center center;
@@ -198,7 +208,6 @@ form#roomForm button.btn:hover {
 }
 
 /* Responsive tweaks */
-/* ≤768px: general form/grid tweaks */
 @media (max-width: 768px) {
     .room {
         height: 120px;
@@ -212,12 +221,6 @@ form#roomForm button.btn:hover {
     .form-container {
         padding: 1rem;
     }
-}
-
-/* horizontal scrolling wrapper */
-.schedule-wrapper {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
 }
 
 /* ≤576px: show 2 rooms at a time */
@@ -247,22 +250,15 @@ form#roomForm button.btn:hover {
     .header-cell {
         position: sticky;
         top: 56px;
-        /* sticks just below your fixed navbar */
         z-index: 10;
-        background-color: var(--sea-medium) !important;
+        background-color: var(--sea-medium);
         color: var(--white);
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
     }
 
     .header-cell,
     .grid-cell {
         min-width: 150px;
         font-size: 0.9rem;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
     }
 }
 
@@ -294,28 +290,37 @@ form#roomForm button.btn:hover {
         position: sticky;
         top: 56px;
         z-index: 10;
-        background-color: var(--sea-medium) !important;
+        background-color: var(--sea-medium);
         color: var(--white);
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
     }
 
     .header-cell,
     .grid-cell {
         min-width: 25%;
         font-size: 1rem;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
     }
 }
 
-/* cancel JS grid-template-columns so wrapper can scroll */
-@media (max-width: 576px),
-(min-width: 577px) and (max-width: 768px) {
+/* Override inline JS grid-template-columns so wrapper scrolls */
+@media (max-width: 576px) {
     #scheduleGrid {
+        display: grid !important;
         grid-template-columns: none !important;
+        grid-auto-columns: minmax(150px, 1fr) !important;
+        overflow-x: visible !important;
+    }
+
+    .schedule-wrapper {
+        width: 100%;
+        overflow-x: auto;
+    }
+}
+
+@media (min-width: 577px) and (max-width: 768px) {
+    #scheduleGrid {
+        display: grid !important;
+        grid-template-columns: none !important;
+        grid-auto-columns: minmax(25%, 1fr) !important;
         overflow-x: visible !important;
     }
 
