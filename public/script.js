@@ -1,4 +1,12 @@
 // Main JavaScript for all pages
+
+const TIMES = [
+    '07:00', '07:30', '08:00', '08:30', '09:00', '09:30',
+    '10:00', '10:30', '11:00', '11:30', '12:00', '12:30',
+    '13:00', '13:30', '14:00', '14:30', '15:00', '15:30',
+    '16:00', '16:30', '17:00', '17:30'
+];
+
 $(document).ready(function () {
     setupNavigation();
     if ($('#room-grid').length) initHome();
@@ -39,18 +47,6 @@ function initSchedule() {
 }
 
 function buildScheduleGrid() {
-    const startHour = 7;
-    const endHour = 19;
-    const interval = 30; // minutes
-    const times = [];
-    for (let h = startHour; h <= endHour; h++) {
-        for (let m = 0; m < 60; m += interval) {
-            if (h === endHour && m > 0) continue;
-            const hh = String(h).padStart(2, '0');
-            const mm = String(m).padStart(2, '0');
-            times.push(`${hh}:${mm}:00`);
-        }
-    }
     const rooms = 10;
     const $g = $('#scheduleGrid').empty().css({
         display: 'grid',
@@ -60,13 +56,15 @@ function buildScheduleGrid() {
 
     // headers
     $g.append(`<div class="header-cell"></div>`);
-    for (let r = 1; r <= rooms; r++) $g.append(`<div class="header-cell">חדר ${r}</div>`);
+    for (let r = 1; r <= rooms; r++) {
+        $g.append(`<div class="header-cell">חדר ${r}</div>`);
+    }
 
-    // rows
-    times.forEach(t => {
-        $g.append(`<div class="header-cell">${t.slice(0, 5)}</div>`);
+    // time rows
+    TIMES.forEach(t => {
+        $g.append(`<div class="header-cell">${t}</div>`);
         for (let r = 1; r <= rooms; r++) {
-            $g.append(`<div class="grid-cell" data-room-hour="${r} ${t}"></div>`);
+            $g.append(`<div class="grid-cell" data-room-hour="${r} ${t}:00"></div>`);
         }
     });
 }
@@ -75,7 +73,7 @@ function fetchDataByDate() {
     fetch(`/fetchDataByDate?date=${encodeURIComponent($('#lookupDate').val())}`, {
         headers: { Accept: 'application/json' }
     })
-        .then(r => (r.ok ? r.json() : Promise.reject(r.status)))
+        .then(r => r.ok ? r.json() : Promise.reject(r.status))
         .then(updateScheduleGrid)
         .catch(() => Swal.fire('שגיאה בטעינת נתוני החדרים'));
 }
@@ -86,16 +84,13 @@ function updateScheduleGrid(rows) {
         const cells = $('.grid-cell').filter(function () {
             const attr = $(this).attr('data-room-hour');
             if (!attr) return false;
-            const parts = attr.split(' ');
-            const roomNum = parts.shift();
-            const time = parts.join(' ');
+            const [roomNum, time] = attr.split(' ');
             return roomNum === String(r.roomNumber) && time >= r.startTime && time < r.endTime;
         });
         cells.css({ backgroundColor: r.color, border: `2px solid ${r.color}` });
         const middle = cells.eq(Math.floor(cells.length / 2));
         middle.html(`<div class="therapist-name">${r.names}</div>`);
-        cells.attr('title', `מטפל/ת: ${r.names}
-חדר: ${r.roomNumber}`).tooltip();
+        cells.attr('title', `מטפל/ת: ${r.names}\nחדר: ${r.roomNumber}`).tooltip();
         cells.off('click').on('click', () => confirmDelete(r, $('#lookupDate').val()));
     });
 }
@@ -120,12 +115,15 @@ function deleteEntry(d, room, start, end) {
 }
 
 function initRoomForm() {
-
-    $('#startTime').change(updateEndTimeOptions);
+    const $start = $('#startTime').empty();
+    TIMES.forEach(t => $start.append(`<option value="${t}">${t}</option>`));
+    $start.change(updateEndTimeOptions);
     updateEndTimeOptions();
+
     $('#recurringEvent').change(() => {
         $('#recurringOptions').css('visibility', $('#recurringEvent').is(':checked') ? 'visible' : 'hidden');
     });
+
     $('#roomForm').submit(async e => {
         e.preventDefault();
         const data = {
@@ -147,8 +145,8 @@ function initRoomForm() {
 
 function updateEndTimeOptions() {
     const s = $('#startTime').val();
-    const opts = ['07:30', '08:00', '08:30', '09:00', '09:30', '10:00', '10:30', '11:00', '11:30', '12:00', '12:30', '13:00', '13:30', '14:00', '14:30', '15:00', '15:30', '16:00', '16:30', '17:00', '17:30', '18:00', '18:30', '19:00'];
-    $('#endTime').empty().append(opts.filter(t => moment(t, 'HH:mm').isAfter(moment(s, 'HH:mm'))).map(t => `<option value="${t}">${t}</option>`));
+    const valid = TIMES.filter(t => moment(t, 'HH:mm').isAfter(moment(s, 'HH:mm')));
+    $('#endTime').empty().append(valid.map(t => `<option value="${t}">${t}</option>`));
 }
 
 function displayLast10Messages() {
@@ -182,5 +180,12 @@ function submitMessage() {
 
 function deleteMessage(messageId, item) {
     fetch('/delete_message', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ messageId }) })
-        .then(r => { if (r.ok) item.addClass('animate__slideOutLeft') && setTimeout(() => item.remove(), 1000); else Swal.fire('שגיאה במחיקת ההודעה'); });
+        .then(r => {
+            if (r.ok) {
+                item.addClass('animate__slideOutLeft');
+                setTimeout(() => item.remove(), 1000);
+            } else {
+                Swal.fire('שגיאה במחיקת ההודעה');
+            }
+        });
 }
