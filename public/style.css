@@ -45,6 +45,17 @@ body {
     color: var(--sea-medium);
 }
 
+/* Page headings */
+.container h1,
+.container h2 {
+    background-color: var(--sea-light);
+    color: var(--sea-deep);
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    display: inline-block;
+    margin-bottom: 1rem;
+}
+
 .room-grid {
     display: grid;
     grid-template-columns: repeat(3, minmax(120px, 1fr));
@@ -90,6 +101,7 @@ body {
     gap: 1px;
     border-radius: 8px;
     overflow-y: hidden;
+    background-color: var(--gray);
 }
 
 .header-cell,
@@ -100,6 +112,8 @@ body {
     word-break: break-word;
     overflow-wrap: break-word;
     hyphens: auto;
+    border: 1px solid var(--gray);
+    box-sizing: border-box;
 }
 
 .header-cell {
