@@ -121,14 +121,21 @@ body {
     box-sizing: border-box;
 }
 
+
+/* header cells (the “frame”) */
 .header-cell {
-    background-color: var(--sea-deep);
-    color: var(--white);
+    background-color: #018594;
+    /* sea-medium */
+    color: white;
     text-align: center;
     padding: 0.75rem 0.5rem;
     font-weight: 600;
     font-size: 0.9rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
+
 
 .therapist-name {
     position: absolute;
