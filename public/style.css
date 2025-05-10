@@ -310,3 +310,17 @@ form#roomForm button.btn:hover {
         text-overflow: ellipsis;
     }
 }
+
+/* cancel JS grid-template-columns so wrapper can scroll */
+@media (max-width: 576px),
+(min-width: 577px) and (max-width: 768px) {
+    #scheduleGrid {
+        grid-template-columns: none !important;
+        overflow-x: visible !important;
+    }
+
+    .schedule-wrapper {
+        width: 100%;
+        overflow-x: auto;
+    }
+}
