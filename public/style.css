@@ -184,7 +184,7 @@ form#roomForm button.btn:hover {
 
 @media (max-width: 576px) {
     .form-container {
-        transform: scale(1.3);
+        transform: scale(1.2);
         transform-origin: top center;
         margin-top: 20px;
     }
