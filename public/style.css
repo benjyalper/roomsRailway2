@@ -183,8 +183,8 @@ form#roomForm button.btn:hover {
 }
 
 .status-container {
-    background-color: var(--sea-medium);
-    color: var(--white);
+    background-color: rgba(1, 133, 148, 0.2);
+    color: var(--sea-deep);
     padding: 1rem;
     border-radius: 8px;
     font-size: 1.1rem;
