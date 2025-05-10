@@ -47,7 +47,7 @@ body {
 
 .room-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    grid-template-columns: repeat(3, minmax(120px, 1fr));
     gap: 1rem;
     padding: 1rem;
 }
@@ -80,11 +80,26 @@ body {
     color: var(--text-dark);
 }
 
+.schedule-wrapper,
+#scheduleGrid {
+    overflow-x: auto;
+}
+
 #scheduleGrid {
     display: grid;
     gap: 1px;
     border-radius: 8px;
-    overflow: hidden;
+    overflow-y: hidden;
+}
+
+.header-cell,
+.grid-cell {
+    background-color: var(--white);
+    min-height: 40px;
+    position: relative;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    hyphens: auto;
 }
 
 .header-cell {
@@ -94,12 +109,6 @@ body {
     padding: 0.75rem 0.5rem;
     font-weight: 600;
     font-size: 0.9rem;
-}
-
-.grid-cell {
-    background-color: var(--white);
-    min-height: 40px;
-    position: relative;
 }
 
 .therapist-name {
@@ -152,7 +161,7 @@ form#roomForm button.btn:hover {
 }
 
 .status-container {
-    background-color: rgba(31, 79, 91, 0.7);
+    background-color: var(--sea-medium);
     color: var(--white);
     padding: 1rem;
     border-radius: 8px;
