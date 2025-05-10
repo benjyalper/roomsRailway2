@@ -213,31 +213,49 @@ form#roomForm button.btn:hover {
     }
 }
 
-@media (max-width: 576px) {
-    .room-grid {
-        grid-template-columns: repeat(2, minmax(120px, 1fr));
-    }
-
-    .form-container {
-        transform: scale(1.4);
-        transform-origin: top center;
-        margin-top: 20px;
-    }
-
-    .form-container h2 {
-        font-size: 2rem;
-    }
-
-    .form-container input,
-    .form-container button {
-        font-size: 1.1rem;
-        padding: 0.75rem;
-    }
+/* Wrap your schedule in a scrolling container */
+.schedule-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    /* smooth scroll on iOS */
 }
 
-/* Light-blue backgrounds for all <p> tags */
-p {
-    background-color: #018594;
-    padding: 0.4rem 0.6rem;
-    border-radius: 6px;
+/* On small screens: fix each column at 150px, so only ~2 fit in the viewport */
+@media (max-width: 576px) {
+    #scheduleGrid {
+        display: grid;
+        grid-auto-columns: minmax(150px, 1fr);
+        gap: 1px;
+        overflow-y: hidden;
+        background-color: var(--gray);
+        /* The top row of headers stays sticky */
+    }
+
+    .schedule-wrapper::-webkit-scrollbar {
+        height: 4px;
+    }
+
+    .schedule-wrapper::-webkit-scrollbar-thumb {
+        background: var(--sea-medium);
+        border-radius: 2px;
+    }
+
+    .header-cell {
+        position: sticky;
+        top: 0;
+        z-index: 2;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .header-cell,
+    .grid-cell {
+        min-width: 150px;
+        font-size: 0.9rem;
+        /* tweak as needed */
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
 }

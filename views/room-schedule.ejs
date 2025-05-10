@@ -11,18 +11,17 @@
     </head>
 
     <body>
-        <!-- Put this immediately inside <body> on home.html, room-schedule.html, room-form.html, room.ejs, messages.html, etc. -->
-
         <%- include('partials/navbar') %>
+        <div style="height:56px;"><!-- spacer for fixed navbar --></div>
 
-
-
-        <div class="container mt-5 pt-5">
+        <div class="container mt-5 pt-3">
             <h1 class="text-center mb-4">טבלת חדרים</h1>
             <div class="mb-3">
                 <input type="date" id="lookupDate" class="form-control" />
             </div>
-            <div id="scheduleGrid" class="grid-container"></div>
+            <div class="schedule-wrapper">
+                <div id="scheduleGrid" class="grid-container"></div>
+            </div>
         </div>
 
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
