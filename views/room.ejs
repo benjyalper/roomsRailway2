@@ -28,7 +28,7 @@
                     <%= moment().tz('Asia/Jerusalem').format('HH:mm') %>
                 </div>
             </div>
-            <div class="status-container text-center text-white bg-dark bg-opacity-50 p-3 rounded">
+            <div class="status-container text-center text-white bg-transparent bg-opacity-50 p-3 rounded">
                 <% if (currentTherapist) { %>
                 <span>
                     <%= currentTherapist.name %> בטיפול עד <%= currentTherapist.endTime %>
