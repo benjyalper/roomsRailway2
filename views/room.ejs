@@ -21,20 +21,21 @@
     <body class="room-detail-page">
 
         <%- include('partials/navbar') %>
+        <div style="height:56px;"></div>
 
-        <div class="container-lg pt-4">
-            <div class="calendar-container mb-4">
-                <div class="calender-item">
+        <div class="container-lg">
+            <div class="d-flex justify-content-between align-items-center mt-4 mb-3">
+                <h1 class="mb-0">חדר <%= roomNumber %></h1>
+                <div class="current-time text-muted">
                     <%= moment().tz('Asia/Jerusalem').format('HH:mm') %>
                 </div>
             </div>
-            <div class="status-container text-center text-white bg-transparent bg-opacity-50 p-3 rounded">
+
+            <div class="status-container text-center p-3 rounded">
                 <% if (currentTherapist) { %>
-                <span>
-                    <%= currentTherapist.name %> בטיפול עד <%= currentTherapist.endTime %>
-                </span>
+                <span><%= currentTherapist.name %> בטיפול עד <%= currentTherapist.endTime %></span>
                 <% } else { %>
-                <p>החדר פנוי</p>
+                <span>החדר פנוי</span>
                 <% } %>
             </div>
         </div>
