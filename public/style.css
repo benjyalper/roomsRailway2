@@ -230,7 +230,7 @@ form#roomForm button.btn:hover {
 
 /* Light-blue backgrounds for all <p> tags */
 p {
-    background-color: rgba(1, 133, 148, 0.2);
+    background-color: #018594;
     padding: 0.4rem 0.6rem;
     border-radius: 6px;
 }
