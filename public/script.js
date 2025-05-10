@@ -120,6 +120,7 @@ function deleteEntry(d, room, start, end) {
 }
 
 function initRoomForm() {
+
     $('#startTime').change(updateEndTimeOptions);
     updateEndTimeOptions();
     $('#recurringEvent').change(() => {

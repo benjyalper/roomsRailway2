@@ -227,3 +227,10 @@ form#roomForm button.btn:hover {
         padding: 0.75rem;
     }
 }
+
+/* Light-blue backgrounds for all <p> tags */
+p {
+    background-color: rgba(1, 133, 148, 0.2);
+    padding: 0.4rem 0.6rem;
+    border-radius: 6px;
+}
