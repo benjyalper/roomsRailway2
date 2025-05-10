@@ -15,27 +15,56 @@
                 min-height: 100vh;
                 padding-top: 56px;
             }
+
+            .room-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-top: 1rem;
+            }
+
+            .room-header h1,
+            .room-header .current-time {
+                font-size: 1.5rem;
+                color: var(--text-dark);
+            }
+
+            .status-row {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                margin-top: 1.5rem;
+            }
+
+            .status-text {
+                background-color: rgba(1, 133, 148, 0.2);
+                color: var(--sea-deep);
+                padding: 0.5rem 1rem;
+                border-radius: 8px;
+                font-size: 1.25rem;
+            }
         </style>
     </head>
 
     <body class="room-detail-page">
-
         <%- include('partials/navbar') %>
         <div style="height:56px;"></div>
 
         <div class="container-lg">
-            <div class="d-flex justify-content-between align-items-center mt-4 mb-3">
+            <div class="room-header">
                 <h1 class="mb-0">חדר <%= roomNumber %></h1>
                 <div class="current-time text-muted">
                     <%= moment().tz('Asia/Jerusalem').format('HH:mm') %>
                 </div>
             </div>
 
-            <div class="status-container text-center p-3 rounded">
+            <div class="status-row">
                 <% if (currentTherapist) { %>
-                <span><%= currentTherapist.name %> בטיפול עד <%= currentTherapist.endTime %></span>
+                <span class="status-text">
+                    <%= currentTherapist.name %> בטיפול עד <%= currentTherapist.endTime %>
+                </span>
                 <% } else { %>
-                <span>החדר פנוי</span>
+                <span class="status-text">החדר פנוי</span>
                 <% } %>
             </div>
         </div>
