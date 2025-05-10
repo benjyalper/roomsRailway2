@@ -58,11 +58,8 @@ body {
     height: 140px;
     border-radius: 12px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-    display: flex;
-    align-items: flex-end;
-    justify-content: center;
+    position: relative;
     transition: transform 0.2s;
-    padding-bottom: 0.5rem;
     cursor: pointer;
 }
 
@@ -71,12 +68,17 @@ body {
 }
 
 .room-number {
+    position: absolute;
+    top: 15%;
+    left: 50%;
+    transform: translateX(-50%);
     background-color: rgba(255, 255, 255, 0.8);
     padding: 0.2rem 0.5rem;
     border-radius: 8px;
     font-weight: 600;
     font-size: 1rem;
 }
+
 
 #scheduleGrid {
     display: grid;
