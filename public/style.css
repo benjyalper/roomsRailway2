@@ -222,12 +222,18 @@ form#roomForm button.btn:hover {
 
 /* On small screens: two rooms at a time, horizontal calendar */
 @media (max-width: 576px) {
+    .schedule-wrapper {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
     #scheduleGrid {
         display: grid;
         grid-auto-columns: minmax(150px, 1fr);
         gap: 1px;
         max-height: calc(100vh - 200px);
         overflow-y: auto;
+        overflow-x: hidden;
         background-color: var(--gray);
     }
 
@@ -240,12 +246,10 @@ form#roomForm button.btn:hover {
         border-radius: 2px;
     }
 
-    /* Sticky header row */
     .header-cell {
         position: sticky;
-        top: calc(56px + 3.5rem);
-        /* navbar height + header margin */
-        z-index: 2;
+        top: 56px;
+        z-index: 10;
         background-color: var(--sea-medium) !important;
         color: var(--white);
         white-space: nowrap;
@@ -253,11 +257,57 @@ form#roomForm button.btn:hover {
         text-overflow: ellipsis;
     }
 
-    /* Cells sizing & text truncation */
     .header-cell,
     .grid-cell {
         min-width: 150px;
         font-size: 0.9rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+}
+
+/* On mid-size screens: four rooms at a time, horizontal calendar */
+@media (max-width: 768px) and (min-width: 577px) {
+    .schedule-wrapper {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    #scheduleGrid {
+        display: grid;
+        grid-auto-columns: minmax(25%, 1fr);
+        gap: 1px;
+        max-height: calc(100vh - 200px);
+        overflow-y: auto;
+        overflow-x: hidden;
+        background-color: var(--gray);
+    }
+
+    .schedule-wrapper::-webkit-scrollbar {
+        height: 4px;
+    }
+
+    .schedule-wrapper::-webkit-scrollbar-thumb {
+        background: var(--sea-medium);
+        border-radius: 2px;
+    }
+
+    .header-cell {
+        position: sticky;
+        top: 56px;
+        z-index: 10;
+        background-color: var(--sea-medium) !important;
+        color: var(--white);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .header-cell,
+    .grid-cell {
+        min-width: 25%;
+        font-size: 1rem;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
