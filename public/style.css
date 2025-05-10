@@ -69,14 +69,14 @@ body {
 
 .room-number {
     position: absolute;
-    top: 15%;
+    top: calc(15% + 3px);
     left: calc(50% - 5px);
     transform: translateX(-50%);
     background-color: transparent;
     padding: 0.2rem 0.5rem;
     border-radius: 8px;
     font-weight: 600;
-    font-size: 0.9rem;
+    font-size: 0.88rem;
     color: var(--text-dark);
 }
 
