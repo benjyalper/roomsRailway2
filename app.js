@@ -34,7 +34,7 @@ app.set('views', './views');
 
 // ─── IN-MEMORY USERS (PHONE-ONLY) ──────────────────────────────────────────────
 const users = [
-    { id: 1, phone: '0501111111', role: 'admin', clinic: 'marbah' },
+    { id: 1, phone: '0509916633', role: 'admin', clinic: 'marbah' },
     { id: 2, phone: '0502222222', role: 'admin', clinic: 'clalit' },
     { id: 3, phone: '0503333333', role: 'user', clinic: 'marbah' },
     { id: 4, phone: '0504444444', role: 'user', clinic: 'clalit' },
