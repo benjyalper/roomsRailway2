@@ -266,3 +266,46 @@ form#roomForm button.btn:hover {
         font-size: 1rem;
     }
 }
+
+/* Sticky header row for small & medium screens */
+@media (max-width: 768px) {
+    .header-cell {
+        position: sticky;
+        top: 56px;
+        z-index: 15;
+        background-color: var(--sea-medium) !important;
+        color: var(--white) !important;
+    }
+
+    #scheduleGrid>div:nth-child(11n+1) {
+        position: sticky;
+        right: 0;
+        z-index: 10;
+        background-color: var(--sea-light) !important;
+    }
+}
+
+/* Extra small screens: enlarge signin form */
+@media (max-width: 400px) {
+    .form-container {
+        width: 100%;
+        margin: 2rem auto;
+        padding: 3rem !important;
+    }
+
+    form#roomForm {
+        padding: 3rem !important;
+        font-size: 1.1rem;
+    }
+
+    form#roomForm .form-control,
+    form#roomForm .form-select {
+        font-size: 1rem;
+    }
+
+    form#roomForm button.btn,
+    .form-container button.btn {
+        font-size: 1.1rem;
+        padding: 0.8rem;
+    }
+}
