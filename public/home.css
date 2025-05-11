@@ -1,0 +1,151 @@
+/* styles.css */
+body {
+    font-family: Arial, sans-serif;
+    /* height: 80vh; */
+    background-color: #f4f4f4;
+    /* display: flex;
+    flex-direction: column;
+    align-items: center; */
+}
+
+#homeHeading {
+    /* margin: auto; */
+    text-align: center;
+    margin-top: 55px;
+    font-size: 28px;
+    color: rgb(19, 86, 39);
+    background-color: rgb(241, 249, 239);
+    width: 100%;
+    /* Set the width to the same value as the navbar */
+    /* max-width: 1200px; */
+    /* Set a max-width to prevent it from expanding indefinitely */
+    padding: 10px;
+}
+
+.navbar1 {
+    background-color: rgb(241, 249, 239);
+    width: 100vw;
+    /* Set the width to a specific value, e.g., 80% */
+    /* max-width: 1500px; */
+    /* Set a max-width to prevent it from expanding indefinitely */
+    display: flex;
+    justify-content: center;
+    /* gap: 10%; */
+    padding: 10px;
+    color: rgb(135, 192, 155);
+    z-index: 1000;
+    top: 0;
+    /* margin: auto; */
+    /* Center the navbar */
+    position: fixed !important;
+}
+
+.navbar-toggler {
+    margin-right: 20px;
+}
+
+.tooltip-inner {
+    background-color: green !important;
+}
+
+
+.room-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    grid-gap: 1rem;
+    background-color: rgb(241, 249, 239);
+    /* padding-left: 50px;
+    padding-right: 100px; */
+    /* Gap between rooms */
+    /* max-width: 700px; */
+    /* Set maximum width */
+    /* max-height: 300px; */
+}
+
+#knock {
+    position: fixed;
+    height: 50px;
+    margin-top: 100px;
+    margin-right: 160px;
+    z-index: 20000;
+    /* background-color: peachpuff; */
+}
+
+@media (max-width: 1100px) {
+    .room-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        grid-template-rows: repeat(4, 1fr) !important;
+    }
+
+    .navbar1 {
+        background-color: rgb(241, 249, 239);
+        width: 100vw;
+        margin-top: 20px;
+        /* display: flex;
+        justify-content: right; */
+        color: rgb(135, 192, 155);
+    }
+
+    #heading {
+        /* margin-left: 120px !important; */
+        font-size: 20px !important;
+        text-align: center;
+        margin-top: 65px;
+    }
+
+}
+
+@media (max-width: 500px) {
+    .room-grid {
+        grid-template-columns: 1fr !important;
+        grid-template-rows: repeat(8, 1fr) !important;
+    }
+
+    #heading {
+        /* margin-left: 120px !important; */
+        font-size: 20px !important;
+        text-align: center;
+        margin-top: 65px;
+    }
+
+    /* #knock {
+        position: fixed;
+        height: 50px;
+        margin-top: 100px;
+        margin-right: 170px;
+        z-index: 20000;
+    } */
+}
+
+.room {
+    background-color: #fff;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    text-align: center;
+    position: relative;
+    height: 22rem;
+    width: 22rem;
+    background-image: url('/newRoom.PNG');
+    background-size: cover;
+    z-index: 1;
+}
+
+
+.room-number {
+    position: absolute;
+    top: 6rem;
+    left: 11rem;
+    transform: translate(-50%, -50%);
+    margin: 0;
+    font-size: 24px;
+    color: rgb(53, 50, 135);
+}
+
+/* .door {
+    height: 15rem;
+} */
+
+.room:hover {
+    cursor: pointer;
+}
