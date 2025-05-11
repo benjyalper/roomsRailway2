@@ -79,6 +79,21 @@
                     font-size: 1.2rem;
                     padding: 0.8rem 1rem;
                 }
+
+                /* 1) Align the placeholder (and input text) to the right */
+                .form-container input[type="tel"] {
+                    direction: rtl;
+                    text-align: right;
+                }
+
+                /* 2) Nudge the whole sign-in box up a bit from exact center */
+                .form-container {
+                    /* since body is display:flex; align-items:center, 
+     this negative margin will lift it above the midpoint */
+                    margin-top: -5vh;
+                    /* adjust “5vh” up/down to taste */
+                }
+
             }
         </style>
     </head>
