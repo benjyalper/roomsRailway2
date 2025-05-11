@@ -46,7 +46,7 @@ body {
     color: var(--sea-medium);
 }
 
-/* Page headings */
+/* Page Headings */
 .container h1,
 .container h2 {
     background-color: var(--sea-light);
@@ -58,7 +58,7 @@ body {
     text-align: center;
 }
 
-/* Home grid */
+/* Home Grid */
 .room-grid {
     display: grid;
     grid-template-columns: repeat(3, minmax(120px, 1fr));
@@ -93,13 +93,13 @@ body {
     color: var(--text-dark);
 }
 
-/* Schedule table wrapper */
+/* Schedule Table Wrapper */
 .schedule-wrapper {
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
 }
 
-/* Schedule grid */
+/* Schedule Grid */
 #scheduleGrid {
     display: grid;
     gap: 1px;
@@ -139,7 +139,7 @@ body {
     color: var(--text-dark);
 }
 
-/* Form styling */
+/* Form Styling */
 form#roomForm,
 .form-container {
     background-color: var(--white);
@@ -174,7 +174,7 @@ form#roomForm button.btn:hover {
     background-color: var(--sea-deep);
 }
 
-/* Sign-in form enlarge */
+/* Sign-in form enlarge on small & very small */
 @media (max-width: 768px) {
     .form-container {
         width: 90%;
@@ -185,25 +185,10 @@ form#roomForm button.btn:hover {
 
 @media (max-width: 576px) {
     .form-container {
-        width: 95%;
-        padding: 2.5rem !important;
+        width: 100% !important;
+        max-width: none;
+        padding: 3rem !important;
     }
-}
-
-/* Room detail */
-.room-detail-page {
-    background: url('/room_image.png') no-repeat center center;
-    background-size: cover;
-    min-height: 100vh;
-    padding-top: 56px;
-}
-
-.status-container {
-    background-color: rgba(1, 133, 148, 0.2);
-    color: var(--sea-deep);
-    padding: 1rem;
-    border-radius: 8px;
-    font-size: 1.1rem;
 }
 
 /* Responsive tweaks for all screens ≤768px */
@@ -225,15 +210,9 @@ form#roomForm button.btn:hover {
     .header-cell {
         position: sticky;
         top: 56px;
-        z-index: 10;
-    }
-
-    /* Sticky first time column for RTL */
-    #scheduleGrid>div:nth-child(11n+1) {
-        position: sticky;
-        right: 0;
-        background-color: var(--sea-light);
-        z-index: 5;
+        z-index: 15;
+        background-color: var(--sea-medium) !important;
+        color: var(--white) !important;
     }
 }
 
@@ -250,6 +229,14 @@ form#roomForm button.btn:hover {
         min-width: 150px;
         font-size: 0.9rem;
     }
+
+    /* Sticky “time” column: 1 time + 2 rooms = 3 columns/row */
+    #scheduleGrid>div:nth-child(3n+1) {
+        position: sticky;
+        right: 0;
+        z-index: 10;
+        background-color: var(--sea-light) !important;
+    }
 }
 
 /* Medium screens 577–768px: 4 rooms visible */
@@ -265,19 +252,9 @@ form#roomForm button.btn:hover {
         min-width: 25%;
         font-size: 1rem;
     }
-}
 
-/* Sticky header row for small & medium screens */
-@media (max-width: 768px) {
-    .header-cell {
-        position: sticky;
-        top: 56px;
-        z-index: 15;
-        background-color: var(--sea-medium) !important;
-        color: var(--white) !important;
-    }
-
-    #scheduleGrid>div:nth-child(11n+1) {
+    /* Sticky “time” column: 1 time + 4 rooms = 5 columns/row */
+    #scheduleGrid>div:nth-child(5n+1) {
         position: sticky;
         right: 0;
         z-index: 10;
@@ -285,27 +262,13 @@ form#roomForm button.btn:hover {
     }
 }
 
-/* Extra small screens: enlarge signin form */
-@media (max-width: 400px) {
-    .form-container {
-        width: 100%;
-        margin: 2rem auto;
-        padding: 3rem !important;
-    }
-
-    form#roomForm {
-        padding: 3rem !important;
-        font-size: 1.1rem;
-    }
-
-    form#roomForm .form-control,
-    form#roomForm .form-select {
-        font-size: 1rem;
-    }
-
-    form#roomForm button.btn,
-    .form-container button.btn {
-        font-size: 1.1rem;
-        padding: 0.8rem;
+/* Large screens ≥769px: 10 rooms visible (default) */
+/* Sticky “time” column: 1 time + 10 rooms = 11 columns/row */
+@media (min-width: 769px) {
+    #scheduleGrid>div:nth-child(11n+1) {
+        position: sticky;
+        right: 0;
+        z-index: 10;
+        background-color: var(--sea-light) !important;
     }
 }
