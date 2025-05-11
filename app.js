@@ -15,35 +15,50 @@ const app = express();
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const port = process.env.PORT || 3000;
 
-// Serve static files
+// ─── MIDDLEWARE ────────────────────────────────────────────────────────────────
 app.use(express.static('public'));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-app.use(session({ secret: process.env.SESSION_SECRET, resave: false, saveUninitialized: false }));
+app.use(session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false
+}));
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
 
-// View engine
+// ─── VIEW ENGINE ───────────────────────────────────────────────────────────────
 app.set('view engine', 'ejs');
 app.set('views', './views');
 
-// In-memory users
+// ─── IN-MEMORY USERS (PHONE-ONLY) ──────────────────────────────────────────────
 const users = [
-    { id: 1, username: 'marbah', password: 'junior', role: 'admin', clinic: 'marbah' },
-    { id: 2, username: 'admin1', password: 'admin1', role: 'admin', clinic: 'clalit' },
-    { id: 3, username: 'user', password: 'user', role: 'user', clinic: 'marbah' },
-    { id: 4, username: 'user1', password: 'user1', role: 'user', clinic: 'clalit' },
-    { id: 5, username: 'user3', password: 'user3', role: 'user', clinic: 'marbah' }
+    { id: 1, phone: '0501111111', role: 'admin', clinic: 'marbah' },
+    { id: 2, phone: '0502222222', role: 'admin', clinic: 'clalit' },
+    { id: 3, phone: '0503333333', role: 'user', clinic: 'marbah' },
+    { id: 4, phone: '0504444444', role: 'user', clinic: 'clalit' },
+    { id: 5, phone: '0505555555', role: 'user', clinic: 'marbah' }
 ];
 
-passport.use(new LocalStrategy((username, password, done) => {
-    const user = users.find(u => u.username === username && u.password === password);
-    return user ? done(null, user) : done(null, false, { message: 'Incorrect credentials.' });
-}));
-passport.serializeUser((u, done) => done(null, u.id));
-passport.deserializeUser((id, done) => done(null, users.find(u => u.id === id)));
+// ─── PASSPORT LOCAL STRATEGY (PHONE ONLY) ─────────────────────────────────────
+passport.use(new LocalStrategy(
+    { usernameField: 'phone', passwordField: 'phone' },
+    (phone, _, done) => {
+        const user = users.find(u => u.phone === phone);
+        return user
+            ? done(null, user)
+            : done(null, false, { message: 'מספר טלפון לא נמצא' });
+    }
+));
 
+passport.serializeUser((user, done) => done(null, user.id));
+passport.deserializeUser((id, done) => {
+    const user = users.find(u => u.id === id);
+    done(null, user ?? false);
+});
+
+// ─── AUTH MIDDLEWARE ───────────────────────────────────────────────────────────
 function isAuthenticated(req, res, next) {
     if (req.isAuthenticated()) return next();
     res.redirect('/signin');
@@ -53,7 +68,7 @@ function isAdmin(req, res, next) {
     res.status(403).send('Permission denied.');
 }
 
-// DB pool
+// ─── DATABASE POOL ─────────────────────────────────────────────────────────────
 const pool = mysql.createPool({
     host: process.env.DB_HOST,
     user: process.env.DB_USER,
@@ -65,25 +80,28 @@ const pool = mysql.createPool({
     queueLimit: 0
 });
 
-// Auth routes
+// ─── AUTH ROUTES ───────────────────────────────────────────────────────────────
 app.get('/signin', (req, res) => res.render('index'));
-app.post('/signin', passport.authenticate('local', {
-    successRedirect: '/home',
-    failureRedirect: '/signin',
-    failureFlash: true
-}));
+app.post('/signin',
+    passport.authenticate('local', {
+        successRedirect: '/home',
+        failureRedirect: '/signin',
+        failureFlash: true
+    })
+);
 app.get('/logout', (req, res) => {
-    req.logout(err => err ? res.status(500).send('Logout failed') : res.redirect('/signin'));
+    req.logout(err => err
+        ? res.status(500).send('Logout failed')
+        : res.redirect('/signin')
+    );
 });
 
-// Page routes
+// ─── PAGE ROUTES ───────────────────────────────────────────────────────────────
 app.get('/home', isAuthenticated, (req, res) => {
     res.render('home', {}, (err, html) => {
         if (err) {
             console.error('❌ Error rendering home.ejs:', err);
-            return res
-                .status(500)
-                .send(`Template render error: ${err.message}`);
+            return res.status(500).send(`Template render error: ${err.message}`);
         }
         res.send(html);
     });
@@ -93,95 +111,148 @@ app.get('/room-schedule', isAuthenticated, (req, res) => res.render('room-schedu
 app.get('/room-form', isAuthenticated, (req, res) => res.render('room-form'));
 app.get('/messages', isAuthenticated, (req, res) => res.render('messages'));
 
-// Fetch schedule data
+// ─── FETCH SCHEDULE DATA ───────────────────────────────────────────────────────
 app.get('/fetchDataByDate', isAuthenticated, async (req, res) => {
     try {
         const clinic = req.user.clinic;
-        const date = req.query.date || moment().tz('Asia/Jerusalem').format('YYYY-MM-DD');
+        const date = req.query.date
+            || moment().tz('Asia/Jerusalem').format('YYYY-MM-DD');
         const conn = await pool.getConnection();
         const [rows] = await conn.execute(
-            `SELECT selected_date,names,color,startTime,endTime,roomNumber FROM selected_dates_2_${clinic} WHERE selected_date=?`,
+            `SELECT selected_date, names, color, startTime, endTime, roomNumber
+         FROM selected_dates_2_${clinic}
+        WHERE selected_date = ?`,
             [date]
         );
         conn.release();
         res.json(rows);
-    } catch (e) { console.error(e); res.status(500).json({ error: e.message }); }
+    } catch (e) {
+        console.error(e);
+        res.status(500).json({ error: e.message });
+    }
 });
 
-// Submit booking
+// ─── SUBMIT BOOKING ────────────────────────────────────────────────────────────
 app.post('/submit', isAuthenticated, isAdmin, async (req, res) => {
     try {
-        const { selectedDate, names, selectedColor, startTime, endTime, roomNumber, recurringEvent, recurringNum } = req.body;
+        const {
+            selectedDate, names, selectedColor,
+            startTime, endTime, roomNumber,
+            recurringEvent, recurringNum
+        } = req.body;
         const clinic = req.user.clinic;
         const conn = await pool.getConnection();
         await conn.beginTransaction();
+
         if (recurringEvent) {
             const times = parseInt(recurringNum, 10);
             for (let i = 0; i < times; i++) {
-                const next = moment(selectedDate).add(i, 'weeks').format('YYYY-MM-DD');
+                const nextDate = moment(selectedDate)
+                    .add(i, 'weeks')
+                    .format('YYYY-MM-DD');
                 await conn.execute(
-                    `INSERT INTO selected_dates_2_${clinic}(selected_date,names,color,startTime,endTime,roomNumber,recurringEvent,recurringNum) VALUES(?,?,?,?,?,?,?,?)`,
-                    [next, names, selectedColor, startTime, endTime, roomNumber, true, times]
+                    `INSERT INTO selected_dates_2_${clinic}
+             (selected_date,names,color,startTime,endTime,roomNumber,recurringEvent,recurringNum)
+           VALUES(?,?,?,?,?,?,?,?)`,
+                    [nextDate, names, selectedColor, startTime, endTime, roomNumber, true, times]
                 );
             }
         } else {
             await conn.execute(
-                `INSERT INTO selected_dates_2_${clinic}(selected_date,names,color,startTime,endTime,roomNumber,recurringEvent) VALUES(?,?,?,?,?,?,?)`,
+                `INSERT INTO selected_dates_2_${clinic}
+           (selected_date,names,color,startTime,endTime,roomNumber,recurringEvent)
+         VALUES(?,?,?,?,?,?,?)`,
                 [selectedDate, names, selectedColor, startTime, endTime, roomNumber, false]
             );
         }
+
         await conn.commit();
         conn.release();
         res.send('Room scheduled successfully.');
-    } catch (e) { console.error(e); res.status(500).send(e.message); }
+    } catch (e) {
+        console.error(e);
+        res.status(500).send(e.message);
+    }
 });
 
-// Delete booking
+// ─── DELETE BOOKING ────────────────────────────────────────────────────────────
 app.delete('/deleteEntry', isAuthenticated, isAdmin, async (req, res) => {
     try {
         const { selected_date, roomNumber, startTime } = req.body;
         const clinic = req.user.clinic;
         const conn = await pool.getConnection();
         await conn.execute(
-            `DELETE FROM selected_dates_2_${clinic} WHERE selected_date=? AND roomNumber=? AND startTime=?`,
+            `DELETE FROM selected_dates_2_${clinic}
+         WHERE selected_date = ?
+           AND roomNumber    = ?
+           AND startTime     = ?`,
             [selected_date, roomNumber, startTime]
         );
         conn.release();
         res.sendStatus(200);
-    } catch (e) { console.error(e); res.status(500).send(e.message); }
+    } catch (e) {
+        console.error(e);
+        res.status(500).send(e.message);
+    }
 });
 
-// Messages API
+// ─── MESSAGES API ──────────────────────────────────────────────────────────────
 app.get('/get_last_messages', isAuthenticated, async (req, res) => {
     try {
         const clinic = req.user.clinic;
-        const [rows] = await pool.query(`SELECT * FROM messages_${clinic} ORDER BY id DESC LIMIT 10`);
-        res.json({ messages: rows.map(r => r.message), messageIds: rows.map(r => r.id) });
-    } catch (e) { console.error(e); res.status(500).json({ error: e.message }); }
+        const [rows] = await pool.query(
+            `SELECT * FROM messages_${clinic}
+       ORDER BY id DESC
+       LIMIT 10`
+        );
+        res.json({
+            messages: rows.map(r => r.message),
+            messageIds: rows.map(r => r.id)
+        });
+    } catch (e) {
+        console.error(e);
+        res.status(500).json({ error: e.message });
+    }
 });
+
 app.post('/submit_message', isAuthenticated, async (req, res) => {
     try {
         const message = req.body.input;
         if (!message) return res.status(400).json({ error: 'Empty' });
+
         const clinic = req.user.clinic;
         const conn = await pool.getConnection();
-        const [r] = await conn.execute(`INSERT INTO messages_${clinic}(message) VALUES(?)`, [message]);
+        const [r] = await conn.execute(
+            `INSERT INTO messages_${clinic}(message) VALUES(?)`,
+            [message]
+        );
         conn.release();
+
         res.json({ messageId: r.insertId });
-    } catch (e) { console.error(e); res.status(500).json({ error: e.message }); }
-});
-app.post('/delete_message', isAuthenticated, isAdmin, async (req, res) => {
-    try {
-        const { messageId } = req.body;
-        const clinic = req.user.clinic;
-        const conn = await pool.getConnection();
-        await conn.execute(`DELETE FROM messages_${clinic} WHERE id=?`, [parseInt(messageId, 10)]);
-        conn.release();
-        res.send('Deleted');
-    } catch (e) { console.error(e); res.status(500).send(e.message); }
+    } catch (e) {
+        console.error(e);
+        res.status(500).json({ error: e.message });
+    }
 });
 
-// Dynamic room view
+app.post('/delete_message', isAuthenticated, isAdmin, async (req, res) => {
+    try {
+        const messageId = parseInt(req.body.messageId, 10);
+        const clinic = req.user.clinic;
+        const conn = await pool.getConnection();
+        await conn.execute(
+            `DELETE FROM messages_${clinic} WHERE id=?`,
+            [messageId]
+        );
+        conn.release();
+        res.send('Deleted');
+    } catch (e) {
+        console.error(e);
+        res.status(500).send(e.message);
+    }
+});
+
+// ─── DYNAMIC ROOM VIEW ─────────────────────────────────────────────────────────
 app.get('/room/:roomNumber', isAuthenticated, async (req, res) => {
     try {
         const roomNumber = req.params.roomNumber;
@@ -189,32 +260,43 @@ app.get('/room/:roomNumber', isAuthenticated, async (req, res) => {
         const today = moment().tz('Asia/Jerusalem').format('YYYY-MM-DD');
         const conn = await pool.getConnection();
         const [rows] = await conn.execute(
-            `SELECT * FROM selected_dates_2_${clinic} WHERE selected_date=? AND roomNumber=?`,
+            `SELECT * FROM selected_dates_2_${clinic}
+         WHERE selected_date = ?
+           AND roomNumber    = ?`,
             [today, roomNumber]
         );
         conn.release();
+
         const now = moment().tz('Asia/Jerusalem');
         let currentTherapist = null;
         for (const r of rows) {
             const s = moment(r.startTime, 'HH:mm:ss');
             const e = moment(r.endTime, 'HH:mm:ss');
             if (now.isBetween(s, e)) {
-                currentTherapist = { name: r.names, endTime: e.format('HH:mm') };
+                currentTherapist = {
+                    name: r.names,
+                    endTime: e.format('HH:mm')
+                };
                 break;
             }
         }
+
         res.render('room', { roomNumber, currentTherapist, data: rows, moment });
-    } catch (e) { console.error(e); res.status(500).send(e.message); }
+    } catch (e) {
+        console.error(e);
+        res.status(500).send(e.message);
+    }
 });
 
-// Favicon
+// ─── FAVICON & ERROR HANDLING ─────────────────────────────────────────────────
 app.get('/favicon.ico', (req, res) => res.status(204));
 
-// catch-all error handler
 app.use((err, req, res, next) => {
     console.error('Unhandled error:', err.stack);
     res.status(500).send(`Server error: ${err.message}`);
 });
 
-// Start server
-app.listen(port, '0.0.0.0', () => console.log(`Listening on port ${port}`));
+// ─── START SERVER ─────────────────────────────────────────────────────────────
+app.listen(port, '0.0.0.0', () =>
+    console.log(`Listening on port ${port}`)
+);
