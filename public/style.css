@@ -275,3 +275,17 @@ form#roomForm button.btn:hover {
 h1.text-center.mb-4 {
     margin-top: 0.5rem !important;
 }
+
+/* 1) Align the placeholder (and input text) to the right */
+.form-container input[type="tel"] {
+    direction: rtl;
+    text-align: right;
+}
+
+/* 2) Nudge the whole sign-in box up a bit from exact center */
+.form-container {
+    /* since body is display:flex; align-items:center, 
+     this negative margin will lift it above the midpoint */
+    margin-top: -5vh;
+    /* adjust “5vh” up/down to taste */
+}
