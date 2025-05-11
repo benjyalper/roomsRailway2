@@ -18,14 +18,12 @@ body {
     background-color: var(--gray-light);
     color: var(--text-dark);
     margin: 0;
-    padding: 0
-        /* reset */
-    ;
+    padding: 0;
     padding-top: 56px;
     /* reserve space for fixed navbar */
 }
 
-/* Navbar */
+/* ─── Navbar (fixed-top) ───────────────────────────────────────────────────── */
 .calm-navbar {
     position: fixed;
     top: 0;
@@ -54,7 +52,7 @@ body {
     color: var(--sea-medium);
 }
 
-/* Page headings */
+/* ─── Page Headings ─────────────────────────────────────────────────────────── */
 .container h1,
 .container h2 {
     background-color: var(--sea-light);
@@ -62,12 +60,13 @@ body {
     padding: 0.5rem 1rem;
     border-radius: 8px;
     display: block;
-    margin: 0.5rem auto 1rem;
+    margin: 0 auto 1rem;
+    /* sit right under navbar */
     font-size: 1.2rem;
     text-align: center;
 }
 
-/* Home grid */
+/* ─── Home Grid ─────────────────────────────────────────────────────────────── */
 .room-grid {
     display: grid;
     grid-template-columns: repeat(3, minmax(120px, 1fr));
@@ -93,7 +92,7 @@ body {
 .room-number {
     position: absolute;
     top: calc(15% + 3px);
-    left: calc(50% - 5px);
+    left: 50%;
     transform: translateX(-50%);
     background-color: transparent;
     padding: 0.2rem 0.5rem;
@@ -103,23 +102,23 @@ body {
     color: var(--text-dark);
 }
 
-/* Schedule wrapper (scroll container) */
+/* ─── Schedule Wrapper & Grid ──────────────────────────────────────────────── */
 .schedule-wrapper {
     overflow-x: auto;
-    overflow-y: hidden;
-    /* will be overridden below */
+    overflow-y: auto;
+    /* wrapper handles both axes */
     -webkit-overflow-scrolling: touch;
 }
 
-/* Schedule grid */
 #scheduleGrid {
     display: grid;
     gap: 1px;
     border-radius: 8px;
-    overflow-y: hidden;
-    /* will be overridden below */
     background-color: var(--gray);
     grid-auto-columns: minmax(80px, 1fr);
+    overflow: visible;
+    /* allow sticky children */
+    max-height: calc(100vh - 100px);
 }
 
 /* Cells */
@@ -135,7 +134,7 @@ body {
     box-sizing: border-box;
 }
 
-/* Header cells */
+/* Header cells (room names) */
 .header-cell {
     background-color: var(--sea-medium);
     color: var(--white);
@@ -155,7 +154,7 @@ body {
     color: var(--text-dark);
 }
 
-/* Form styling */
+/* ─── Form Styling ──────────────────────────────────────────────────────────── */
 form#roomForm,
 .form-container {
     background-color: var(--white);
@@ -190,7 +189,7 @@ form#roomForm button.btn:hover {
     background-color: var(--sea-deep);
 }
 
-/* Room detail page */
+/* ─── Room Detail Page ─────────────────────────────────────────────────────── */
 .room-detail-page {
     background: url('/room_image.png') no-repeat center center;
     background-size: cover;
@@ -206,23 +205,7 @@ form#roomForm button.btn:hover {
     font-size: 1.1rem;
 }
 
-/* Responsive tweaks ≤768px */
-@media (max-width: 768px) {
-    .room {
-        height: 120px;
-    }
-
-    .therapist-name {
-        font-size: 0.8rem;
-    }
-
-    form#roomForm,
-    .form-container {
-        padding: 1rem;
-    }
-}
-
-/* Responsive: ≤576px (2 rooms visible) */
+/* ─── Responsive: Phones ≤576px ─────────────────────────────────────────────── */
 @media (max-width: 576px) {
     #scheduleGrid {
         grid-auto-columns: minmax(150px, 1fr);
@@ -233,9 +216,24 @@ form#roomForm button.btn:hover {
         min-width: 150px;
         font-size: 0.9rem;
     }
+
+    /* Sticky header row (under navbar) */
+    .header-cell {
+        position: sticky;
+        top: 56px;
+        z-index: 20;
+    }
+
+    /* Sticky hour column (2 rooms view) */
+    #scheduleGrid>div:nth-child(3n+1) {
+        position: sticky;
+        inset-inline-end: 0;
+        z-index: 10;
+        background-color: var(--white);
+    }
 }
 
-/* Responsive: 577–768px (4 rooms visible) */
+/* ─── Responsive: Landscape phones & small tablets 577–768px ──────────────── */
 @media (min-width: 577px) and (max-width: 768px) {
     #scheduleGrid {
         grid-auto-columns: minmax(25%, 1fr);
@@ -246,45 +244,15 @@ form#roomForm button.btn:hover {
         min-width: 25%;
         font-size: 1rem;
     }
-}
 
-/* ─── Sticky & Scroll Fixes ───────────────────────────────────────────────────── */
-
-/* 1) Let the wrapper handle ALL scrolling */
-.schedule-wrapper {
-    overflow-x: auto;
-    overflow-y: auto;
-}
-
-/* 2) Allow sticky children to escape the grid container */
-#scheduleGrid {
-    overflow: visible;
-    max-height: calc(100vh - 100px);
-    /* adjust as needed */
-}
-
-/* 3) Sticky header row under fixed navbar */
-.header-cell {
-    position: sticky;
-    top: 56px;
-    z-index: 20;
-}
-
-/* 4) Sticky hour column on inline-end edge (RTL) */
-@media (max-width: 576px) {
-
-    /* 1 time + 2 rooms = 3 cols/row */
-    #scheduleGrid>div:nth-child(3n+1) {
+    /* Sticky header row (under navbar) */
+    .header-cell {
         position: sticky;
-        inset-inline-end: 0;
-        z-index: 10;
-        background-color: var(--white);
+        top: 56px;
+        z-index: 20;
     }
-}
 
-@media (min-width: 577px) and (max-width: 768px) {
-
-    /* 1 time + 4 rooms = 5 cols/row */
+    /* Sticky hour column (4 rooms view) */
     #scheduleGrid>div:nth-child(5n+1) {
         position: sticky;
         inset-inline-end: 0;
@@ -293,13 +261,5 @@ form#roomForm button.btn:hover {
     }
 }
 
-@media (min-width: 769px) {
-
-    /* 1 time + 10 rooms = 11 cols/row */
-    #scheduleGrid>div:nth-child(11n+1) {
-        position: sticky;
-        inset-inline-end: 0;
-        z-index: 10;
-        background-color: var(--white);
-    }
-}
+/* ─── Tablets & Desktops ≥769px: No sticky header/time column ────────────── */
+/* (Header row will scroll away as usual, and no fixed hour column.) */
