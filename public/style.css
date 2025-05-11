@@ -8,7 +8,7 @@
     --sand-medium: #b7a18b;
     --sand-light: #ded9ce;
     --white: #ffffff;
-    --gray-light: #f7f7f7;
+    --gray-light: #f7f7f8;
     --gray: #e0e0e0;
     --text-dark: #2E3A3F;
 }
@@ -20,53 +20,51 @@ body {
     margin: 0;
     padding: 0;
     padding-top: 56px;
-    /* reserve space for fixed navbar */
+    /* space for fixed navbar */
 }
 
-/* ─── Navbar (fixed-top) ───────────────────────────────────────────────────── */
+/* ─── Navbar (fixed-top) ───────────────────────────────────────── */
 .calm-navbar {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
-    background-color: var(--white);
+    background: var(--white);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     padding: 0.5rem 1rem;
-    font-weight: 500;
     z-index: 2000;
+    font-weight: 500;
 }
 
 .calm-navbar .navbar-brand i {
-    font-size: 1.5rem;
     color: var(--sea-deep);
+    font-size: 1.5rem;
 }
 
 .calm-navbar .nav-link {
     color: var(--sea-deep);
-    margin: 0 0.5rem;
-    transition: color 0.2s;
-    cursor: pointer;
+    margin: 0 .5rem;
+    transition: .2s;
 }
 
 .calm-navbar .nav-link:hover {
     color: var(--sea-medium);
 }
 
-/* ─── Page Headings ─────────────────────────────────────────────────────────── */
+/* ─── Page Headings ─────────────────────────────────────────────── */
 .container h1,
 .container h2 {
-    background-color: var(--sea-light);
+    background: var(--sea-light);
     color: var(--sea-deep);
-    padding: 0.5rem 1rem;
+    padding: .5rem 1rem;
     border-radius: 8px;
-    display: block;
     margin: 0 auto 1rem;
-    /* sit right under navbar */
-    font-size: 1.2rem;
+    /* no top margin */
     text-align: center;
+    font-size: 1.2rem;
 }
 
-/* ─── Home Grid ─────────────────────────────────────────────────────────────── */
+/* ─── Home Grid ─────────────────────────────────────────────────── */
 .room-grid {
     display: grid;
     grid-template-columns: repeat(3, minmax(120px, 1fr));
@@ -75,13 +73,12 @@ body {
 }
 
 .room {
-    background: url('/images/newRoom.png') center/contain no-repeat;
-    background-color: var(--white);
+    background: url('/images/newRoom.png') center/contain no-repeat var(--white);
     height: 140px;
     border-radius: 12px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
     position: relative;
-    transition: transform 0.2s;
+    transition: transform .2s;
     cursor: pointer;
 }
 
@@ -91,40 +88,34 @@ body {
 
 .room-number {
     position: absolute;
-    top: calc(15% + 3px);
+    top: 15%;
     left: 50%;
     transform: translateX(-50%);
-    background-color: transparent;
-    padding: 0.2rem 0.5rem;
-    border-radius: 8px;
     font-weight: 600;
-    font-size: 0.88rem;
-    color: var(--text-dark);
+    font-size: .88rem;
 }
 
-/* ─── Schedule Wrapper & Grid ──────────────────────────────────────────────── */
+/* ─── Schedule Wrapper & Grid ──────────────────────────────────── */
 .schedule-wrapper {
     overflow-x: auto;
     overflow-y: auto;
-    /* wrapper handles both axes */
     -webkit-overflow-scrolling: touch;
 }
 
 #scheduleGrid {
     display: grid;
     gap: 1px;
+    background: var(--gray);
     border-radius: 8px;
-    background-color: var(--gray);
     grid-auto-columns: minmax(80px, 1fr);
     overflow: visible;
-    /* allow sticky children */
+    /* allow sticky */
     max-height: calc(100vh - 100px);
 }
 
 /* Cells */
-.header-cell,
 .grid-cell {
-    background-color: var(--white);
+    background: var(--white);
     min-height: 40px;
     position: relative;
     white-space: nowrap;
@@ -134,78 +125,82 @@ body {
     box-sizing: border-box;
 }
 
-/* Header cells (room names) */
 .header-cell {
-    background-color: var(--sea-medium);
+    /* base styling only – no position here */
+    background: var(--sea-medium);
     color: var(--white);
     text-align: center;
-    padding: 0.75rem 0.5rem;
+    padding: .75rem .5rem;
     font-weight: 600;
-    font-size: 0.9rem;
+    font-size: .9rem;
 }
 
-/* Therapist name */
+/* Therapist name inside cells */
 .therapist-name {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     font-weight: 500;
-    color: var(--text-dark);
 }
 
-/* ─── Form Styling ──────────────────────────────────────────────────────────── */
-form#roomForm,
-.form-container {
-    background-color: var(--white);
+/* ─── Form Styling ─────────────────────────────────────────────── */
+.form-container,
+form#roomForm {
+    background: var(--white);
     padding: 2rem;
     border-radius: 12px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
-form#roomForm .form-label {
+.form-container h2 {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    font-weight: 600;
+}
+
+form#roomForm label {
     font-weight: 500;
     color: var(--sea-deep);
+    margin-top: 1rem;
+    display: block;
 }
 
 form#roomForm .form-control,
 form#roomForm .form-select {
     border-radius: 8px;
     border: 1px solid var(--gray);
-    box-shadow: none;
-    font-size: 0.9rem;
+    font-size: .9rem;
 }
 
 form#roomForm button.btn {
-    background-color: var(--sea-medium);
+    background: var(--sea-medium);
     border: none;
-    padding: 0.6rem 1.5rem;
+    padding: .6rem 1.5rem;
     border-radius: 8px;
     font-size: 1rem;
-    transition: background-color 0.2s;
+    transition: .2s;
 }
 
 form#roomForm button.btn:hover {
-    background-color: var(--sea-deep);
+    background: var(--sea-deep);
 }
 
-/* ─── Room Detail Page ─────────────────────────────────────────────────────── */
+/* ─── Room Detail Page ─────────────────────────────────────────── */
 .room-detail-page {
-    background: url('/room_image.png') no-repeat center center;
-    background-size: cover;
+    background: url('/room_image.png') center/cover no-repeat;
     min-height: 100vh;
     padding-top: 56px;
 }
 
 .status-container {
-    background-color: rgba(1, 133, 148, 0.2);
-    color: var(--sea-deep);
+    background: rgba(1, 133, 148, 0.2);
     padding: 1rem;
     border-radius: 8px;
     font-size: 1.1rem;
 }
 
-/* ─── Responsive: Phones ≤576px ─────────────────────────────────────────────── */
+/* ─── Responsive: Phones ≤576px ───────────────────────────────── */
 @media (max-width: 576px) {
     #scheduleGrid {
         grid-auto-columns: minmax(150px, 1fr);
@@ -214,26 +209,26 @@ form#roomForm button.btn:hover {
     .header-cell,
     .grid-cell {
         min-width: 150px;
-        font-size: 0.9rem;
+        font-size: .9rem;
     }
 
-    /* Sticky header row (under navbar) */
+    /* Sticky header row under navbar */
     .header-cell {
         position: sticky;
         top: 56px;
         z-index: 20;
     }
 
-    /* Sticky hour column (2 rooms view) */
+    /* Sticky hour column (2-room view) */
     #scheduleGrid>div:nth-child(3n+1) {
         position: sticky;
         inset-inline-end: 0;
         z-index: 10;
-        background-color: var(--white);
+        background: var(--white);
     }
 }
 
-/* ─── Responsive: Landscape phones & small tablets 577–768px ──────────────── */
+/* ─── Responsive: Landscape phones & small tablets 577–768px ──── */
 @media (min-width: 577px) and (max-width: 768px) {
     #scheduleGrid {
         grid-auto-columns: minmax(25%, 1fr);
@@ -245,21 +240,38 @@ form#roomForm button.btn:hover {
         font-size: 1rem;
     }
 
-    /* Sticky header row (under navbar) */
+    /* Sticky header row under navbar */
     .header-cell {
         position: sticky;
         top: 56px;
         z-index: 20;
     }
 
-    /* Sticky hour column (4 rooms view) */
+    /* Sticky hour column (4-room view) */
     #scheduleGrid>div:nth-child(5n+1) {
         position: sticky;
         inset-inline-end: 0;
         z-index: 10;
-        background-color: var(--white);
+        background: var(--white);
     }
 }
 
-/* ─── Tablets & Desktops ≥769px: No sticky header/time column ────────────── */
-/* (Header row will scroll away as usual, and no fixed hour column.) */
+/* ─── Tablets & Desktops ≥769px: no sticky header/column ─────── */
+
+/* ─── Reduce container top‐margin for page headings ───────────────────────── */
+.container.mt-5 {
+    margin-top: 0 !important;
+}
+
+/* ─── Pull all h1s closer to the navbar ───────────────────────────────────── */
+.container h1 {
+    margin-top: 0.5rem !important;
+    /* adjust this value (e.g. .25rem / 4px) to taste */
+    margin-bottom: 1rem !important;
+    /* keep a bit of space below */
+}
+
+/* ─── If you want to target only your “טבלת חדרים” heading */
+h1.text-center.mb-4 {
+    margin-top: 0.5rem !important;
+}
