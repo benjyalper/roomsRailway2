@@ -310,3 +310,66 @@ form#roomForm button.btn:hover {
         text-overflow: ellipsis;
     }
 }
+
+/* 1) Float the navbar */
+.calm-navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 2000;
+}
+
+body {
+    padding-top: 56px;
+    /* = your navbar height */
+}
+
+/* 2) Allow the grid to scroll vertically so sticky headers work */
+#scheduleGrid {
+    overflow-y: auto;
+    /* instead of hidden */
+}
+
+/* 3) Make the room-header row stick under the fixed navbar */
+.header-cell {
+    position: sticky;
+    top: 56px;
+    /* sit just below the 56px-tall navbar */
+    z-index: 1500;
+}
+
+/* 4) Make the “hour” column stick to the right edge during LTR scrolling */
+/*    adjust the “3n+1, 5n+1, 11n+1” to match your 1+2, 1+4, 1+10 layouts */
+@media (max-width: 576px) {
+
+    /* 1 time + 2 rooms = 3 cols/row */
+    #scheduleGrid>div:nth-child(3n+1) {
+        position: sticky;
+        right: 0;
+        z-index: 1400;
+        background-color: var(--white);
+    }
+}
+
+@media (min-width: 577px) and (max-width: 768px) {
+
+    /* 1 time + 4 rooms = 5 cols/row */
+    #scheduleGrid>div:nth-child(5n+1) {
+        position: sticky;
+        right: 0;
+        z-index: 1400;
+        background-color: var(--white);
+    }
+}
+
+@media (min-width: 769px) {
+
+    /* 1 time + 10 rooms = 11 cols/row */
+    #scheduleGrid>div:nth-child(11n+1) {
+        position: sticky;
+        right: 0;
+        z-index: 1400;
+        background-color: var(--white);
+    }
+}
