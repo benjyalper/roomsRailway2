@@ -286,3 +286,38 @@ body {
 .container.mt-5 {
     margin-top: 0 !important;
 }
+
+/* HOME GRID: wrap into rows of N columns */
+#room-grid {
+    display: grid;
+    gap: 1rem;
+    padding: 1rem;
+}
+
+/* ≥1200px: 5 columns */
+@media (min-width: 1200px) {
+    #room-grid {
+        grid-template-columns: repeat(5, minmax(120px, 1fr));
+    }
+}
+
+/* 992–1199px: 4 columns */
+@media (min-width: 992px) and (max-width: 1199px) {
+    #room-grid {
+        grid-template-columns: repeat(4, minmax(120px, 1fr));
+    }
+}
+
+/* 768–991px: 3 columns */
+@media (min-width: 768px) and (max-width: 991px) {
+    #room-grid {
+        grid-template-columns: repeat(3, minmax(120px, 1fr));
+    }
+}
+
+/* <768px: 2 columns */
+@media (max-width: 767px) {
+    #room-grid {
+        grid-template-columns: repeat(2, minmax(120px, 1fr));
+    }
+}
