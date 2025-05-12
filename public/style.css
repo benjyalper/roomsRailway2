@@ -256,7 +256,7 @@ body {
     .schedule-wrapper {
         position: relative;
         /* establishes the bounds for sticky children */
-        direction: ltr;
+        direction: rtl;
         /* so right:0 is the physical right edge */
     }
 
