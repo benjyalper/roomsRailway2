@@ -56,6 +56,10 @@ body {
     color: var(--sea-medium);
 }
 
+.form-container input::placeholder {
+    text-align: right;
+}
+
 /* ─── Home Grid ───────────────────────────────────────────────── */
 #room-grid {
     display: grid;
