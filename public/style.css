@@ -6,29 +6,25 @@
     --sea-deep: #247794;
     --sea-medium: #018594;
     --sea-light: #e2dcc3;
+    --sand-medium: #b7a18b;
+    --sand-light: #ded9ce;
     --white: #ffffff;
     --gray-light: #f7f7f8;
     --gray: #e0e0e0;
     --text-dark: #2E3A3F;
-
-    /* Fixed header heights – adjust if your <h1> or date-selector are taller/shorter */
-    --navbar-height: 56px;
-    --heading-height: 48px;
-    /* <h1> bar (including padding) */
-    --date-height: 56px;
-    /* date-input row height */
 }
 
 body {
     font-family: 'Poppins', sans-serif;
+    background-color: var(--gray-light);
+    color: var(--text-dark);
     margin: 0;
     padding: 0;
-    padding-top: var(--navbar-height);
-    background: var(--gray-light);
-    color: var(--text-dark);
+    padding-top: 56px;
+    /* reserve space for fixed navbar */
 }
 
-/* ─── Navbar (already fixed‐top in HTML) ───────────────────────────────── */
+/* ─── Navbar (fixed-top) ───────────────────────────────────────── */
 .calm-navbar {
     position: fixed;
     top: 0;
@@ -36,8 +32,8 @@ body {
     width: 100%;
     background: var(--white);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    padding: .5rem 1rem;
-    z-index: 3000;
+    padding: 0.5rem 1rem;
+    z-index: 2000;
     font-weight: 500;
 }
 
@@ -56,108 +52,104 @@ body {
     color: var(--sea-medium);
 }
 
-/* ─── Page Title & Date Row ─────────────────────────────────────────── */
-/* We wrap <h1> and the .mb-3 date-input as fixed bars below the navbar */
-.container h1 {
+/* ─── Page Headings ─────────────────────────────────────────────── */
+.container h1,
+.container h2 {
     background: var(--sea-light);
     color: var(--sea-deep);
     padding: .5rem 1rem;
-    margin: 0;
+    border-radius: 8px;
+    margin: 0 auto 1rem;
     text-align: center;
     font-size: 1.2rem;
-    height: var(--heading-height);
-    line-height: calc(var(--heading-height) - 1rem);
 }
 
-.container .mb-3 {
-    padding: .5rem 1rem;
-    background: var(--white);
-    margin: 0 0 1rem 0;
-    height: var(--date-height);
-    line-height: calc(var(--date-height) - 1rem);
+/* ─── Home Grid ─────────────────────────────────────────────────── */
+.room-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(120px, 1fr));
+    gap: 1rem;
+    padding: 1rem;
 }
 
-/* Make them stick on phones/landscape phones */
-@media (max-width: 768px) {
-    .container h1 {
-        position: fixed;
-        top: var(--navbar-height);
-        left: 0;
-        right: 0;
-        z-index: 2999;
-    }
-
-    .container .mb-3 {
-        position: fixed;
-        top: calc(var(--navbar-height) + var(--heading-height));
-        left: 0;
-        right: 0;
-        z-index: 2998;
-    }
+.room {
+    background: url('/images/newRoom.png') center/contain no-repeat var(--white);
+    height: 140px;
+    border-radius: 12px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    position: relative;
+    transition: transform .2s;
+    cursor: pointer;
 }
 
-/* ─── Schedule Wrapper (scroll container) ─────────────────────────── */
-/* On phones, we pin it below the three fixed bars and give it its own scroll */
-@media (max-width: 768px) {
-    .schedule-wrapper {
-        position: fixed;
-        top: calc(var(--navbar-height) + var(--heading-height) + var(--date-height));
-        bottom: 0;
-        left: 0;
-        right: 0;
-        overflow: auto;
-        -webkit-overflow-scrolling: touch;
-    }
+.room:hover {
+    transform: translateY(-3px);
 }
 
-@media (min-width: 769px) {
-    .schedule-wrapper {
-        overflow-x: auto;
-        overflow-y: auto;
-        -webkit-overflow-scrolling: touch;
-    }
+.room-number {
+    position: absolute;
+    top: 15%;
+    left: 50%;
+    transform: translateX(-50%);
+    font-weight: 600;
+    font-size: .88rem;
 }
 
-/* ─── Schedule Grid ──────────────────────────────────────────────── */
+/* ─── Schedule Wrapper & Grid ──────────────────────────────────── */
+.schedule-wrapper {
+    overflow-x: auto;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
 #scheduleGrid {
     display: grid;
-    grid-template-columns: auto repeat(10, 1fr);
     gap: 1px;
     background: var(--gray);
     border-radius: 8px;
+    grid-auto-columns: minmax(80px, 1fr);
+    overflow: visible;
+    max-height: calc(100vh - 100px);
 }
 
 /* ─── Cells ─────────────────────────────────────────────────────── */
-.header-cell,
-.time-cell,
 .grid-cell {
+    background: var(--white);
+    min-height: 40px;
+    position: relative;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    border: 1px solid var(--gray);
+    box-sizing: border-box;
+}
+
+.header-cell {
+    /* only base styling here */
+    background: var(--sea-medium);
+    color: var(--white);
+    text-align: center;
     padding: .75rem .5rem;
+    font-weight: 600;
+    font-size: .9rem;
+}
+
+.time-cell {
+    /* time‐column base styling */
+    background: var(--sea-medium);
+    color: var(--white);
+    text-align: center;
+    padding: .75rem .5rem;
+    font-weight: 600;
     font-size: .9rem;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    box-sizing: border-box;
     border: 1px solid var(--gray);
+    box-sizing: border-box;
 }
 
-.header-cell {
-    background: var(--sea-medium);
-    color: var(--white);
-    text-align: center;
-}
-
-.time-cell {
-    background: var(--sea-medium);
-    color: var(--white);
-    text-align: center;
-}
-
-.grid-cell {
-    background: var(--white);
-    position: relative;
-    min-height: 40px;
-}
-
+/* ─── Therapist name ───────────────────────────────────────────── */
 .therapist-name {
     position: absolute;
     top: 50%;
@@ -166,25 +158,68 @@ body {
     font-weight: 500;
 }
 
-/* ─── Sticky Room‐Names & Time Column on ≤768px ─────────────────── */
-@media (max-width: 768px) {
-
-    /* Room header row sticks to top of .schedule-wrapper */
-    .header-cell {
-        position: sticky;
-        top: 0;
-        z-index: 20;
-    }
-
-    /* Time column sticks to right edge of .schedule-wrapper */
-    .time-cell {
-        position: sticky;
-        inset-inline-end: 0;
-        z-index: 19;
-    }
+/* ─── Form & Sign-in Styling ───────────────────────────────────── */
+form#roomForm,
+.form-container {
+    background: var(--white);
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
-/* ─── Responsive Grid Widths ───────────────────────────────────── */
+form#roomForm .form-label {
+    font-weight: 500;
+    color: var(--sea-deep);
+    margin-top: 1rem;
+    display: block;
+}
+
+form#roomForm .form-control,
+form#roomForm .form-select {
+    border-radius: 8px;
+    border: 1px solid var(--gray);
+    font-size: .9rem;
+}
+
+form#roomForm button.btn {
+    background: var(--sea-medium);
+    border: none;
+    padding: .6rem 1.5rem;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: .2s;
+}
+
+form#roomForm button.btn:hover {
+    background: var(--sea-deep);
+}
+
+/* align phone placeholder on sign-in */
+.form-container input[type="tel"] {
+    direction: rtl;
+    text-align: right;
+}
+
+/* nudge sign-in box upward */
+.form-container {
+    margin-top: -5vh;
+}
+
+/* ─── Room Detail Page ─────────────────────────────────────────── */
+.room-detail-page {
+    background: url('/room_image.png') center/cover no-repeat;
+    min-height: 100vh;
+    padding-top: 56px;
+}
+
+.status-container {
+    background: rgba(1, 133, 148, 0.2);
+    padding: 1rem;
+    border-radius: 8px;
+    font-size: 1.1rem;
+}
+
+/* ─── Responsive: Phones ≤576px ───────────────────────────────── */
 @media (max-width: 576px) {
     #scheduleGrid {
         grid-auto-columns: minmax(150px, 1fr);
@@ -193,9 +228,11 @@ body {
     .header-cell,
     .grid-cell {
         min-width: 150px;
+        font-size: .9rem;
     }
 }
 
+/* ─── Responsive: Landscape phones & small tablets 577–768px ── */
 @media (min-width: 577px) and (max-width: 768px) {
     #scheduleGrid {
         grid-auto-columns: minmax(25%, 1fr);
@@ -204,10 +241,38 @@ body {
     .header-cell,
     .grid-cell {
         min-width: 25%;
+        font-size: 1rem;
     }
 }
 
-/* ─── Reduce default container top‐margin on all pages ───────────── */
+/* ─── Sticky on all small screens (≤768px) ────────────────────────── */
+@media (max-width: 768px) {
+
+    /* stick top row under navbar */
+    .header-cell {
+        position: sticky;
+        top: 56px;
+        z-index: 20;
+        background: var(--sea-medium);
+    }
+
+    /* stick time column at inline-end (right in RTL) */
+    .time-cell {
+        position: sticky;
+        inset-inline-end: 0;
+        z-index: 10;
+        background: var(--sea-medium);
+        color: var(--white);
+    }
+}
+
+/* ─── Reduce container top-margin for page headings ───────────── */
 .container.mt-5 {
     margin-top: 0 !important;
+}
+
+/* tighten <h1> under navbar */
+.container h1 {
+    margin-top: 0.5rem !important;
+    margin-bottom: 1rem !important;
 }
