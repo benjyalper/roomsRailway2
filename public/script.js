@@ -53,33 +53,40 @@ function initSchedule() {
     buildScheduleGrid();
     fetchDataByDate();
 }
+// script.js
 
 function buildScheduleGrid() {
-    const rooms = 10;
+    // ← change this
+    const rooms = ['1', '2', '3', '4', '5', '6', '7', '15', 'מקלט'];
+    const cols = rooms.length;
+
     const $g = $('#scheduleGrid')
         .empty()
         .css({
             display: 'grid',
-            gridTemplateColumns: `auto repeat(${rooms},1fr)`,
+            gridTemplateColumns: `auto repeat(${cols},1fr)`,
             gap: '1px'
         });
 
-    // Top row: corner + room names
+    // empty corner cell
     $g.append(`<div class="header-cell"></div>`);
-    for (let r = 1; r <= rooms; r++) {
-        $g.append(`<div class="header-cell">חדר ${r}</div>`);
-    }
 
-    // Time rows: time-cell + cells
+    // now use .forEach instead of a for-loop
+    rooms.forEach(label => {
+        $g.append(`<div class="header-cell">${label}</div>`);
+    });
+
+    // time rows
     TIMES.forEach(t => {
         $g.append(`<div class="time-cell">${t}</div>`);
-        for (let r = 1; r <= rooms; r++) {
+        rooms.forEach(label => {
             $g.append(
-                `<div class="grid-cell" data-room-hour="${r} ${t}:00"></div>`
+                `<div class="grid-cell" data-room-hour="${label} ${t}:00"></div>`
             );
-        }
+        });
     });
 }
+
 
 function fetchDataByDate() {
     fetch(`/fetchDataByDate?date=${encodeURIComponent($('#lookupDate').val())}`, {
