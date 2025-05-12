@@ -11,12 +11,12 @@
     --gray: #e0e0e0;
     --text-dark: #2E3A3F;
 
-    /* Heights of fixed bars */
+    /* Fixed header heights – adjust if your <h1> or date-selector are taller/shorter */
     --navbar-height: 56px;
     --heading-height: 48px;
-    /* h1 bar */
+    /* <h1> bar (including padding) */
     --date-height: 56px;
-    /* date‐picker bar */
+    /* date-input row height */
 }
 
 body {
@@ -28,7 +28,7 @@ body {
     color: var(--text-dark);
 }
 
-/* ─── Navbar ───────────────────────────────────────────────────── */
+/* ─── Navbar (already fixed‐top in HTML) ───────────────────────────────── */
 .calm-navbar {
     position: fixed;
     top: 0;
@@ -42,8 +42,8 @@ body {
 }
 
 .calm-navbar .navbar-brand i {
-    font-size: 1.5rem;
     color: var(--sea-deep);
+    font-size: 1.5rem;
 }
 
 .calm-navbar .nav-link {
@@ -87,27 +87,28 @@ body {
     font-size: .88rem;
 }
 
-/* ─── Page Title & Date Selector ───────────────────────────────── */
+/* ─── Page Title & Date Row ─────────────────────────────────────────── */
+/* We wrap <h1> and the .mb-3 date-input as fixed bars below the navbar */
 .container h1 {
     background: var(--sea-light);
     color: var(--sea-deep);
     padding: .5rem 1rem;
     margin: 0;
-    font-size: 1.2rem;
     text-align: center;
+    font-size: 1.2rem;
     height: var(--heading-height);
     line-height: calc(var(--heading-height) - 1rem);
 }
 
 .container .mb-3 {
     padding: .5rem 1rem;
-    margin: 0 0 1rem;
     background: var(--white);
+    margin: 0 0 1rem 0;
     height: var(--date-height);
     line-height: calc(var(--date-height) - 1rem);
 }
 
-/* Stick title & date on phones */
+/* Make them stick on phones/landscape phones */
 @media (max-width: 768px) {
     .container h1 {
         position: fixed;
@@ -126,23 +127,20 @@ body {
     }
 }
 
-/* ─── Schedule Wrapper & Grid ─────────────────────────────────── */
-/* On phones: give it a fixed-height scrollable area under the three bars */
+/* ─── Schedule Wrapper (scroll container) ─────────────────────────── */
+/* On phones, we pin it below the three fixed bars and give it its own scroll */
 @media (max-width: 768px) {
     .schedule-wrapper {
-        position: relative;
-        top: 0;
-        /* position within flow under the fixed bars */
-        height: calc(100vh - var(--navbar-height) - var(--heading-height) - var(--date-height) - 1rem
-                /* adjust if you need extra bottom padding */
-            );
-        overflow-y: auto;
-        overflow-x: auto;
+        position: fixed;
+        top: calc(var(--navbar-height) + var(--heading-height) + var(--date-height));
+        bottom: 0;
+        left: 0;
+        right: 0;
+        overflow: auto;
         -webkit-overflow-scrolling: touch;
     }
 }
 
-/* On larger screens: normal scrolling */
 @media (min-width: 769px) {
     .schedule-wrapper {
         overflow-x: auto;
@@ -151,6 +149,7 @@ body {
     }
 }
 
+/* ─── Schedule Grid ──────────────────────────────────────────────── */
 #scheduleGrid {
     display: grid;
     grid-template-columns: auto repeat(10, 1fr);
@@ -186,8 +185,8 @@ body {
 
 .grid-cell {
     background: var(--white);
-    min-height: 40px;
     position: relative;
+    min-height: 40px;
 }
 
 .therapist-name {
@@ -198,17 +197,17 @@ body {
     font-weight: 500;
 }
 
-/* ─── Sticky row & column on ≤768px ───────────────────────────── */
+/* ─── Sticky Room‐Names & Time Column on ≤768px ─────────────────── */
 @media (max-width: 768px) {
 
-    /* Stick the room‐header row to top of the scroll container */
+    /* Room header row sticks to top of .schedule-wrapper */
     .header-cell {
         position: sticky;
         top: 0;
         z-index: 20;
     }
 
-    /* Stick time column at right edge */
+    /* Time column sticks to right edge of .schedule-wrapper */
     .time-cell {
         position: sticky;
         inset-inline-end: 0;
@@ -216,10 +215,15 @@ body {
     }
 }
 
-/* ─── Responsive grid widths ───────────────────────────────────── */
+/* ─── Responsive Grid Widths ───────────────────────────────────── */
 @media (max-width: 576px) {
     #scheduleGrid {
         grid-auto-columns: minmax(150px, 1fr);
+    }
+
+    .header-cell,
+    .grid-cell {
+        min-width: 150px;
     }
 }
 
@@ -227,9 +231,14 @@ body {
     #scheduleGrid {
         grid-auto-columns: minmax(25%, 1fr);
     }
+
+    .header-cell,
+    .grid-cell {
+        min-width: 25%;
+    }
 }
 
-/* ─── Remove extra container top‐margin ─────────────────────────── */
+/* ─── Reduce default container top‐margin on all pages ───────────── */
 .container.mt-5 {
     margin-top: 0 !important;
 }
