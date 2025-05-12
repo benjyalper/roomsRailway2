@@ -11,18 +11,16 @@
     --gray: #e0e0e0;
     --text-dark: #2E3A3F;
 
-    /* Heights of fixed bars */
+    /* Heights of fixed header bars */
     --navbar-height: 56px;
     --heading-height: 48px;
-    /* h1 bar */
     --date-height: 56px;
-    /* date‐picker bar */
 }
 
 body {
     font-family: 'Poppins', sans-serif;
     margin: 0;
-    padding: 0;
+    padding: 0 0 0 var(--navbar-height);
     padding-top: var(--navbar-height);
     background: var(--gray-light);
     color: var(--text-dark);
@@ -54,6 +52,17 @@ body {
 
 .calm-navbar .nav-link:hover {
     color: var(--sea-medium);
+}
+
+/* fix collapsed menu above everything */
+.navbar-collapse {
+    overflow: visible !important;
+    z-index: 3001;
+}
+
+/* any dropdowns above fixed header */
+.dropdown-menu {
+    z-index: 4000 !important;
 }
 
 /* ─── Home Grid ───────────────────────────────────────────────── */
@@ -107,7 +116,7 @@ body {
     line-height: calc(var(--date-height) - 1rem);
 }
 
-/* Stick title & date on phones */
+/* stick them under navbar on phones */
 @media (max-width: 768px) {
     .container h1 {
         position: fixed;
@@ -127,22 +136,19 @@ body {
 }
 
 /* ─── Schedule Wrapper & Grid ─────────────────────────────────── */
-/* On phones: give it a fixed-height scrollable area under the three bars */
+/* phone: fixed-height scroll container */
 @media (max-width: 768px) {
     .schedule-wrapper {
         position: relative;
-        top: 0;
-        /* position within flow under the fixed bars */
-        height: calc(100vh - var(--navbar-height) - var(--heading-height) - var(--date-height) - 1rem
-                /* adjust if you need extra bottom padding */
-            );
+        margin-top: calc(var(--navbar-height) + var(--heading-height) + var(--date-height));
+        height: calc(100vh - var(--navbar-height) - var(--heading-height) - var(--date-height) - 1rem);
         overflow-y: auto;
         overflow-x: auto;
         -webkit-overflow-scrolling: touch;
     }
 }
 
-/* On larger screens: normal scrolling */
+/* desktop/tablet: normal scroll */
 @media (min-width: 769px) {
     .schedule-wrapper {
         overflow-x: auto;
@@ -153,13 +159,13 @@ body {
 
 #scheduleGrid {
     display: grid;
-    grid-template-columns: auto repeat(10, 1fr);
     gap: 1px;
     background: var(--gray);
     border-radius: 8px;
+    /* default inline style from JS will be overridden below */
 }
 
-/* ─── Cells ─────────────────────────────────────────────────────── */
+/* ─── Base Cells ───────────────────────────────────────────────── */
 .header-cell,
 .time-cell,
 .grid-cell {
@@ -198,17 +204,14 @@ body {
     font-weight: 500;
 }
 
-/* ─── Sticky row & column on ≤768px ───────────────────────────── */
+/* ─── Sticky Header & Time-Col on phones ≤768px ─────────────── */
 @media (max-width: 768px) {
-
-    /* Stick the room‐header row to top of the scroll container */
     .header-cell {
         position: sticky;
         top: 0;
         z-index: 20;
     }
 
-    /* Stick time column at right edge */
     .time-cell {
         position: sticky;
         inset-inline-end: 0;
@@ -216,16 +219,25 @@ body {
     }
 }
 
-/* ─── Responsive grid widths ───────────────────────────────────── */
+/* ─── Force 2/4/10 columns via CSS !important ───────────────── */
 @media (max-width: 576px) {
     #scheduleGrid {
-        grid-auto-columns: minmax(150px, 1fr);
+        grid-template-columns:
+            auto repeat(2, minmax(150px, 1fr)) !important;
     }
 }
 
-@media (min-width: 577px) and (max-width: 768px) {
+@media (min-width:577px) and (max-width:768px) {
     #scheduleGrid {
-        grid-auto-columns: minmax(25%, 1fr);
+        grid-template-columns:
+            auto repeat(4, minmax(25%, 1fr)) !important;
+    }
+}
+
+@media (min-width:769px) {
+    #scheduleGrid {
+        grid-template-columns:
+            auto repeat(10, 1fr) !important;
     }
 }
 
