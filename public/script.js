@@ -33,18 +33,28 @@ function setupNavigation() {
 }
 
 function initHome() {
+    // 1) Define your rooms however you like:
+    const rooms = ['15', 'מקלט', '1', '2', '3', '4', '5', '6', '7', '8'];
+
+    // 2) Grab & clear the grid container
     const $grid = $('#room-grid').empty();
-    for (let i = 1; i <= 10; i++) {
+
+    // 3) Render each room from the array
+    rooms.forEach(label => {
         $grid.append(`
-      <div class="room" data-room-number="${i}">
-        <div class="room-number">חדר ${i}</div>
+      <div class="room" data-room-number="${label}">
+        <div class="room-number">${label}</div>
       </div>
     `);
-    }
+    });
+
+    // 4) Preserve the click behavior
     $('.room').click(function () {
-        window.location.href = `/room/${$(this).data('room-number')}`;
+        const room = $(this).data('room-number');
+        window.location.href = `/room/${room}`;
     });
 }
+
 
 function initSchedule() {
     $('#lookupDate')
