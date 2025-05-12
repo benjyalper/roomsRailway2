@@ -14,18 +14,21 @@
     /* Heights of fixed bars */
     --navbar-height: 56px;
     --heading-height: 48px;
+    /* h1 bar */
     --date-height: 56px;
+    /* date‐picker bar */
 }
 
-/* ─── Base Body & Navbar ───────────────────────────────────────────────── */
 body {
     font-family: 'Poppins', sans-serif;
     margin: 0;
+    padding: 0;
     padding-top: var(--navbar-height);
     background: var(--gray-light);
     color: var(--text-dark);
 }
 
+/* ─── Navbar ───────────────────────────────────────────────────── */
 .calm-navbar {
     position: fixed;
     top: 0;
@@ -53,16 +56,7 @@ body {
     color: var(--sea-medium);
 }
 
-/* Ensure dropdowns appear above fixed header */
-.navbar-collapse {
-    z-index: 3001 !important;
-}
-
-.dropdown-menu {
-    z-index: 4000 !important;
-}
-
-/* ─── Home Page Grid ───────────────────────────────────────────────────── */
+/* ─── Home Grid ───────────────────────────────────────────────── */
 #room-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
@@ -93,22 +87,22 @@ body {
     font-size: .88rem;
 }
 
-/* ─── Page Title & Date Selector ─────────────────────────────────────── */
+/* ─── Page Title & Date Selector ───────────────────────────────── */
 .container h1 {
     background: var(--sea-light);
     color: var(--sea-deep);
-    margin: 0;
     padding: .5rem 1rem;
-    text-align: center;
+    margin: 0;
     font-size: 1.2rem;
+    text-align: center;
     height: var(--heading-height);
     line-height: calc(var(--heading-height) - 1rem);
 }
 
 .container .mb-3 {
-    background: var(--white);
-    margin: 0 0 1rem;
     padding: .5rem 1rem;
+    margin: 0 0 1rem;
+    background: var(--white);
     height: var(--date-height);
     line-height: calc(var(--date-height) - 1rem);
 }
@@ -132,35 +126,40 @@ body {
     }
 }
 
-/* ─── Schedule Wrapper & Grid ─────────────────────────────────────── */
+/* ─── Schedule Wrapper & Grid ─────────────────────────────────── */
+/* On phones: give it a fixed-height scrollable area under the three bars */
 @media (max-width: 768px) {
     .schedule-wrapper {
         position: relative;
-        margin-top: calc(var(--navbar-height) + var(--heading-height) + var(--date-height));
-        height: calc(100vh - var(--navbar-height) - var(--heading-height) - var(--date-height) - 1rem);
+        top: 0;
+        /* position within flow under the fixed bars */
+        height: calc(100vh - var(--navbar-height) - var(--heading-height) - var(--date-height) - 1rem
+                /* adjust if you need extra bottom padding */
+            );
         overflow-y: auto;
         overflow-x: auto;
         -webkit-overflow-scrolling: touch;
     }
 }
 
+/* On larger screens: normal scrolling */
 @media (min-width: 769px) {
     .schedule-wrapper {
-        overflow-y: auto;
         overflow-x: auto;
+        overflow-y: auto;
         -webkit-overflow-scrolling: touch;
     }
 }
 
 #scheduleGrid {
     display: grid;
+    grid-template-columns: auto repeat(10, 1fr);
     gap: 1px;
     background: var(--gray);
     border-radius: 8px;
-    /* We'll override grid-template-columns per breakpoint below */
 }
 
-/* ─── Base Cells ─────────────────────────────────────────────────── */
+/* ─── Cells ─────────────────────────────────────────────────────── */
 .header-cell,
 .time-cell,
 .grid-cell {
@@ -199,14 +198,17 @@ body {
     font-weight: 500;
 }
 
-/* ─── Sticky Room Headers & Time-Col ───────────────────────────── */
+/* ─── Sticky row & column on ≤768px ───────────────────────────── */
 @media (max-width: 768px) {
+
+    /* Stick the room‐header row to top of the scroll container */
     .header-cell {
         position: sticky;
         top: 0;
         z-index: 20;
     }
 
+    /* Stick time column at right edge */
     .time-cell {
         position: sticky;
         inset-inline-end: 0;
@@ -214,26 +216,20 @@ body {
     }
 }
 
-/* ─── Force 2/4/10 Room Columns ────────────────────────────────── */
+/* ─── Responsive grid widths ───────────────────────────────────── */
 @media (max-width: 576px) {
     #scheduleGrid {
-        grid-template-columns: auto repeat(2, minmax(150px, 1fr)) !important;
+        grid-auto-columns: minmax(150px, 1fr);
     }
 }
 
 @media (min-width: 577px) and (max-width: 768px) {
     #scheduleGrid {
-        grid-template-columns: auto repeat(4, minmax(25%, 1fr)) !important;
+        grid-auto-columns: minmax(25%, 1fr);
     }
 }
 
-@media (min-width: 769px) {
-    #scheduleGrid {
-        grid-template-columns: auto repeat(10, 1fr) !important;
-    }
-}
-
-/* ─── Remove extra container top‐margin ───────────────────────── */
+/* ─── Remove extra container top‐margin ─────────────────────────── */
 .container.mt-5 {
     margin-top: 0 !important;
 }
