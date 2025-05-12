@@ -53,7 +53,7 @@ body {
     color: var(--sea-medium);
 }
 
-/* Ensure dropdowns / collapse sit above fixed header */
+/* make sure any dropdown or collapse menu floats above everything */
 .navbar-collapse {
     z-index: 3001 !important;
 }
@@ -62,7 +62,7 @@ body {
     z-index: 4000 !important;
 }
 
-/* ─── Home Page Grid ───────────────────────────────────────────────────── */
+/* ─── Home Page Grid ───────────────────────────────────────────── */
 #room-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
@@ -93,7 +93,7 @@ body {
     font-size: .88rem;
 }
 
-/* ─── Page Title & Date Selector ───────────────────────────────────────── */
+/* ─── Page Title & Date Selector ───────────────────────────────── */
 .container h1 {
     background: var(--sea-light);
     color: var(--sea-deep);
@@ -113,7 +113,7 @@ body {
     line-height: calc(var(--date-height) - 1rem);
 }
 
-/* Stick title & date under navbar on phones/tablets */
+/* stick title+date bars under navbar on phones/tablets */
 @media (max-width: 768px) {
     .container h1 {
         position: fixed;
@@ -132,8 +132,8 @@ body {
     }
 }
 
-/* ─── Schedule Wrapper & Grid ────────────────────────────────────────── */
-/* Phones/tablets: make .schedule-wrapper a fixed-height scroll container */
+/* ─── Schedule Wrapper & Grid ─────────────────────────────────── */
+/* phones/tablets: fixed-height, scrollable area under the 3 bars */
 @media (max-width: 768px) {
     .schedule-wrapper {
         position: relative;
@@ -145,7 +145,7 @@ body {
     }
 }
 
-/* Desktop/tablet: normal scrolling */
+/* desktop+: normal scrolling schedule */
 @media (min-width: 769px) {
     .schedule-wrapper {
         overflow-y: auto;
@@ -159,10 +159,10 @@ body {
     gap: 1px;
     background: var(--gray);
     border-radius: 8px;
-    /* grid-template-columns overridden below */
+    /* grid-template-columns set below per breakpoint */
 }
 
-/* ─── Base Cell Styling ─────────────────────────────────────────────── */
+/* ─── Base Cell Styling ────────────────────────────────────────── */
 .header-cell,
 .time-cell,
 .grid-cell {
@@ -201,7 +201,7 @@ body {
     font-weight: 500;
 }
 
-/* ─── Sticky Header-Row & Time-Col on ≤768px ───────────────────────── */
+/* ─── Sticky Header Row & Time-Col on ≤768px ─────────────────── */
 @media (max-width: 768px) {
     .header-cell {
         position: sticky;
@@ -216,26 +216,32 @@ body {
     }
 }
 
-/* ─── Force 2/4/10 Room-Columns ─────────────────────────────────────── */
+/* ─── Explicit 2/4 Columns w/ fixed min-width to force scroll ── */
+/* Portrait phones: 2 rooms at once */
 @media (max-width: 576px) {
     #scheduleGrid {
-        grid-template-columns: auto repeat(2, minmax(150px, 1fr)) !important;
+        grid-template-columns:
+            minmax(80px, auto) repeat(2, minmax(150px, auto)) !important;
     }
 }
 
+/* Landscape phones/tablets: 4 rooms at once */
 @media (min-width: 577px) and (max-width: 768px) {
     #scheduleGrid {
-        grid-template-columns: auto repeat(4, minmax(25%, 1fr)) !important;
+        grid-template-columns:
+            minmax(80px, auto) repeat(4, minmax(25%, auto)) !important;
     }
 }
 
+/* Desktops: all 10 rooms shrink-to-fit */
 @media (min-width: 769px) {
     #scheduleGrid {
-        grid-template-columns: auto repeat(10, 1fr) !important;
+        grid-template-columns:
+            auto repeat(10, 1fr) !important;
     }
 }
 
-/* ─── Remove extra container top-margin on all pages ───────────────── */
+/* ─── Remove extra container top-margin on all pages ───────────── */
 .container.mt-5 {
     margin-top: 0 !important;
 }
