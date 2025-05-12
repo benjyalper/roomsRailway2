@@ -107,7 +107,7 @@ app.get('/logout', (req, res) => {
 
 // ─── PAGE ROUTES ──────────────────────────────────────────────────────────────
 app.get('/home', isAuthenticated, (req, res) => {
-    res.render('home', {}, (err, html) => {
+    res.render('home', { title: 'דף ראשי' }, (err, html) => {
         if (err) {
             console.error('❌ Error rendering home.ejs:', err);
             return res.status(500).send(`Template render error: ${err.message}`);
@@ -116,9 +116,14 @@ app.get('/home', isAuthenticated, (req, res) => {
     });
 });
 
-app.get('/room-schedule', isAuthenticated, (req, res) => res.render('room-schedule'));
-app.get('/room-form', isAuthenticated, (req, res) => res.render('room-form'));
-app.get('/messages', isAuthenticated, (req, res) => res.render('messages'));
+app.get('/room-schedule', isAuthenticated, (req, res) =>
+    res.render('room-schedule', { title: 'טבלת חדרים' })
+);
+app.get('/room-form', isAuthenticated, (req, res) => res.render('room-form', { title: 'עריכת פגישות' }));
+app.get('/messages', isAuthenticated, (req, res) => res.render('messages', { title: 'הודעות' }));
+// app.get('/home', isAuthenticated, (req, res) => res.render('home', { title: 'דף ראשי' }));
+// etc.
+
 
 // ─── FETCH SCHEDULE DATA ──────────────────────────────────────────────────────
 app.get('/fetchDataByDate', isAuthenticated, async (req, res) => {

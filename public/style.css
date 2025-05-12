@@ -28,6 +28,31 @@ body {
     color: var(--text-dark);
 }
 
+/* Sandy-beach heading inside navbar */
+.sandy-heading {
+    color: var(--sand-medium);
+    /* sandy-beach accent */
+    font-size: 1.25rem;
+    /* tweak to taste */
+    font-weight: 600;
+    margin: 0 .75rem;
+    /* spacing around it */
+    line-height: var(--navbar-height);
+    white-space: nowrap;
+    /* prevent wrapping */
+}
+
+/* If you used <h1> instead of span, ensure it sits nicely: */
+.sandy-heading-as-h1 {
+    display: inline-block;
+    margin: 0 .75rem;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--sand-medium);
+    line-height: var(--navbar-height);
+}
+
+
 /* ─── Navbar (already fixed‐top in HTML) ───────────────────────────────── */
 .calm-navbar {
     position: fixed;

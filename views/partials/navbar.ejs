@@ -1,9 +1,16 @@
 <nav class="navbar navbar-expand-lg calm-navbar fixed-top">
     <div class="container-fluid">
-        <a class="navbar-brand" href="/home"><i class="fa fa-home"></i></a>
+        <!-- collapse toggle -->
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
             <span class="navbar-toggler-icon"></span>
         </button>
+
+        <!-- embedded “sandy” heading -->
+        <span class="navbar-text sandy-heading"><%= title %></span>
+
+        <!-- home icon -->
+        <a class="navbar-brand" href="/home"><i class="fa fa-home"></i></a>
+
         <div class="collapse navbar-collapse" id="mainNav">
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item">
