@@ -252,18 +252,6 @@ body {
 /* ─── Sticky Room‐Names & Time Column on ≤768px ─────────────────── */
 @media (max-width: 768px) {
 
-    /* 1) Ensure the wrapper is the sticky‐boundary */
-    .schedule-wrapper {
-        position: relative;
-        /* establishes the bounds for sticky children */
-        direction: rtl;
-        /* so right:0 is the physical right edge */
-    }
-
-    /* 2) Also force the grid itself to LTR for consistency */
-    #scheduleGrid {
-        direction: rtl;
-    }
 
     /* your existing header‐row stickiness */
     .header-cell {
