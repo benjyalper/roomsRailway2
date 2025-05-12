@@ -262,7 +262,7 @@ body {
 
     /* 2) Also force the grid itself to LTR for consistency */
     #scheduleGrid {
-        direction: ltr;
+        direction: rtl;
     }
 
     /* your existing header‐row stickiness */
