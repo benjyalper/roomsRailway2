@@ -127,7 +127,7 @@ body {
     /* move down 3px */
     top: calc(15% + 3px);
     /* move left 3px before centering */
-    left: calc(50% - 5px);
+    left: calc(50% - 7px);
     transform: translateX(-50%);
     font-weight: 600;
     font-size: .88rem;
