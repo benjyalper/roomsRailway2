@@ -34,7 +34,7 @@ function setupNavigation() {
 
 function initHome() {
     // 1) Define your rooms however you like:
-    const rooms = ['15', 'מקלט', '1', '2', '3', '4', '5', '6', '7', '8'];
+    const rooms = ['1', '2', '3', '4', '5', '6', '7', '8', '15', 'מקלט'];
 
     // 2) Grab & clear the grid container
     const $grid = $('#room-grid').empty();
