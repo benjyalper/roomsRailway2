@@ -11,13 +11,14 @@
     --gray: #e0e0e0;
     --text-dark: #2E3A3F;
 
-    /* Header heights (tweak if your actual bars differ) */
+    /* Heights of fixed bars */
     --navbar-height: 56px;
     --heading-height: 48px;
+    /* h1 bar */
     --date-height: 56px;
+    /* date‐picker bar */
 }
 
-/* ─── Base Body & Navbar ───────────────────────────────────────────── */
 body {
     font-family: 'Poppins', sans-serif;
     margin: 0;
@@ -27,6 +28,7 @@ body {
     color: var(--text-dark);
 }
 
+/* ─── Navbar ───────────────────────────────────────────────────── */
 .calm-navbar {
     position: fixed;
     top: 0;
@@ -54,7 +56,7 @@ body {
     color: var(--sea-medium);
 }
 
-/* ─── Home Page Grid ───────────────────────────────────────────────── */
+/* ─── Home Grid ───────────────────────────────────────────────── */
 #room-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
@@ -85,7 +87,7 @@ body {
     font-size: .88rem;
 }
 
-/* ─── Page Title & Date Selector ─────────────────────────────────── */
+/* ─── Page Title & Date Selector ───────────────────────────────── */
 .container h1 {
     background: var(--sea-light);
     color: var(--sea-deep);
@@ -99,8 +101,8 @@ body {
 
 .container .mb-3 {
     padding: .5rem 1rem;
-    background: var(--white);
     margin: 0 0 1rem;
+    background: var(--white);
     height: var(--date-height);
     line-height: calc(var(--date-height) - 1rem);
 }
@@ -124,19 +126,23 @@ body {
     }
 }
 
-/* ─── Schedule Wrapper & Grid ───────────────────────────────────── */
+/* ─── Schedule Wrapper & Grid ─────────────────────────────────── */
+/* On phones: give it a fixed-height scrollable area under the three bars */
 @media (max-width: 768px) {
     .schedule-wrapper {
-        position: fixed;
-        top: calc(var(--navbar-height) + var(--heading-height) + var(--date-height));
-        bottom: 0;
-        left: 0;
-        right: 0;
-        overflow: auto;
+        position: relative;
+        top: 0;
+        /* position within flow under the fixed bars */
+        height: calc(100vh - var(--navbar-height) - var(--heading-height) - var(--date-height) - 1rem
+                /* adjust if you need extra bottom padding */
+            );
+        overflow-y: auto;
+        overflow-x: auto;
         -webkit-overflow-scrolling: touch;
     }
 }
 
+/* On larger screens: normal scrolling */
 @media (min-width: 769px) {
     .schedule-wrapper {
         overflow-x: auto;
@@ -192,10 +198,10 @@ body {
     font-weight: 500;
 }
 
-/* ─── Sticky Headers on ≤768px ─────────────────────────────────── */
+/* ─── Sticky row & column on ≤768px ───────────────────────────── */
 @media (max-width: 768px) {
 
-    /* Stick room-names row to top of .schedule-wrapper */
+    /* Stick the room‐header row to top of the scroll container */
     .header-cell {
         position: sticky;
         top: 0;
@@ -210,7 +216,7 @@ body {
     }
 }
 
-/* ─── Responsive Grid Widths ───────────────────────────────────── */
+/* ─── Responsive grid widths ───────────────────────────────────── */
 @media (max-width: 576px) {
     #scheduleGrid {
         grid-auto-columns: minmax(150px, 1fr);
@@ -223,7 +229,7 @@ body {
     }
 }
 
-/* ─── Remove extra top margin on .container ────────────────────── */
+/* ─── Remove extra container top‐margin ─────────────────────────── */
 .container.mt-5 {
     margin-top: 0 !important;
 }
