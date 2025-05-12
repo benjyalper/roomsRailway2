@@ -1,4 +1,3 @@
-/* style.css */
 /* Calm Sea Palette & Soft Styling */
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
 
@@ -9,7 +8,7 @@
     --sand-medium: #b7a18b;
     --sand-light: #ded9ce;
     --white: #ffffff;
-    --gray-light: #f7f7f8;
+    --gray-light: #f7f7f7;
     --gray: #e0e0e0;
     --text-dark: #2E3A3F;
 }
@@ -20,51 +19,46 @@ body {
     color: var(--text-dark);
     margin: 0;
     padding: 0;
-    padding-top: 56px;
-    /* reserve space for fixed navbar */
 }
 
-/* ─── Navbar (fixed-top) ───────────────────────────────────────── */
 .calm-navbar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    background: var(--white);
+    background-color: var(--white);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     padding: 0.5rem 1rem;
-    z-index: 2000;
     font-weight: 500;
+    z-index: 1050;
 }
 
 .calm-navbar .navbar-brand i {
-    color: var(--sea-deep);
     font-size: 1.5rem;
+    color: var(--sea-deep);
 }
 
 .calm-navbar .nav-link {
     color: var(--sea-deep);
-    margin: 0 .5rem;
-    transition: .2s;
+    margin: 0 0.5rem;
+    transition: color 0.2s;
+    cursor: pointer;
 }
 
 .calm-navbar .nav-link:hover {
     color: var(--sea-medium);
 }
 
-/* ─── Page Headings ─────────────────────────────────────────────── */
+/* Page headings */
 .container h1,
 .container h2 {
-    background: var(--sea-light);
+    background-color: var(--sea-light);
     color: var(--sea-deep);
-    padding: .5rem 1rem;
+    padding: 0.5rem 1rem;
     border-radius: 8px;
-    margin: 0 auto 1rem;
-    text-align: center;
+    display: block;
+    margin: 0.5rem auto 1rem;
     font-size: 1.2rem;
+    text-align: center;
 }
 
-/* ─── Home Grid ─────────────────────────────────────────────────── */
+/* Home grid */
 .room-grid {
     display: grid;
     grid-template-columns: repeat(3, minmax(120px, 1fr));
@@ -73,12 +67,13 @@ body {
 }
 
 .room {
-    background: url('/images/newRoom.png') center/contain no-repeat var(--white);
+    background: url('/images/newRoom.png') center/contain no-repeat;
+    background-color: var(--white);
     height: 140px;
     border-radius: 12px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
     position: relative;
-    transition: transform .2s;
+    transition: transform 0.2s;
     cursor: pointer;
 }
 
@@ -88,33 +83,35 @@ body {
 
 .room-number {
     position: absolute;
-    top: 15%;
-    left: 50%;
+    top: calc(15% + 3px);
+    left: calc(50% - 5px);
     transform: translateX(-50%);
+    background-color: transparent;
+    padding: 0.2rem 0.5rem;
+    border-radius: 8px;
     font-weight: 600;
-    font-size: .88rem;
+    font-size: 0.88rem;
+    color: var(--text-dark);
 }
 
-/* ─── Schedule Wrapper & Grid ──────────────────────────────────── */
-.schedule-wrapper {
+/* Schedule table */
+.schedule-wrapper,
+#scheduleGrid {
     overflow-x: auto;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
 }
 
 #scheduleGrid {
     display: grid;
     gap: 1px;
-    background: var(--gray);
     border-radius: 8px;
+    overflow-y: hidden;
+    background-color: var(--gray);
     grid-auto-columns: minmax(80px, 1fr);
-    overflow: visible;
-    max-height: calc(100vh - 100px);
 }
 
-/* ─── Cells ─────────────────────────────────────────────────────── */
+.header-cell,
 .grid-cell {
-    background: var(--white);
+    background-color: var(--white);
     min-height: 40px;
     position: relative;
     white-space: nowrap;
@@ -124,44 +121,35 @@ body {
     box-sizing: border-box;
 }
 
-.header-cell {
-    /* only base styling here */
-    background: var(--sea-medium);
-    color: var(--white);
-    text-align: center;
-    padding: .75rem .5rem;
-    font-weight: 600;
-    font-size: .9rem;
-}
 
-.time-cell {
-    /* time‐column base styling */
-    background: var(--sea-medium);
-    color: var(--white);
+/* header cells (the “frame”) */
+.header-cell {
+    background-color: #018594;
+    /* sea-medium */
+    color: white;
     text-align: center;
-    padding: .75rem .5rem;
+    padding: 0.75rem 0.5rem;
     font-weight: 600;
-    font-size: .9rem;
+    font-size: 0.9rem;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    border: 1px solid var(--gray);
-    box-sizing: border-box;
 }
 
-/* ─── Therapist name ───────────────────────────────────────────── */
+
 .therapist-name {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     font-weight: 500;
+    color: var(--text-dark);
 }
 
-/* ─── Form & Sign-in Styling ───────────────────────────────────── */
+/* Form styling */
 form#roomForm,
 .form-container {
-    background: var(--white);
+    background-color: var(--white);
     padding: 2rem;
     border-radius: 12px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
@@ -170,109 +158,218 @@ form#roomForm,
 form#roomForm .form-label {
     font-weight: 500;
     color: var(--sea-deep);
-    margin-top: 1rem;
-    display: block;
 }
 
 form#roomForm .form-control,
 form#roomForm .form-select {
     border-radius: 8px;
     border: 1px solid var(--gray);
-    font-size: .9rem;
+    box-shadow: none;
+    font-size: 0.9rem;
 }
 
 form#roomForm button.btn {
-    background: var(--sea-medium);
+    background-color: var(--sea-medium);
     border: none;
-    padding: .6rem 1.5rem;
+    padding: 0.6rem 1.5rem;
     border-radius: 8px;
     font-size: 1rem;
-    transition: .2s;
+    transition: background-color 0.2s;
 }
 
 form#roomForm button.btn:hover {
-    background: var(--sea-deep);
+    background-color: var(--sea-deep);
 }
 
-/* align phone placeholder on sign-in */
-.form-container input[type="tel"] {
-    direction: rtl;
-    text-align: right;
-}
-
-/* nudge sign-in box upward */
-.form-container {
-    margin-top: -5vh;
-}
-
-/* ─── Room Detail Page ─────────────────────────────────────────── */
+/* Room detail */
 .room-detail-page {
-    background: url('/room_image.png') center/cover no-repeat;
+    background: url('/room_image.png') no-repeat center center;
+    background-size: cover;
     min-height: 100vh;
     padding-top: 56px;
 }
 
 .status-container {
-    background: rgba(1, 133, 148, 0.2);
+    background-color: rgba(1, 133, 148, 0.2);
+    color: var(--sea-deep);
     padding: 1rem;
     border-radius: 8px;
     font-size: 1.1rem;
 }
 
-/* ─── Responsive: Phones ≤576px ───────────────────────────────── */
+/* Responsive tweaks */
+/* ≤768px: general form/grid tweaks */
+@media (max-width: 768px) {
+    .room {
+        height: 120px;
+    }
+
+    .therapist-name {
+        font-size: 0.8rem;
+    }
+
+    form#roomForm,
+    .form-container {
+        padding: 1rem;
+    }
+}
+
+/* horizontal scrolling wrapper */
+.schedule-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* ≤576px: show 2 rooms at a time */
 @media (max-width: 576px) {
+    .schedule-wrapper {
+        overflow-x: auto;
+    }
+
     #scheduleGrid {
+        display: grid;
         grid-auto-columns: minmax(150px, 1fr);
+        gap: 1px;
+        background-color: var(--gray);
+        max-height: calc(100vh - 200px);
+        overflow-y: auto;
+    }
+
+    .schedule-wrapper::-webkit-scrollbar {
+        height: 4px;
+    }
+
+    .schedule-wrapper::-webkit-scrollbar-thumb {
+        background: var(--sea-medium);
+        border-radius: 2px;
+    }
+
+    .header-cell {
+        position: sticky;
+        top: 56px;
+        /* sticks just below your fixed navbar */
+        z-index: 10;
+        background-color: var(--sea-medium) !important;
+        color: var(--white);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 
     .header-cell,
     .grid-cell {
         min-width: 150px;
-        font-size: .9rem;
+        font-size: 0.9rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 }
 
-/* ─── Responsive: Landscape phones & small tablets 577–768px ── */
+/* 577–768px: show 4 rooms at a time */
 @media (min-width: 577px) and (max-width: 768px) {
+    .schedule-wrapper {
+        overflow-x: auto;
+    }
+
     #scheduleGrid {
+        display: grid;
         grid-auto-columns: minmax(25%, 1fr);
+        gap: 1px;
+        background-color: var(--gray);
+        max-height: calc(100vh - 200px);
+        overflow-y: auto;
+    }
+
+    .schedule-wrapper::-webkit-scrollbar {
+        height: 4px;
+    }
+
+    .schedule-wrapper::-webkit-scrollbar-thumb {
+        background: var(--sea-medium);
+        border-radius: 2px;
+    }
+
+    .header-cell {
+        position: sticky;
+        top: 56px;
+        z-index: 10;
+        background-color: var(--sea-medium) !important;
+        color: var(--white);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 
     .header-cell,
     .grid-cell {
         min-width: 25%;
         font-size: 1rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 }
 
-/* ─── Sticky on all small screens (≤768px) ────────────────────────── */
-@media (max-width: 768px) {
+/* 1) Float the navbar */
+.calm-navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 2000;
+}
 
-    /* stick top row under navbar */
-    .header-cell {
+body {
+    padding-top: 56px;
+    /* = your navbar height */
+}
+
+/* 2) Allow the grid to scroll vertically so sticky headers work */
+#scheduleGrid {
+    overflow-y: auto;
+    /* instead of hidden */
+}
+
+/* 3) Make the room-header row stick under the fixed navbar */
+.header-cell {
+    position: sticky;
+    top: 56px;
+    /* sit just below the 56px-tall navbar */
+    z-index: 1500;
+}
+
+/* 4) Make the “hour” column stick to the right edge during LTR scrolling */
+/*    adjust the “3n+1, 5n+1, 11n+1” to match your 1+2, 1+4, 1+10 layouts */
+@media (max-width: 576px) {
+
+    /* 1 time + 2 rooms = 3 cols/row */
+    #scheduleGrid>div:nth-child(3n+1) {
         position: sticky;
-        top: 56px;
-        z-index: 20;
-        background: var(--sea-medium);
+        right: 0;
+        z-index: 1400;
+        background-color: var(--white);
     }
+}
 
-    /* stick time column at inline-end (right in RTL) */
-    .time-cell {
+@media (min-width: 577px) and (max-width: 768px) {
+
+    /* 1 time + 4 rooms = 5 cols/row */
+    #scheduleGrid>div:nth-child(5n+1) {
         position: sticky;
-        inset-inline-end: 0;
-        z-index: 10;
-        background: var(--sea-medium);
-        color: var(--white);
+        right: 0;
+        z-index: 1400;
+        background-color: var(--white);
     }
 }
 
-/* ─── Reduce container top-margin for page headings ───────────── */
-.container.mt-5 {
-    margin-top: 0 !important;
-}
+@media (min-width: 769px) {
 
-/* tighten <h1> under navbar */
-.container h1 {
-    margin-top: 0.5rem !important;
-    margin-bottom: 1rem !important;
+    /* 1 time + 10 rooms = 11 cols/row */
+    #scheduleGrid>div:nth-child(11n+1) {
+        position: sticky;
+        right: 0;
+        z-index: 1400;
+        background-color: var(--white);
+    }
 }
