@@ -18,18 +18,18 @@ $(document).ready(function () {
 });
 
 function setupNavigation() {
-    $('#nav-schedule').click(() => { window.location.href = '/room-schedule.html'; });
-    $('#nav-edit').click(() => { window.location.href = '/room-form.html'; });
-    $('#nav-messages').click(() => { window.location.href = '/messages.html'; });
+    $('#nav-schedule').click(() => { window.location.href = '/room-schedule'; });
+    $('#nav-edit').click(() => { window.location.href = '/room-form'; });
+    $('#nav-messages').click(() => { window.location.href = '/messages'; });
     $('#nav-signout').click(() => {
         Swal.fire({
             title: 'להתנתק?',
             showCancelButton: true,
             confirmButtonText: 'כן',
             cancelButtonText: 'לא'
-        }).then(r => { if (r.isConfirmed) window.location.href = '/signin'; });
+        }).then(r => { if (r.isConfirmed) window.location.href = '/logout'; });
     });
-    $('#backHome').click(() => { window.location.href = '/home.html'; });
+    $('#backHome').click(() => { window.location.href = '/home'; });
 }
 
 function initHome() {
@@ -64,13 +64,13 @@ function buildScheduleGrid() {
             gap: '1px'
         });
 
-    // TOP ROW: empty corner + room headers
+    // Top row: corner + room names
     $g.append(`<div class="header-cell"></div>`);
     for (let r = 1; r <= rooms; r++) {
         $g.append(`<div class="header-cell">חדר ${r}</div>`);
     }
 
-    // TIME ROWS: time-cell + grid-cells
+    // Time rows: time-cell + cells
     TIMES.forEach(t => {
         $g.append(`<div class="time-cell">${t}</div>`);
         for (let r = 1; r <= rooms; r++) {
@@ -144,6 +144,9 @@ function deleteEntry(d, room, start, end) {
         })
     });
 }
+
+// ... the rest of your initRoomForm, messages, etc. remains unchanged ...
+
 
 function initRoomForm() {
     const $start = $('#startTime').empty();

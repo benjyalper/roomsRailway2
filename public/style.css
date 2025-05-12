@@ -6,8 +6,6 @@
     --sea-deep: #247794;
     --sea-medium: #018594;
     --sea-light: #e2dcc3;
-    --sand-medium: #b7a18b;
-    --sand-light: #ded9ce;
     --white: #ffffff;
     --gray-light: #f7f7f8;
     --gray: #e0e0e0;
@@ -16,15 +14,15 @@
 
 body {
     font-family: 'Poppins', sans-serif;
-    background-color: var(--gray-light);
+    background: var(--gray-light);
     color: var(--text-dark);
     margin: 0;
     padding: 0;
     padding-top: 56px;
-    /* reserve space for fixed navbar */
+    /* space for fixed navbar */
 }
 
-/* ─── Navbar (fixed-top) ───────────────────────────────────────── */
+/* ─── Navbar ───────────────────────────────────────────────────── */
 .calm-navbar {
     position: fixed;
     top: 0;
@@ -32,7 +30,7 @@ body {
     width: 100%;
     background: var(--white);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    padding: 0.5rem 1rem;
+    padding: .5rem 1rem;
     z-index: 2000;
     font-weight: 500;
 }
@@ -52,7 +50,7 @@ body {
     color: var(--sea-medium);
 }
 
-/* ─── Page Headings ─────────────────────────────────────────────── */
+/* ─── Page Headings ───────────────────────────────────────────── */
 .container h1,
 .container h2 {
     background: var(--sea-light);
@@ -64,7 +62,7 @@ body {
     font-size: 1.2rem;
 }
 
-/* ─── Home Grid ─────────────────────────────────────────────────── */
+/* ─── Home Grid ───────────────────────────────────────────────── */
 .room-grid {
     display: grid;
     grid-template-columns: repeat(3, minmax(120px, 1fr));
@@ -78,8 +76,8 @@ body {
     border-radius: 12px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
     position: relative;
-    transition: transform .2s;
     cursor: pointer;
+    transition: transform .2s;
 }
 
 .room:hover {
@@ -95,7 +93,7 @@ body {
     font-size: .88rem;
 }
 
-/* ─── Schedule Wrapper & Grid ──────────────────────────────────── */
+/* ─── Schedule Wrapper & Grid ───────────────────────────────── */
 .schedule-wrapper {
     overflow-x: auto;
     overflow-y: auto;
@@ -112,7 +110,7 @@ body {
     max-height: calc(100vh - 100px);
 }
 
-/* ─── Cells ─────────────────────────────────────────────────────── */
+/* ─── Cells ───────────────────────────────────────────────────── */
 .grid-cell {
     background: var(--white);
     min-height: 40px;
@@ -125,7 +123,6 @@ body {
 }
 
 .header-cell {
-    /* only base styling here */
     background: var(--sea-medium);
     color: var(--white);
     text-align: center;
@@ -135,7 +132,6 @@ body {
 }
 
 .time-cell {
-    /* time‐column base styling */
     background: var(--sea-medium);
     color: var(--white);
     text-align: center;
@@ -149,7 +145,7 @@ body {
     box-sizing: border-box;
 }
 
-/* ─── Therapist name ───────────────────────────────────────────── */
+/* Therapist names */
 .therapist-name {
     position: absolute;
     top: 50%;
@@ -158,69 +154,46 @@ body {
     font-weight: 500;
 }
 
-/* ─── Form & Sign-in Styling ───────────────────────────────────── */
-form#roomForm,
-.form-container {
-    background: var(--white);
-    padding: 2rem;
-    border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+/* ─── Sticky title & date on phones ───────────────────────────── */
+@media (max-width:576px) {
+    .container h1 {
+        position: sticky;
+        top: 56px;
+        z-index: 30;
+        background: var(--sea-light);
+    }
+
+    .container .mb-3 {
+        position: sticky;
+        top: calc(56px + 3rem);
+        z-index: 29;
+        background: var(--white);
+    }
 }
 
-form#roomForm .form-label {
-    font-weight: 500;
-    color: var(--sea-deep);
-    margin-top: 1rem;
-    display: block;
+/* ─── Sticky header row & time-col on phones & landscape phones ── */
+@media (max-width:768px) {
+
+    /* room headers */
+    .header-cell {
+        position: sticky;
+        top: calc(56px + 3rem + 3rem);
+        /* adjust if h1/date height changes */
+        z-index: 20;
+        background: var(--sea-medium);
+    }
+
+    /* time column */
+    .time-cell {
+        position: sticky;
+        inset-inline-end: 0;
+        z-index: 19;
+        background: var(--sea-medium);
+    }
 }
 
-form#roomForm .form-control,
-form#roomForm .form-select {
-    border-radius: 8px;
-    border: 1px solid var(--gray);
-    font-size: .9rem;
-}
-
-form#roomForm button.btn {
-    background: var(--sea-medium);
-    border: none;
-    padding: .6rem 1.5rem;
-    border-radius: 8px;
-    font-size: 1rem;
-    transition: .2s;
-}
-
-form#roomForm button.btn:hover {
-    background: var(--sea-deep);
-}
-
-/* align phone placeholder on sign-in */
-.form-container input[type="tel"] {
-    direction: rtl;
-    text-align: right;
-}
-
-/* nudge sign-in box upward */
-.form-container {
-    margin-top: -5vh;
-}
-
-/* ─── Room Detail Page ─────────────────────────────────────────── */
-.room-detail-page {
-    background: url('/room_image.png') center/cover no-repeat;
-    min-height: 100vh;
-    padding-top: 56px;
-}
-
-.status-container {
-    background: rgba(1, 133, 148, 0.2);
-    padding: 1rem;
-    border-radius: 8px;
-    font-size: 1.1rem;
-}
-
-/* ─── Responsive: Phones ≤576px ───────────────────────────────── */
-@media (max-width: 576px) {
+/* ─── Responsive grid sizing ───────────────────────────────────── */
+@media (max-width:576px) {
     #scheduleGrid {
         grid-auto-columns: minmax(150px, 1fr);
     }
@@ -232,8 +205,7 @@ form#roomForm button.btn:hover {
     }
 }
 
-/* ─── Responsive: Landscape phones & small tablets 577–768px ── */
-@media (min-width: 577px) and (max-width: 768px) {
+@media (min-width:577px) and (max-width:768px) {
     #scheduleGrid {
         grid-auto-columns: minmax(25%, 1fr);
     }
@@ -245,34 +217,12 @@ form#roomForm button.btn:hover {
     }
 }
 
-/* ─── Sticky on all small screens (≤768px) ────────────────────────── */
-@media (max-width: 768px) {
-
-    /* stick top row under navbar */
-    .header-cell {
-        position: sticky;
-        top: 56px;
-        z-index: 20;
-        background: var(--sea-medium);
-    }
-
-    /* stick time column at inline-end (right in RTL) */
-    .time-cell {
-        position: sticky;
-        inset-inline-end: 0;
-        z-index: 10;
-        background: var(--sea-medium);
-        color: var(--white);
-    }
-}
-
-/* ─── Reduce container top-margin for page headings ───────────── */
+/* ─── Reduce container top-margin for headings ─────────────────── */
 .container.mt-5 {
     margin-top: 0 !important;
 }
 
-/* tighten <h1> under navbar */
 .container h1 {
-    margin-top: 0.5rem !important;
+    margin-top: .5rem !important;
     margin-bottom: 1rem !important;
 }
