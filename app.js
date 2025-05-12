@@ -287,20 +287,25 @@ app.get('/room/:roomNumber', isAuthenticated, async (req, res) => {
             const s = moment(r.startTime, 'HH:mm:ss');
             const e = moment(r.endTime, 'HH:mm:ss');
             if (now.isBetween(s, e)) {
-                currentTherapist = {
-                    name: r.names,
-                    endTime: e.format('HH:mm')
-                };
+                currentTherapist = { name: r.names, endTime: e.format('HH:mm') };
                 break;
             }
         }
 
-        res.render('room', { roomNumber, currentTherapist, data: rows, moment });
+        // *** Pass `title` here so navbar.ejs has it ***
+        res.render('room', {
+            title: `חדר ${roomNumber}`,
+            roomNumber,
+            currentTherapist,
+            data: rows,
+            moment
+        });
     } catch (e) {
         console.error(e);
         res.status(500).send(e.message);
     }
 });
+
 
 
 // ─── FAVICON & ERROR HANDLER ───────────────────────────────────────────────
