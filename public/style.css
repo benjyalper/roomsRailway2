@@ -252,20 +252,24 @@ body {
 /* ─── Sticky Room‐Names & Time Column on ≤768px ─────────────────── */
 @media (max-width: 768px) {
 
-    /* Room header row sticks to top of .schedule-wrapper */
+    /* your existing header‐row stickiness */
     .header-cell {
         position: sticky;
         top: 0;
         z-index: 20;
     }
 
-    /* Time column sticks to right edge of .schedule-wrapper */
+    /* replace the logical inset with a physical right:0 */
     .time-cell {
         position: sticky;
-        inset-inline-end: 0;
+        right: 0;
+        /* no top, so it only sticks horizontally */
         z-index: 19;
+        /* ensure the background covers underneath scrolled cells */
+        background: var(--sea-medium);
     }
 }
+
 
 /* ─── Responsive Grid Widths ───────────────────────────────────── */
 @media (max-width: 576px) {
