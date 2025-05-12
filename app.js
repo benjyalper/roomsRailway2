@@ -11,12 +11,15 @@ import { Strategy as LocalStrategy } from 'passport-local';
 import flash from 'express-flash';
 
 dotenv.config();
+
 const app = express();
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const port = process.env.PORT || 3000;
 
-// ─── MIDDLEWARE ────────────────────────────────────────────────────────────────
-app.use(express.static('public'));
+// ─── STATIC FILES (except index.html) ───────────────────────────────────────
+app.use(express.static('public', { index: false }));
+
+// ─── BODY & SESSION MIDDLEWARE ──────────────────────────────────────────────
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(session({
@@ -28,11 +31,11 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
 
-// ─── VIEW ENGINE ───────────────────────────────────────────────────────────────
+// ─── VIEW ENGINE ─────────────────────────────────────────────────────────────
 app.set('view engine', 'ejs');
 app.set('views', './views');
 
-// ─── IN-MEMORY USERS (PHONE-ONLY) ──────────────────────────────────────────────
+// ─── IN-MEMORY USERS (PHONE-ONLY) ────────────────────────────────────────────
 const users = [
     { id: 1, phone: '0509916633', role: 'admin', clinic: 'marbah' },
     { id: 2, phone: '0506431842', role: 'admin', clinic: 'marbah' },
@@ -42,7 +45,7 @@ const users = [
     { id: 6, phone: '0505555555', role: 'user', clinic: 'marbah' }
 ];
 
-// ─── PASSPORT LOCAL STRATEGY (PHONE ONLY) ─────────────────────────────────────
+// ─── PASSPORT LOCAL STRATEGY (PHONE ONLY) ───────────────────────────────────
 passport.use(new LocalStrategy(
     { usernameField: 'phone', passwordField: 'phone' },
     (phone, _, done) => {
@@ -59,7 +62,7 @@ passport.deserializeUser((id, done) => {
     done(null, user ?? false);
 });
 
-// ─── AUTH MIDDLEWARE ───────────────────────────────────────────────────────────
+// ─── AUTH MIDDLEWARE ─────────────────────────────────────────────────────────
 function isAuthenticated(req, res, next) {
     if (req.isAuthenticated()) return next();
     res.redirect('/signin');
@@ -69,7 +72,7 @@ function isAdmin(req, res, next) {
     res.status(403).send('Permission denied.');
 }
 
-// ─── DATABASE POOL ─────────────────────────────────────────────────────────────
+// ─── DATABASE POOL ───────────────────────────────────────────────────────────
 const pool = mysql.createPool({
     host: process.env.DB_HOST,
     user: process.env.DB_USER,
@@ -81,8 +84,11 @@ const pool = mysql.createPool({
     queueLimit: 0
 });
 
-// ─── AUTH ROUTES ───────────────────────────────────────────────────────────────
+// ─── AUTH ROUTES ──────────────────────────────────────────────────────────────
+// Render the sign-in form (index.ejs) at both "/" and "/signin"
+app.get('/', (req, res) => res.render('index'));
 app.get('/signin', (req, res) => res.render('index'));
+
 app.post('/signin',
     passport.authenticate('local', {
         successRedirect: '/home',
@@ -90,14 +96,16 @@ app.post('/signin',
         failureFlash: true
     })
 );
+
 app.get('/logout', (req, res) => {
-    req.logout(err => err
-        ? res.status(500).send('Logout failed')
-        : res.redirect('/signin')
+    req.logout(err =>
+        err
+            ? res.status(500).send('Logout failed')
+            : res.redirect('/signin')
     );
 });
 
-// ─── PAGE ROUTES ───────────────────────────────────────────────────────────────
+// ─── PAGE ROUTES ──────────────────────────────────────────────────────────────
 app.get('/home', isAuthenticated, (req, res) => {
     res.render('home', {}, (err, html) => {
         if (err) {
@@ -112,7 +120,7 @@ app.get('/room-schedule', isAuthenticated, (req, res) => res.render('room-schedu
 app.get('/room-form', isAuthenticated, (req, res) => res.render('room-form'));
 app.get('/messages', isAuthenticated, (req, res) => res.render('messages'));
 
-// ─── FETCH SCHEDULE DATA ───────────────────────────────────────────────────────
+// ─── FETCH SCHEDULE DATA ──────────────────────────────────────────────────────
 app.get('/fetchDataByDate', isAuthenticated, async (req, res) => {
     try {
         const clinic = req.user.clinic;
@@ -141,6 +149,7 @@ app.post('/submit', isAuthenticated, isAdmin, async (req, res) => {
             startTime, endTime, roomNumber,
             recurringEvent, recurringNum
         } = req.body;
+
         const clinic = req.user.clinic;
         const conn = await pool.getConnection();
         await conn.beginTransaction();
@@ -153,7 +162,7 @@ app.post('/submit', isAuthenticated, isAdmin, async (req, res) => {
                     .format('YYYY-MM-DD');
                 await conn.execute(
                     `INSERT INTO selected_dates_2_${clinic}
-             (selected_date,names,color,startTime,endTime,roomNumber,recurringEvent,recurringNum)
+            (selected_date,names,color,startTime,endTime,roomNumber,recurringEvent,recurringNum)
            VALUES(?,?,?,?,?,?,?,?)`,
                     [nextDate, names, selectedColor, startTime, endTime, roomNumber, true, times]
                 );
@@ -161,7 +170,7 @@ app.post('/submit', isAuthenticated, isAdmin, async (req, res) => {
         } else {
             await conn.execute(
                 `INSERT INTO selected_dates_2_${clinic}
-           (selected_date,names,color,startTime,endTime,roomNumber,recurringEvent)
+          (selected_date,names,color,startTime,endTime,roomNumber,recurringEvent)
          VALUES(?,?,?,?,?,?,?)`,
                 [selectedDate, names, selectedColor, startTime, endTime, roomNumber, false]
             );
@@ -197,7 +206,7 @@ app.delete('/deleteEntry', isAuthenticated, isAdmin, async (req, res) => {
     }
 });
 
-// ─── MESSAGES API ──────────────────────────────────────────────────────────────
+// ─── MESSAGES API ─────────────────────────────────────────────────────────────
 app.get('/get_last_messages', isAuthenticated, async (req, res) => {
     try {
         const clinic = req.user.clinic;
@@ -253,7 +262,7 @@ app.post('/delete_message', isAuthenticated, isAdmin, async (req, res) => {
     }
 });
 
-// ─── DYNAMIC ROOM VIEW ─────────────────────────────────────────────────────────
+// ─── DYNAMIC ROOM VIEW ───────────────────────────────────────────────────────
 app.get('/room/:roomNumber', isAuthenticated, async (req, res) => {
     try {
         const roomNumber = req.params.roomNumber;
@@ -289,7 +298,7 @@ app.get('/room/:roomNumber', isAuthenticated, async (req, res) => {
     }
 });
 
-// ─── FAVICON & ERROR HANDLING ─────────────────────────────────────────────────
+// ─── FAVICON & ERROR HANDLING ───────────────────────────────────────────────
 app.get('/favicon.ico', (req, res) => res.status(204));
 
 app.use((err, req, res, next) => {
