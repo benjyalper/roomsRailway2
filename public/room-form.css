@@ -1,253 +1,213 @@
+/* style.css */
+/* Calm Sea Palette & Soft Styling */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
+
+:root {
+    --sea-deep: #247794;
+    --sea-medium: #018594;
+    --sea-light: #e2dcc3;
+    --white: #ffffff;
+    --gray-light: #f7f7f8;
+    --gray: #e0e0e0;
+    --text-dark: #2E3A3F;
+
+    /* Fixed header heights – adjust if your <h1> or date-selector are taller/shorter */
+    --navbar-height: 56px;
+    --heading-height: 48px;
+    /* <h1> bar (including padding) */
+    --date-height: 56px;
+    /* date-input row height */
+}
+
 body {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+    padding-top: var(--navbar-height);
+    background: var(--gray-light);
+    color: var(--text-dark);
 }
 
-/* .navbar1 {
-    background-color: #f1f9ef;
-    width: 30vw;
-    display: flex;
-    justify-content: right;
-    gap: 22%;
-    padding: 10px;
-    color: #87c09b;
-} */
-
-.navbar-room-schedule {
+/* ─── Navbar (already fixed‐top in HTML) ───────────────────────────────── */
+.calm-navbar {
     position: fixed;
-    background-color: rgb(241, 249, 239);
-    /* change */
-    width: 500px;
-    margin-top: 20px;
-    display: flex;
-    justify-content: center;
-    gap: 10%;
-    padding: 10px;
-    color: rgb(135, 192, 155);
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: var(--white);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    padding: .5rem 1rem;
+    z-index: 3000;
+    font-weight: 500;
 }
 
-
-.back-btn {
-    /* Style the back button as needed */
-    background-position: center;
-    background-color: rgb(214, 245, 219);
-    border-radius: 5px;
-    padding: 5px;
-    color: rgb(135, 192, 155);
-    border-color: rgb(5, 239, 107);
-    /* height: 50px; */
-    margin-left: 20px;
-    /* Add your custom styles here */
+.calm-navbar .navbar-brand i {
+    color: var(--sea-deep);
+    font-size: 1.5rem;
 }
 
-
-.form-container {
-    margin-top: 20vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 20px;
-    background-color: rgb(162, 234, 217);
-    padding-bottom: 20px;
-    color: rgb(38, 81, 53);
-    width: 500px;
+.calm-navbar .nav-link {
+    color: var(--sea-deep);
+    margin: 0 .5rem;
+    transition: .2s;
 }
 
-form {
+.calm-navbar .nav-link:hover {
+    color: var(--sea-medium);
+}
+
+/* ─── Page Title & Date Row ─────────────────────────────────────────── */
+/* We wrap <h1> and the .mb-3 date-input as fixed bars below the navbar */
+.container h1 {
+    background: var(--sea-light);
+    color: var(--sea-deep);
+    padding: .5rem 1rem;
+    margin: 0;
+    text-align: center;
+    font-size: 1.2rem;
+    height: var(--heading-height);
+    line-height: calc(var(--heading-height) - 1rem);
+}
+
+.container .mb-3 {
+    padding: .5rem 1rem;
+    background: var(--white);
+    margin: 0 0 1rem 0;
+    height: var(--date-height);
+    line-height: calc(var(--date-height) - 1rem);
+}
+
+/* Make them stick on phones/landscape phones */
+@media (max-width: 768px) {
+    .container h1 {
+        position: fixed;
+        top: var(--navbar-height);
+        left: 0;
+        right: 0;
+        z-index: 2999;
+    }
+
+    .container .mb-3 {
+        position: fixed;
+        top: calc(var(--navbar-height) + var(--heading-height));
+        left: 0;
+        right: 0;
+        z-index: 2998;
+    }
+}
+
+/* ─── Schedule Wrapper (scroll container) ─────────────────────────── */
+/* On phones, we pin it below the three fixed bars and give it its own scroll */
+@media (max-width: 768px) {
+    .schedule-wrapper {
+        position: fixed;
+        top: calc(var(--navbar-height) + var(--heading-height) + var(--date-height));
+        bottom: 0;
+        left: 0;
+        right: 0;
+        overflow: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+}
+
+@media (min-width: 769px) {
+    .schedule-wrapper {
+        overflow-x: auto;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+}
+
+/* ─── Schedule Grid ──────────────────────────────────────────────── */
+#scheduleGrid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: repeat(5, 1fr);
-    gap: 10px;
-    color: rgb(3, 85, 38);
+    grid-template-columns: auto repeat(10, 1fr);
+    gap: 1px;
+    background: var(--gray);
+    border-radius: 8px;
 }
 
-input {
-    border-radius: 5px;
-    padding: 3px;
+/* ─── Cells ─────────────────────────────────────────────────────── */
+.header-cell,
+.time-cell,
+.grid-cell {
+    padding: .75rem .5rem;
+    font-size: .9rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    box-sizing: border-box;
+    border: 1px solid var(--gray);
 }
 
-select {
-    border-radius: 5px;
+.header-cell {
+    background: var(--sea-medium);
+    color: var(--white);
+    text-align: center;
 }
 
-#submitBtn {
-    margin-top: 10px;
-    /* grid-column: span 2; */
-    /* justify-self: center; */
-    padding: 3px;
-    background-color: rgb(221, 202, 196);
-    border-radius: 5px;
-    transition: background-color .5s;
+.time-cell {
+    background: var(--sea-medium);
+    color: var(--white);
+    text-align: center;
 }
 
-#submitBtn:hover {
-    background-color: rgb(4, 248, 90);
+.grid-cell {
+    background: var(--white);
+    position: relative;
+    min-height: 40px;
 }
 
-#selectedColor {
-    height: 2rem;
-    /* width: 12rem; */
-    color: #0a054d;
+.therapist-name {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-weight: 500;
 }
 
-#roomNumber {
-    height: 2rem;
+/* ─── Sticky Room‐Names & Time Column on ≤768px ─────────────────── */
+@media (max-width: 768px) {
+
+    /* Room header row sticks to top of .schedule-wrapper */
+    .header-cell {
+        position: sticky;
+        top: 0;
+        z-index: 20;
+    }
+
+    /* Time column sticks to right edge of .schedule-wrapper */
+    .time-cell {
+        position: sticky;
+        inset-inline-end: 0;
+        z-index: 19;
+    }
 }
 
-
-@media (max-width: 1100px) {
-    .form-container {
-        margin-top: 1vh;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 20px;
-        background-color: rgb(162, 234, 217);
-        padding-bottom: 20px;
-        color: rgb(38, 81, 53);
-        width: 95%;
-        height: 97%;
+/* ─── Responsive Grid Widths ───────────────────────────────────── */
+@media (max-width: 576px) {
+    #scheduleGrid {
+        grid-auto-columns: minmax(150px, 1fr);
     }
 
-    .navbar-room-schedule {
-        position: fixed;
-        background-color: rgb(241, 249, 239);
-        /* change */
-        width: 95%;
-        margin-top: 20px;
-        display: flex;
-        justify-content: center;
-        gap: 10%;
-        padding: 10px;
-        color: rgb(135, 192, 155);
+    .header-cell,
+    .grid-cell {
+        min-width: 150px;
     }
-
-    .navbar-toggler {
-        margin-right: 20px;
-    }
-
-    form {
-        height: 95%;
-        width: 95%;
-    }
-
-    input {
-        width: 100%;
-        height: 40px;
-    }
-
-    select {
-        width: 100%;
-        height: 40px;
-    }
-
-    #roomNumber {
-        width: 100%;
-        height: 40px;
-    }
-
-    #selectedDate {
-        width: 300px;
-        height: 40px;
-    }
-
-    #selectedColor {
-        width: 100%;
-        height: 40px;
-    }
-
-    /* #recurringEvent {
-        margin-left: 70px;
-    } */
-
-    #submitBtn {
-        width: 100%;
-        height: 40px;
-    }
-
-    #back-btn {
-        width: 60px;
-    }
-
-    #navbar-toggler {
-        width: 60px !important;
-    }
-
-    .navbar-toggler-icon {
-        width: 25px;
-    }
-
 }
 
-
-@media (max-width: 500px) {
-
-    .form-container {
-        margin-top: 1vh;
+@media (min-width: 577px) and (max-width: 768px) {
+    #scheduleGrid {
+        grid-auto-columns: minmax(25%, 1fr);
     }
 
-    form {
-        margin-left: 10px;
-        margin-right: 20px;
+    .header-cell,
+    .grid-cell {
+        min-width: 25%;
     }
+}
 
-    .navbar-room-schedule {
-        position: fixed;
-        background-color: rgb(241, 249, 239);
-        /* change */
-        width: 95%;
-        margin-top: 20px;
-        display: flex;
-        justify-content: center;
-        /* gap: 10%; */
-        padding: 10px;
-        color: rgb(135, 192, 155);
-    }
-
-    input {
-        width: 100%;
-        height: 40px;
-    }
-
-    select {
-        width: 100%;
-        height: 40px;
-    }
-
-    #roomNumber {
-        width: 100%;
-        height: 40px;
-    }
-
-    #selectedDate {
-        width: 200px;
-        height: 40px;
-    }
-
-    #selectedColor {
-        width: 100%;
-        height: 40px;
-    }
-
-    /* #recurringEvent {
-        justify-self: center;
-    } */
-
-    #submitBtn {
-        width: 100%;
-        height: 40px;
-    }
-
-    #back-btn {
-        width: 60px;
-    }
-
-    #navbar-toggler {
-        width: 60px !important;
-    }
-
-    .navbar-toggler-icon {
-        width: 25px;
-    }
+/* ─── Reduce default container top‐margin on all pages ───────────── */
+.container.mt-5 {
+    margin-top: 0 !important;
 }
