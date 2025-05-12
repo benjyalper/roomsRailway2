@@ -81,6 +81,21 @@ body {
     color: var(--sea-medium);
 }
 
+/* in style.css, below your :root palette */
+.calm-navbar {
+    background-color: var(--sea-deep) !important;
+}
+
+.calm-navbar .navbar-brand i,
+.calm-navbar .nav-link {
+    color: var(--white) !important;
+}
+
+.calm-navbar .nav-link:hover {
+    color: var(--sand-light) !important;
+}
+
+
 .form-container input::placeholder {
     text-align: right;
 }
