@@ -119,7 +119,8 @@ app.get('/home', isAuthenticated, (req, res) => {
 app.get('/room-schedule', isAuthenticated, (req, res) =>
     res.render('room-schedule', { title: 'טבלת חדרים' })
 );
-app.get('/room-form', isAuthenticated, (req, res) => res.render('room-form', { title: 'עריכת פגישות' }));
+app.get('/room-form', isAuthenticated, (req, res) => res.render('room-form',
+    { title: 'עריכת חדרים' }));
 app.get('/messages', isAuthenticated, (req, res) => res.render('messages', { title: 'הודעות' }));
 // app.get('/home', isAuthenticated, (req, res) => res.render('home', { title: 'דף ראשי' }));
 // etc.
