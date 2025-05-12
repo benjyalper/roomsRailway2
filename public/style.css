@@ -252,23 +252,39 @@ body {
 /* ─── Sticky Room‐Names & Time Column on ≤768px ─────────────────── */
 @media (max-width: 768px) {
 
-    /* your existing header‐row stickiness */
+    /* 1) Treat the scroll container as LTR, so right:0 is physical right */
+    .schedule-wrapper {
+        direction: ltr;
+    }
+
+    /* 2) Ensure the grid itself is LTR too */
+    #scheduleGrid {
+        direction: ltr;
+    }
+
+    /* 3) Keep your wrapper positioned so sticky knows its bounds */
+    .schedule-wrapper {
+        position: relative;
+    }
+
+    /* Header row still sticks at the top */
     .header-cell {
         position: sticky;
         top: 0;
         z-index: 20;
     }
 
-    /* replace the logical inset with a physical right:0 */
+    /* Now the time‐column will truly stick at the physical right edge */
     .time-cell {
         position: sticky;
         right: 0;
-        /* no top, so it only sticks horizontally */
+        left: auto;
+        /* cancel any RTL-based left */
         z-index: 19;
-        /* ensure the background covers underneath scrolled cells */
         background: var(--sea-medium);
     }
 }
+
 
 
 /* ─── Responsive Grid Widths ───────────────────────────────────── */
