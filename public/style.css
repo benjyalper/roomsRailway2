@@ -314,7 +314,8 @@ body {
     left: 50%;
     transform: translate(-50%, -50%);
     font-weight: 500;
-    min-width: var(--time-col-width);
+    min-width: var(--time-col-width); /*remove this if you want to see the full name */
+    text-align: center;
 }
 
 /* ─── Sticky Room‐Names & Time Column on ≤768px ─────────────────── */
