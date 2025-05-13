@@ -291,12 +291,15 @@ body {
     background: var(--sea-medium);
     color: var(--white);
     text-align: center;
+    /* ensure it spans the full time‐column track */
+    min-width: var(--time-col-width);
 }
 
 .time-cell {
     background: var(--sea-medium);
     color: var(--white);
     text-align: center;
+    min-width: var(--time-col-width);
 }
 
 .grid-cell {
@@ -311,6 +314,7 @@ body {
     left: 50%;
     transform: translate(-50%, -50%);
     font-weight: 500;
+    min-width: var(--time-col-width);
 }
 
 /* ─── Sticky Room‐Names & Time Column on ≤768px ─────────────────── */
