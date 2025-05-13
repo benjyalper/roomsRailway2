@@ -205,21 +205,79 @@ body {
     }
 } */
 
+/* ─── Schedule Wrapper ──────────────────────────────────────────── */
 .schedule-wrapper {
     position: relative;
-    /* establish sticky boundary */
-    /* 1) vertical scroll container for sticky top */
-    overflow-y: auto;
-    overflow-x: auto;
-
-    /* allow horizontal scroll always */
-
-    -webkit-overflow-scrolling: touch;
-
     max-height: calc(100vh - var(--navbar-height) - var(--heading-height) - var(--date-height));
+    overflow: auto;
+    /* both axes scrolling */
+    -webkit-overflow-scrolling: touch;
+    direction: ltr;
+    /* ensure left-to-right table despite RTL page */
+}
 
-    /* smooth iOS scroll */
+/* ─── Table Reset ───────────────────────────────────────────────── */
+#scheduleTable {
+    border-collapse: collapse;
+    width: max-content;
+    /* ensure full intrinsic width */
+}
 
+/* ─── Header & Time Column ───────────────────────────────────────── */
+#scheduleTable thead th,
+#scheduleTable thead td,
+#scheduleTable tbody th {
+    background: var(--sea-medium);
+    color: var(--white);
+    padding: .75rem .5rem;
+    font-weight: 600;
+    text-align: center;
+    border: 1px solid var(--gray);
+}
+
+#scheduleTable thead th.room-col {
+    /* room header cells */
+}
+
+#scheduleTable tbody th.time-col {
+    /* time column cells */
+    position: sticky;
+    left: 0;
+    z-index: 2;
+    /* above body cells */
+    background: var(--sea-medium);
+    min-width: 80px;
+    /* ensure hour label remains visible */
+}
+
+/* stick the entire header row */
+#scheduleTable thead th {
+    position: sticky;
+    top: 0;
+    z-index: 3;
+    /* above time-column */
+}
+
+/* ─── Body Cells ─────────────────────────────────────────────────── */
+#scheduleTable td.grid-cell {
+    background: var(--white);
+    min-width: 120px;
+    /* ensure each room-cell has a reasonable width */
+    height: 40px;
+    border: 1px solid var(--gray);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    position: relative;
+}
+
+/* therapist name inside cell */
+.therapist-name {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-weight: 500;
 }
 
 /* ─── Schedule Grid ──────────────────────────────────────────────── */
