@@ -214,6 +214,8 @@ body {
 .schedule-wrapper {
     position: relative;
     /* establish sticky boundary */
+    /* 1) vertical scroll container for sticky top */
+    overflow-y: auto;
     overflow-x: auto;
     /* allow horizontal scroll always */
     
