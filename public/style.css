@@ -51,28 +51,6 @@ body {
     color: var(--sea-light) !important;
 }
 
-html,
-body {
-    height: 100%;
-    margin: 0;
-    /* reset default margins */
-}
-
-body {
-    display: flex;
-    align-items: center;
-    /* vertical centering */
-    justify-content: center;
-    /* horizontal centering */
-}
-
-/* make sure all .container.mt-5 get pushed below the fixed navbar */
-.container.mt-5 {
-    margin-top: var(--navbar-height);
-}
-
-
-
 /* ─── Form (Sign-In) ───────────────────────────────────────────── */
 .form-container {
     background: var(--white);
@@ -168,24 +146,6 @@ body {
     -webkit-overflow-scrolling: touch;
     /* inherit RTL from page */
 }
-
-.schedule-wrapper {
-    /* keep your overflow setup… */
-    overflow: auto;
-    /* …and ensure child centering when possible */
-    display: block;
-    text-align: center;
-    /* fallback centering */
-}
-
-.schedule-wrapper table {
-    /* reset the inline centering and use true block centering */
-    display: inline-table;
-    margin: 0 auto;
-    text-align: left;
-    /* restore normal cell align */
-}
-
 
 /* ─── Schedule Table ───────────────────────────────────────────── */
 #scheduleTable {
