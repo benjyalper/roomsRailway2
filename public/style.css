@@ -66,6 +66,12 @@ body {
     /* horizontal centering */
 }
 
+/* make sure all .container.mt-5 get pushed below the fixed navbar */
+.container.mt-5 {
+    margin-top: var(--navbar-height);
+}
+
+
 
 /* ─── Form (Sign-In) ───────────────────────────────────────────── */
 .form-container {
