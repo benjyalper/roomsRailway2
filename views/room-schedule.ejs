@@ -21,8 +21,28 @@
                 <input type="date" id="lookupDate" class="form-control" />
             </div>
             <div class="schedule-wrapper">
-                <div id="scheduleGrid" class="grid-container"></div>
+                <table id="scheduleTable">
+                    <thead>
+                        <tr>
+                            <th class="time-col"></th>
+                            <% rooms.forEach(label => { %>
+                            <th class="room-col">חדר <%= label %></th>
+                            <% }) %>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% TIMES.forEach(time => { %>
+                        <tr>
+                            <th class="time-col"><%= time %></th>
+                            <% rooms.forEach(label => { %>
+                            <td class="grid-cell" data-room-hour="<%= label %> <%= time %>:00"></td>
+                            <% }) %>
+                        </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
             </div>
+
         </div>
 
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
