@@ -220,6 +220,13 @@ body {
     /* allow horizontal scroll always */
     
     -webkit-overflow-scrolling: touch;
+
+    max-height: calc(
+    100vh
+    - var(--navbar-height)
+    - var(--heading-height)
+    - var(--date-height)
+    );
     /* smooth iOS scroll */
     
 }
