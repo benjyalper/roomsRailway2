@@ -12,79 +12,34 @@ const TIMES = [
 $(document).ready(function () {
     setupNavigation();
     if ($('#room-grid').length) initHome();
-    if ($('#scheduleGrid').length) initSchedule();
+    if ($('#scheduleTable').length) initSchedule();      // ← look for the table
     if ($('#roomForm').length) initRoomForm();
     if ($('#messageList').length) displayLast10Messages();
 });
 
 function setupNavigation() {
-    $('#nav-schedule').click(() => { window.location.href = '/room-schedule'; });
-    $('#nav-edit').click(() => { window.location.href = '/room-form'; });
-    $('#nav-messages').click(() => { window.location.href = '/messages'; });
-    $('#nav-signout').click(() => {
-        Swal.fire({
-            title: 'להתנתק?',
-            showCancelButton: true,
-            confirmButtonText: 'כן',
-            cancelButtonText: 'לא'
-        }).then(r => { if (r.isConfirmed) window.location.href = '/logout'; });
-    });
-    $('#backHome').click(() => { window.location.href = '/home'; });
+    // … your existing nav setup …
 }
 
 function initHome() {
-    // 1) Define your rooms however you like:
-    const rooms = ['1', '2', '3', '4', '5', '6', '7', '8', '15', 'מקלט'];
-
-    // 2) Grab & clear the grid container
-    const $grid = $('#room-grid').empty();
-
-    // 3) Render each room from the array
-    rooms.forEach(label => {
-        $grid.append(`
-      <div class="room" data-room-number="${label}">
-        <div class="room-number">${label}</div>
-      </div>
-    `);
-    });
-
-    // 4) Preserve the click behavior
-    $('.room').click(function () {
-        const room = $(this).data('room-number');
-        window.location.href = `/room/${room}`;
-    });
+    // … your existing home grid code …
 }
-
 
 function initSchedule() {
+    // 1) Set the date picker to today
+    const today = moment().format('YYYY-MM-DD');
     $('#lookupDate')
-        .val(moment().format('YYYY-MM-DD'))
-        .change(fetchDataByDate);
-    buildScheduleGrid();
+        .val(today)
+        .off('change')            // remove any old handlers
+        .on('change', fetchDataByDate);
+
+    // 2) Load data for today
     fetchDataByDate();
 }
-// script.js
-
-function buildScheduleGrid() {
-    const rooms = ['1', '2', '3', '4', '5', '6', '7', '15', 'מקלט'];
-    const $tbl = $('#scheduleTable');
-    const $tbody = $tbl.find('tbody').empty();
-
-    // For each time slot, make a <tr> and fill in the <td>s
-    TIMES.forEach(time => {
-        const $tr = $('<tr>');
-        $tr.append(`<th class="time-col">${time}</th>`);
-        rooms.forEach(label => {
-            $tr.append(`<td class="grid-cell" data-room-hour="${label} ${time}:00"></td>`);
-        });
-        $tbody.append($tr);
-    });
-}
-
-
 
 function fetchDataByDate() {
-    fetch(`/fetchDataByDate?date=${encodeURIComponent($('#lookupDate').val())}`, {
+    const date = $('#lookupDate').val();
+    fetch(`/fetchDataByDate?date=${encodeURIComponent(date)}`, {
         headers: { Accept: 'application/json' }
     })
         .then(r => (r.ok ? r.json() : Promise.reject(r.status)))
@@ -93,53 +48,65 @@ function fetchDataByDate() {
 }
 
 function updateScheduleGrid(rows) {
-    $('.grid-cell').removeAttr('style').empty();
+    // Clear styling and content from all the existing table cells
+    $('#scheduleTable td.grid-cell')
+        .removeAttr('style')
+        .empty();
+
+    // For each booking, find the matching cells and color them
     (rows || []).forEach(r => {
-        const cells = $('.grid-cell').filter(function () {
-            const attr = $(this).attr('data-room-hour');
-            if (!attr) return false;
-            const [roomNum, time] = attr.split(' ');
+        const selector = `[data-room-hour="${r.roomNumber} ${r.startTime}"]`;
+        // Actually we need all cells whose data-room-hour time is between startTime (inclusive) and endTime (exclusive):
+        const $cells = $('#scheduleTable td.grid-cell').filter(function () {
+            const [room, time] = $(this).data('room-hour').split(' ');
             return (
-                roomNum === String(r.roomNumber) &&
+                room === String(r.roomNumber) &&
                 time >= r.startTime &&
                 time < r.endTime
             );
         });
-        cells.css({
+
+        // Style the range of cells
+        $cells.css({
             backgroundColor: r.color,
             border: `2px solid ${r.color}`
         });
-        const middle = cells.eq(Math.floor(cells.length / 2));
-        middle.html(`<div class="therapist-name">${r.names}</div>`);
-        cells
+
+        // Show the therapist’s name in the middle cell
+        const $middle = $cells.eq(Math.floor($cells.length / 2));
+        $middle.html(`<div class="therapist-name">${r.names}</div>`);
+
+        // Tooltip + click‐to‐delete
+        $cells
             .attr('title', `מטפל/ת: ${r.names}\nחדר: ${r.roomNumber}`)
             .tooltip()
             .off('click')
-            .on('click', () => confirmDelete(r, $('#lookupDate').val()));
+            .on('click', () => {
+                Swal.fire({
+                    title: 'האם להסיר פגישה זו?',
+                    showCancelButton: true,
+                    confirmButtonText: 'כן',
+                    cancelButtonText: 'לא'
+                }).then(res => {
+                    if (res.isConfirmed) {
+                        deleteEntry(
+                            $('#lookupDate').val(),
+                            r.roomNumber,
+                            r.startTime,
+                            r.endTime
+                        ).then(fetchDataByDate);
+                    }
+                });
+            });
     });
 }
 
-function confirmDelete(r, date) {
-    Swal.fire({
-        title: 'האם להסיר פגישה זו?',
-        showCancelButton: true,
-        confirmButtonText: 'כן',
-        cancelButtonText: 'לא'
-    }).then(res => {
-        if (res.isConfirmed) {
-            deleteEntry(date, r.roomNumber, r.startTime, r.endTime).then(
-                fetchDataByDate
-            );
-        }
-    });
-}
-
-function deleteEntry(d, room, start, end) {
+function deleteEntry(date, room, start, end) {
     return fetch('/deleteEntry', {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-            selected_date: d,
+            selected_date: date,
             roomNumber: room,
             startTime: start,
             endTime: end
