@@ -201,16 +201,36 @@ body {
     }
 }
 
-/* ─── Schedule Grid ──────────────────────────────────────────────── */
+/* ─── Schedule Grid Base ───────────────────────────────────────── */
 #scheduleGrid {
     display: grid;
-    grid-template-columns: auto repeat(10, 1fr);
     gap: 1px;
     background: var(--gray);
     border-radius: 8px;
 }
 
-/* ─── Cells ─────────────────────────────────────────────────────── */
+/* Desktop (≥769px): time-column + 10 rooms */
+@media (min-width: 769px) {
+    #scheduleGrid {
+        grid-template-columns: auto repeat(10, 1fr);
+    }
+}
+
+/* Tablet & large phones (577–768px): time-column + 4 rooms */
+@media (min-width: 577px) and (max-width: 768px) {
+    #scheduleGrid {
+        grid-template-columns: auto repeat(4, minmax(25%, 1fr));
+    }
+}
+
+/* Portrait phones (≤576px): time-column + 2 rooms */
+@media (max-width: 576px) {
+    #scheduleGrid {
+        grid-template-columns: auto repeat(2, minmax(150px, 1fr));
+    }
+}
+
+/* ─── Cell Styling ─────────────────────────────────────────────────── */
 .header-cell,
 .time-cell,
 .grid-cell {
@@ -249,86 +269,56 @@ body {
     font-weight: 500;
 }
 
-/* ─── Sticky Room‐Names & Time Column on ≤768px ─────────────────── */
+/* ─── Sticky Behavior on Phones/Tablets ───────────────────────────── */
 @media (max-width: 768px) {
+    .schedule-wrapper {
+        position: relative;
+        /* sticky boundary */
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
 
-
-    /* your existing header‐row stickiness */
     .header-cell {
         position: sticky;
         top: 0;
         z-index: 20;
     }
 
-    /* replace the logical inset with a physical right:0 */
     .time-cell {
         position: sticky;
         right: 0;
-        /* no top, so it only sticks horizontally */
+        left: auto;
+        /* cancel any RTL left */
         z-index: 19;
-        /* ensure the background covers underneath scrolled cells */
         background: var(--sea-medium);
     }
 }
 
-
-/* ─── Responsive Grid Widths ───────────────────────────────────── */
-@media (max-width: 576px) {
-    #scheduleGrid {
-        grid-auto-columns: minmax(150px, 1fr);
-    }
-
-    .header-cell,
-    .grid-cell {
-        min-width: 150px;
-    }
-}
-
-@media (min-width: 577px) and (max-width: 768px) {
-    #scheduleGrid {
-        grid-auto-columns: minmax(25%, 1fr);
-    }
-
-    .header-cell,
-    .grid-cell {
-        min-width: 25%;
-    }
-}
-
-/* ─── Reduce default container top‐margin on all pages ───────────── */
-.container.mt-5 {
-    margin-top: 0 !important;
-}
-
-/* HOME GRID: wrap into rows of N columns */
+/* ─── Home Grid ────────────────────────────────────────────────────── */
 #room-grid {
     display: grid;
     gap: 1rem;
     padding: 1rem;
 }
 
-/* ≥1200px: 5 columns */
 @media (min-width: 1200px) {
     #room-grid {
         grid-template-columns: repeat(5, minmax(120px, 1fr));
     }
 }
 
-/* 992–1199px: 4 columns */
 @media (min-width: 992px) and (max-width: 1199px) {
     #room-grid {
         grid-template-columns: repeat(4, minmax(120px, 1fr));
     }
 }
 
-/* 768–991px: 3 columns */
 @media (min-width: 768px) and (max-width: 991px) {
     #room-grid {
         grid-template-columns: repeat(3, minmax(120px, 1fr));
     }
 }
 
-/* <768px: 2 columns */
 @media (max-width: 767px) {
     #room-grid {
         grid-template-columns: repeat(2, minmax(120px, 1fr));

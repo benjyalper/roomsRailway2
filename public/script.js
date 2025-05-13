@@ -74,9 +74,9 @@ function buildScheduleGrid() {
         .empty()
         .css({
             display: 'grid',
-            gridTemplateColumns: `auto repeat(${cols},1fr)`,
             gap: '1px'
         });
+
 
     // empty corner cell
     $g.append(`<div class="header-cell"></div>`);
