@@ -66,29 +66,27 @@ function initSchedule() {
 // script.js
 
 function buildScheduleGrid() {
-    // ← change this
+    // 1) Your custom room labels
     const rooms = ['1', '2', '3', '4', '5', '6', '7', '15', 'מקלט'];
-    const cols = rooms.length;
 
-    const $g = $('#scheduleGrid')
-        .empty()
-        .css({
-            display: 'grid',
-            gridTemplateColumns: `auto repeat(${cols},1fr)`,
-            gap: '1px'
-        });
+    // 2) Grab & clear the grid container
+    //    (we no longer set gridTemplateColumns here—CSS does that)
+    const $g = $('#scheduleGrid').empty();
 
-    // empty corner cell
-    $g.append(`<div class="header-cell"></div>`);
+    // 3) Empty corner cell
+    $g.append('<div class="header-cell"></div>');
 
-    // now use .forEach instead of a for-loop
+    // 4) Render each room header
     rooms.forEach(label => {
         $g.append(`<div class="header-cell">${label}</div>`);
     });
 
-    // time rows
+    // 5) Render each time row + its room cells
     TIMES.forEach(t => {
+        // time‐column cell
         $g.append(`<div class="time-cell">${t}</div>`);
+
+        // one .grid-cell per room/time
         rooms.forEach(label => {
             $g.append(
                 `<div class="grid-cell" data-room-hour="${label} ${t}:00"></div>`
@@ -96,6 +94,7 @@ function buildScheduleGrid() {
         });
     });
 }
+
 
 
 function fetchDataByDate() {
