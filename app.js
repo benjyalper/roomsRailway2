@@ -109,7 +109,7 @@ app.get('/logout', (req, res) => {
 
 // ─── PAGE ROUTES ──────────────────────────────────────────────────────────────
 app.get('/home', isAuthenticated, (req, res) => {
-    res.render('home', { title: 'דף ראשי' });
+    res.render('home', { title: 'סידור חדרים' });
 });
 
 app.get('/room-schedule', isAuthenticated, (req, res) =>
