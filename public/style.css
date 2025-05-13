@@ -241,6 +241,11 @@ body {
     border-radius: 8px;
 }
 
+/* give your time‐column a fixed minimum width */
+:root {
+  --time-col-width: 80px; /* tweak so hours always visible */
+}
+
 /* Desktop (≥769px): show all 10 rooms */
 @media (min-width: 769px) {
     #scheduleGrid {
