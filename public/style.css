@@ -218,6 +218,7 @@ body {
     /* allow horizontal scroll always */
     -webkit-overflow-scrolling: touch;
     /* smooth iOS scroll */
+    direction: ltr; 
 }
 
 /* ─── Schedule Grid ──────────────────────────────────────────────── */
