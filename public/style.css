@@ -1,40 +1,64 @@
 /* style.css */
-/* ─── Calm Sea Palette & Soft Styling ──────────────────────────────────── */
+/* Calm Sea Palette & Soft Styling */
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
 
 :root {
-    /* color palette */
     --sea-deep: #247794;
     --sea-medium: #018594;
     --sea-light: #e2dcc3;
-    --sand-medium: #b7a18b;
-    --sand-light: #ded9ce;
     --white: #ffffff;
     --gray-light: #f7f7f8;
     --gray: #e0e0e0;
     --text-dark: #2E3A3F;
 
-    /* fixed‐bar heights */
+    /* Fixed header heights – adjust if your <h1> or date-selector are taller/shorter */
     --navbar-height: 56px;
     --heading-height: 48px;
+    /* <h1> bar (including padding) */
     --date-height: 56px;
+    /* date-input row height */
 }
 
 body {
     font-family: 'Poppins', sans-serif;
     margin: 0;
-    /* leave room for the fixed navbar */
+    padding: 0;
     padding-top: var(--navbar-height);
     background: var(--gray-light);
     color: var(--text-dark);
 }
 
-/* ─── Navbar (fixed‐top) ─────────────────────────────────────────────── */
+/* Sandy-beach heading inside navbar */
+.sandy-heading {
+    color: var(--sand-medium);
+    /* sandy-beach accent */
+    font-size: 1.25rem;
+    /* tweak to taste */
+    font-weight: 600;
+    margin: 0 .75rem;
+    /* spacing around it */
+    line-height: var(--navbar-height);
+    white-space: nowrap;
+    /* prevent wrapping */
+}
+
+/* If you used <h1> instead of span, ensure it sits nicely: */
+.sandy-heading-as-h1 {
+    display: inline-block;
+    margin: 0 .75rem;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--sand-medium);
+    line-height: var(--navbar-height);
+}
+
+
+/* ─── Navbar (already fixed‐top in HTML) ───────────────────────────────── */
 .calm-navbar {
     position: fixed;
     top: 0;
     left: 0;
-    right: 0;
+    width: 100%;
     background: var(--white);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     padding: .5rem 1rem;
@@ -43,8 +67,8 @@ body {
 }
 
 .calm-navbar .navbar-brand i {
-    font-size: 1.5rem;
     color: var(--sea-deep);
+    font-size: 1.5rem;
 }
 
 .calm-navbar .nav-link {
@@ -57,50 +81,29 @@ body {
     color: var(--sea-medium);
 }
 
-/* ensure dropdowns & collapse sit above everything */
-.navbar-collapse {
-    z-index: 3001 !important;
+/* in style.css, below your :root palette */
+.calm-navbar {
+    background-color: var(--sea-deep) !important;
 }
 
-.dropdown-menu {
-    z-index: 4000 !important;
+.calm-navbar .navbar-brand i,
+.calm-navbar .nav-link {
+    color: var(--white) !important;
 }
 
-/* ─── Page Headings ───────────────────────────────────────────────────── */
-.container h1,
-.container h2 {
-    background: var(--sea-light);
-    color: var(--sea-deep);
-    margin: 0;
-    padding: .5rem 1rem;
-    text-align: center;
-    font-size: 1.2rem;
-    height: var(--heading-height);
-    line-height: calc(var(--heading-height) - 1rem);
+.calm-navbar .nav-link:hover {
+    color: var(--sand-light) !important;
 }
 
-/* stick title & date under navbar on phones/tablets */
-@media (max-width: 768px) {
-    .container h1 {
-        position: fixed;
-        top: var(--navbar-height);
-        left: 0;
-        right: 0;
-        z-index: 2999;
-    }
 
-    .container .mb-3 {
-        position: fixed;
-        top: calc(var(--navbar-height) + var(--heading-height));
-        left: 0;
-        right: 0;
-        z-index: 2998;
-    }
+.form-container input::placeholder {
+    text-align: right;
 }
 
-/* ─── Home Grid ───────────────────────────────────────────────────────── */
+/* ─── Home Grid ───────────────────────────────────────────────── */
 #room-grid {
     display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
     gap: 1rem;
     padding: 1rem;
 }
@@ -121,80 +124,94 @@ body {
 
 #room-grid .room-number {
     position: absolute;
-    top: 15%;
-    left: 50%;
+    /* move down 3px */
+    top: calc(15% + 3px);
+    /* move left 3px before centering */
+    left: calc(50% - 7px);
     transform: translateX(-50%);
     font-weight: 600;
     font-size: .88rem;
+
+    /* light-blue, ~30% opacity background */
+    background-color: rgba(173, 216, 230, 0.3);
+    padding: 2px 6px;
+    border-radius: 5px;
 }
 
-/* HOME GRID: responsive columns */
-@media (min-width: 1200px) {
-    #room-grid {
-        grid-template-columns: repeat(5, minmax(120px, 1fr));
+
+/* ─── Page Title & Date Row ─────────────────────────────────────────── */
+/* We wrap <h1> and the .mb-3 date-input as fixed bars below the navbar */
+.container h1 {
+    background: var(--sea-light);
+    color: var(--sea-deep);
+    padding: .5rem 1rem;
+    margin: 0;
+    text-align: center;
+    font-size: 1.2rem;
+    height: var(--heading-height);
+    line-height: calc(var(--heading-height) - 1rem);
+}
+
+.container .mb-3 {
+    padding: .5rem 1rem;
+    background: var(--white);
+    margin: 0 0 1rem 0;
+    height: var(--date-height);
+    line-height: calc(var(--date-height) - 1rem);
+}
+
+/* Make them stick on phones/landscape phones */
+@media (max-width: 768px) {
+    .container h1 {
+        position: fixed;
+        top: var(--navbar-height);
+        left: 0;
+        right: 0;
+        z-index: 10;
+    }
+
+    .container .mb-3 {
+        position: fixed;
+        top: calc(var(--navbar-height) + var(--heading-height));
+        left: 0;
+        right: 0;
+        z-index: 10;
     }
 }
 
-@media (min-width: 992px) and (max-width: 1199px) {
-    #room-grid {
-        grid-template-columns: repeat(4, minmax(120px, 1fr));
+/* ─── Schedule Wrapper (scroll container) ─────────────────────────── */
+/* On phones, we pin it below the three fixed bars and give it its own scroll */
+@media (max-width: 768px) {
+    .schedule-wrapper {
+        position: fixed;
+        top: calc(var(--navbar-height) + var(--heading-height) + var(--date-height));
+        bottom: 0;
+        left: 0;
+        right: 0;
+        overflow: auto;
+        -webkit-overflow-scrolling: touch;
     }
 }
 
-@media (min-width: 768px) and (max-width: 991px) {
-    #room-grid {
-        grid-template-columns: repeat(3, minmax(120px, 1fr));
+@media (min-width: 769px) {
+    .schedule-wrapper {
+        overflow-x: auto;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
     }
 }
 
-@media (max-width: 767px) {
-    #room-grid {
-        grid-template-columns: repeat(2, minmax(120px, 1fr));
-    }
-}
-
-/* ─── Schedule Wrapper & Grid ───────────────────────────────────────── */
-/* Base wrapper: smooth scrolling */
-.schedule-wrapper {
-    overflow-x: auto;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-}
-
-/* ─── Schedule Grid Base (moved from JS) ───────────────────────────── */
+/* ─── Schedule Grid ──────────────────────────────────────────────── */
 #scheduleGrid {
     display: grid;
-    /* formerly inline in script.js */
+    /* moved from JS */
     gap: 1px;
-    /* formerly inline */
+    /* moved from JS */
     background: var(--gray);
     border-radius: 8px;
 }
 
-/* Desktop (≥769px): time‐column + 10 room columns */
-@media (min-width: 769px) {
-    #scheduleGrid {
-        grid-template-columns: auto repeat(10, 1fr);
-    }
-}
-
-/* Tablet & landscape phones (577–768px): time‐column + 4 rooms at once */
-@media (min-width: 577px) and (max-width: 768px) {
-    #scheduleGrid {
-        /* each room col ≥25% → 4 visible, rest overflow */
-        grid-template-columns: auto repeat(4, minmax(25%, 1fr));
-    }
-}
-
-/* Portrait phones (≤576px): time‐column + 2 rooms at once */
-@media (max-width: 576px) {
-    #scheduleGrid {
-        /* each room col ≥50% → 2 visible, rest overflow */
-        grid-template-columns: auto repeat(2, minmax(50%, 1fr));
-    }
-}
-
-/* ─── Cells ─────────────────────────────────────────────────────────── */
+/* ─── Cells ─────────────────────────────────────────────────────── */
 .header-cell,
 .time-cell,
 .grid-cell {
@@ -221,8 +238,8 @@ body {
 
 .grid-cell {
     background: var(--white);
-    min-height: 40px;
     position: relative;
+    min-height: 40px;
 }
 
 .therapist-name {
@@ -233,34 +250,88 @@ body {
     font-weight: 500;
 }
 
-/* ─── Sticky Header‐Row & Time‐Column on ≤768px ──────────────────── */
+/* ─── Sticky Room‐Names & Time Column on ≤768px ─────────────────── */
 @media (max-width: 768px) {
 
-    /* Ensure the wrapper becomes the sticky‐boundary and allows overflow */
-    .schedule-wrapper {
-        position: relative;
-        direction: ltr;
-        /* force LTR so right:0 pins to physical right */
-    }
 
+    /* your existing header‐row stickiness */
     .header-cell {
         position: sticky;
         top: 0;
         z-index: 20;
     }
 
+    /* replace the logical inset with a physical right:0 */
     .time-cell {
         position: sticky;
         right: 0;
-        /* physical right edge */
-        left: auto;
-        /* cancel any RTL left */
+        /* no top, so it only sticks horizontally */
         z-index: 19;
+        /* ensure the background covers underneath scrolled cells */
         background: var(--sea-medium);
     }
 }
 
-/* ─── Remove extra top‐margin on all container pages ──────────────── */
+
+/* ─── Responsive Grid Widths ───────────────────────────────────── */
+@media (max-width: 576px) {
+    #scheduleGrid {
+        grid-auto-columns: minmax(150px, 1fr);
+    }
+
+    .header-cell,
+    .grid-cell {
+        min-width: 150px;
+    }
+}
+
+@media (min-width: 577px) and (max-width: 768px) {
+    #scheduleGrid {
+        grid-auto-columns: minmax(25%, 1fr);
+    }
+
+    .header-cell,
+    .grid-cell {
+        min-width: 25%;
+    }
+}
+
+/* ─── Reduce default container top‐margin on all pages ───────────── */
 .container.mt-5 {
     margin-top: 0 !important;
+}
+
+/* HOME GRID: wrap into rows of N columns */
+#room-grid {
+    display: grid;
+    gap: 1rem;
+    padding: 1rem;
+}
+
+/* ≥1200px: 5 columns */
+@media (min-width: 1200px) {
+    #room-grid {
+        grid-template-columns: repeat(5, minmax(120px, 1fr));
+    }
+}
+
+/* 992–1199px: 4 columns */
+@media (min-width: 992px) and (max-width: 1199px) {
+    #room-grid {
+        grid-template-columns: repeat(4, minmax(120px, 1fr));
+    }
+}
+
+/* 768–991px: 3 columns */
+@media (min-width: 768px) and (max-width: 991px) {
+    #room-grid {
+        grid-template-columns: repeat(3, minmax(120px, 1fr));
+    }
+}
+
+/* <768px: 2 columns */
+@media (max-width: 767px) {
+    #room-grid {
+        grid-template-columns: repeat(2, minmax(120px, 1fr));
+    }
 }
