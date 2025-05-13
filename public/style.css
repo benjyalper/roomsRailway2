@@ -20,13 +20,13 @@
 }
 
 /* DEBUG: outline the wrapper and time-cells */
-.schedule-wrapper {
+/* .schedule-wrapper {
     outline: 2px dashed blue !important;
 }
 
 .time-cell {
     outline: 2px solid red !important;
-}
+} */
 
 
 body {
