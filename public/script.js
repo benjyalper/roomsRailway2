@@ -68,15 +68,12 @@ function initSchedule() {
 function buildScheduleGrid() {
     // ← change this
     const rooms = ['1', '2', '3', '4', '5', '6', '7', '15', 'מקלט'];
-    const cols = rooms.length;
+    // const cols = rooms.length;
 
-    const $g = $('#scheduleGrid')
-        .empty()
-        .css({
-            display: 'grid',
-            gridTemplateColumns: `auto repeat(${cols},1fr)`,
-            gap: '1px'
-        });
+    const $g = $('#scheduleGrid').empty();
+    // We no longer set display, gap or gridTemplateColumns here.
+    // All of that lives in your CSS now.
+
 
     // empty corner cell
     $g.append(`<div class="header-cell"></div>`);
