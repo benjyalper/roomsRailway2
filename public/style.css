@@ -216,6 +216,7 @@ body {
     /* establish sticky boundary */
     overflow-x: auto;
     /* allow horizontal scroll always */
+    overflow-y: auto;  
     -webkit-overflow-scrolling: touch;
     /* smooth iOS scroll */
     direction: ltr; 
