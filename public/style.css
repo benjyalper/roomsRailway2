@@ -229,7 +229,8 @@ body {
     background: var(--gray);
     border-radius: 8px;
 
-    /* make *this* the scroll box */
+
+    min-width: max-content;
 }
 
 /* give your time‐column a fixed minimum width */
