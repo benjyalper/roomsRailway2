@@ -211,7 +211,7 @@ body {
     }
 } */
 
-.schedule-wrapper {
+/* .schedule-wrapper { */
     /* position: relative; */
     /* establish sticky boundary */
     /* 1) vertical scroll container for sticky top */
@@ -229,7 +229,7 @@ body {
     ); */
     /* smooth iOS scroll */
     
-}
+/* } */
 
 /* ─── Schedule Grid ──────────────────────────────────────────────── */
 #scheduleGrid {
