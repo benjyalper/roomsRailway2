@@ -229,8 +229,6 @@ body {
     background: var(--gray);
     border-radius: 8px;
 
-
-    min-width: max-content;
 }
 
 /* give your time‐column a fixed minimum width */
@@ -259,7 +257,7 @@ body {
 @media (max-width: 576px) {
     #scheduleGrid {
         grid-template-columns:
-            minmax(var(--time-col-width), auto) repeat(9, minmax(50%, 1fr));
+            minmax(var(--time-col-width), auto) repeat(9, minmax(160px, 1fr));
     }
 }
 
