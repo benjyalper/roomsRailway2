@@ -262,9 +262,11 @@ body {
 
 /* Portrait phones (≤576px): 2 rooms at once */
 @media (max-width: 576px) {
-    #scheduleGrid {
-        grid-template-columns: auto repeat(9, minmax(50%, 1fr));
-    }
+  #scheduleGrid {
+    grid-template-columns:
+      minmax(var(--time-col-width), auto)
+      repeat(9, minmax(50%, 1fr));
+  }
 }
 
 
