@@ -40,7 +40,7 @@ body {
 
 /* Sandy-beach heading inside navbar */
 .sandy-heading {
-    color: var(--sand-medium);
+    color: var(--sea-light);
     /* sandy-beach accent */
     font-size: 1.25rem;
     /* tweak to taste */
@@ -191,7 +191,7 @@ body {
 
 /* ─── Schedule Wrapper (scroll container) ─────────────────────────── */
 /* On phones, we pin it below the three fixed bars and give it its own scroll */
-@media (max-width: 768px) {
+/* @media (max-width: 768px) {
     .schedule-wrapper {
         position: fixed;
         top: calc(var(--navbar-height) + var(--heading-height) + var(--date-height));
@@ -201,14 +201,23 @@ body {
         overflow: auto;
         -webkit-overflow-scrolling: touch;
     }
-}
+} */
 
-@media (min-width: 769px) {
+/* @media (min-width: 769px) {
     .schedule-wrapper {
         overflow-x: auto;
         overflow-y: auto;
         -webkit-overflow-scrolling: touch;
     }
+} */
+
+.schedule-wrapper {
+    position: relative;
+    /* establish sticky boundary */
+    overflow-x: auto;
+    /* allow horizontal scroll always */
+    -webkit-overflow-scrolling: touch;
+    /* smooth iOS scroll */
 }
 
 /* ─── Schedule Grid ──────────────────────────────────────────────── */
@@ -220,6 +229,28 @@ body {
     background: var(--gray);
     border-radius: 8px;
 }
+
+/* Desktop (≥769px): show all 10 rooms */
+@media (min-width: 769px) {
+    #scheduleGrid {
+        grid-template-columns: auto repeat(10, 1fr);
+    }
+}
+
+/* Tablet & landscape phones (577–768px): 4 rooms at once */
+@media (min-width: 577px) and (max-width: 768px) {
+    #scheduleGrid {
+        grid-template-columns: auto repeat(4, minmax(25%, 1fr));
+    }
+}
+
+/* Portrait phones (≤576px): 2 rooms at once */
+@media (max-width: 576px) {
+    #scheduleGrid {
+        grid-template-columns: auto repeat(2, minmax(50%, 1fr));
+    }
+}
+
 
 /* ─── Cells ─────────────────────────────────────────────────────── */
 .header-cell,
@@ -284,7 +315,7 @@ body {
 
 
 /* ─── Responsive Grid Widths ───────────────────────────────────── */
-@media (max-width: 576px) {
+/* @media (max-width: 576px) {
     #scheduleGrid {
         grid-auto-columns: minmax(150px, 1fr);
     }
@@ -304,7 +335,7 @@ body {
     .grid-cell {
         min-width: 25%;
     }
-}
+} */
 
 /* ─── Reduce default container top‐margin on all pages ───────────── */
 .container.mt-5 {
