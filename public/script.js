@@ -66,33 +66,21 @@ function initSchedule() {
 // script.js
 
 function buildScheduleGrid() {
-    // ← change this
     const rooms = ['1', '2', '3', '4', '5', '6', '7', '15', 'מקלט'];
-    // const cols = rooms.length;
+    const $tbl = $('#scheduleTable');
+    const $tbody = $tbl.find('tbody').empty();
 
-    const $g = $('#scheduleGrid').empty();
-    // We no longer set display, gap or gridTemplateColumns here.
-    // All of that lives in your CSS now.
-
-
-    // empty corner cell
-    $g.append(`<div class="header-cell"></div>`);
-
-    // now use .forEach instead of a for-loop
-    rooms.forEach(label => {
-        $g.append(`<div class="header-cell">${label}</div>`);
-    });
-
-    // time rows
-    TIMES.forEach(t => {
-        $g.append(`<div class="time-cell">${t}</div>`);
+    // For each time slot, make a <tr> and fill in the <td>s
+    TIMES.forEach(time => {
+        const $tr = $('<tr>');
+        $tr.append(`<th class="time-col">${time}</th>`);
         rooms.forEach(label => {
-            $g.append(
-                `<div class="grid-cell" data-room-hour="${label} ${t}:00"></div>`
-            );
+            $tr.append(`<td class="grid-cell" data-room-hour="${label} ${time}:00"></td>`);
         });
+        $tbody.append($tr);
     });
 }
+
 
 
 function fetchDataByDate() {
