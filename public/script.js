@@ -18,11 +18,41 @@ $(document).ready(function () {
 });
 
 function setupNavigation() {
-    // … your existing nav setup …
+    $('#nav-schedule').click(() => { window.location.href = '/room-schedule'; });
+    $('#nav-edit').click(() => { window.location.href = '/room-form'; });
+    $('#nav-messages').click(() => { window.location.href = '/messages'; });
+    $('#nav-signout').click(() => {
+        Swal.fire({
+            title: 'להתנתק?',
+            showCancelButton: true,
+            confirmButtonText: 'כן',
+            cancelButtonText: 'לא'
+        }).then(r => { if (r.isConfirmed) window.location.href = '/logout'; });
+    });
+    $('#backHome').click(() => { window.location.href = '/home'; });
 }
 
 function initHome() {
-    // … your existing home grid code …
+    // 1) Define your rooms however you like:
+    const rooms = ['1', '2', '3', '4', '5', '6', '7', '8', '15', 'מקלט'];
+
+    // 2) Grab & clear the grid container
+    const $grid = $('#room-grid').empty();
+
+    // 3) Render each room from the array
+    rooms.forEach(label => {
+        $grid.append(`
+      <div class="room" data-room-number="${label}">
+        <div class="room-number">${label}</div>
+      </div>
+    `);
+    });
+
+    // 4) Preserve the click behavior
+    $('.room').click(function () {
+        const room = $(this).data('room-number');
+        window.location.href = `/room/${room}`;
+    });
 }
 
 function initSchedule() {
