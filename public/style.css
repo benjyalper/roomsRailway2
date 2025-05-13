@@ -51,6 +51,22 @@ body {
     color: var(--sea-light) !important;
 }
 
+html,
+body {
+    height: 100%;
+    margin: 0;
+    /* reset default margins */
+}
+
+body {
+    display: flex;
+    align-items: center;
+    /* vertical centering */
+    justify-content: center;
+    /* horizontal centering */
+}
+
+
 /* ─── Form (Sign-In) ───────────────────────────────────────────── */
 .form-container {
     background: var(--white);
