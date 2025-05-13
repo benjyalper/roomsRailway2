@@ -20,13 +20,7 @@
 }
 
 /* DEBUG: outline the wrapper and time-cells */
-.schedule-wrapper {
-    outline: 2px dashed blue !important;
-}
 
-.time-cell {
-    outline: 2px solid red !important;
-}
 
 
 body {
@@ -211,25 +205,22 @@ body {
     }
 } */
 
-/* .schedule-wrapper { */
-/* position: relative; */
-/* establish sticky boundary */
-/* 1) vertical scroll container for sticky top */
-/* overflow-y: auto;
-    overflow-x: auto; */
-/* allow horizontal scroll always */
+.schedule-wrapper {
+    position: relative;
+    /* establish sticky boundary */
+    /* 1) vertical scroll container for sticky top */
+    overflow-y: auto;
+    overflow-x: auto;
 
-/* -webkit-overflow-scrolling: touch; */
+    /* allow horizontal scroll always */
 
-/* max-height: calc(
-    100vh
-    - var(--navbar-height)
-    - var(--heading-height)
-    - var(--date-height)
-    ); */
-/* smooth iOS scroll */
+    -webkit-overflow-scrolling: touch;
 
-/* } */
+    max-height: calc(100vh - var(--navbar-height) - var(--heading-height) - var(--date-height));
+
+    /* smooth iOS scroll */
+
+}
 
 /* ─── Schedule Grid ──────────────────────────────────────────────── */
 #scheduleGrid {
@@ -239,12 +230,6 @@ body {
     border-radius: 8px;
 
     /* make *this* the scroll box */
-    position: relative;
-    overflow-x: auto;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-    /* direction: ltr; */
-    max-height: calc(100vh - var(--navbar-height) - var(--heading-height) - var(--date-height));
 }
 
 /* give your time‐column a fixed minimum width */
