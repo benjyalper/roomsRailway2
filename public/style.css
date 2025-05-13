@@ -233,21 +233,21 @@ body {
 /* Desktop (≥769px): show all 10 rooms */
 @media (min-width: 769px) {
     #scheduleGrid {
-        grid-template-columns: auto repeat(10, 1fr);
+        grid-template-columns: auto repeat(9, 1fr);
     }
 }
 
 /* Tablet & landscape phones (577–768px): 4 rooms at once */
 @media (min-width: 577px) and (max-width: 768px) {
     #scheduleGrid {
-        grid-template-columns: auto repeat(4, minmax(25%, 1fr));
+        grid-template-columns: auto repeat(9, minmax(25%, 1fr));
     }
 }
 
 /* Portrait phones (≤576px): 2 rooms at once */
 @media (max-width: 576px) {
     #scheduleGrid {
-        grid-template-columns: auto repeat(2, minmax(50%, 1fr));
+        grid-template-columns: auto repeat(9, minmax(50%, 1fr));
     }
 }
 
