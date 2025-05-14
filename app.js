@@ -9,7 +9,7 @@ import dotenv from 'dotenv';
 import passport from 'passport';
 import { Strategy as LocalStrategy } from 'passport-local';
 import flash from 'express-flash';
-import 'moment/locale/he';
+import 'moment/locale/he.js';
 moment.locale('he');
 
 dotenv.config();
