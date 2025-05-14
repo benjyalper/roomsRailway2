@@ -4,7 +4,7 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <!-- head partial can pick up title -->
+        <!-- head partial will inject the <title> -->
         <%- include('partials/head', { title: 'טבלת חדרים' }) %>
         <!-- your styles -->
         <link rel="stylesheet" href="/style.css" />
@@ -13,19 +13,21 @@
     </head>
 
     <body>
-        <!-- navbar -->
+        <!-- fixed navbar with page title -->
         <%- include('partials/navbar') %>
-        <div style="height:56px;"></div> <!-- spacer -->
 
-        <div class="container mt-5 pt-3">
-            <h1 class="text-center mb-4">טבלת חדרים</h1>
+        <!-- decorative “sea-tone” banner -->
+        <div class="page-banner"></div>
+
+        <div class="container mt-3 pt-3 text-center">
+            <!-- date selector only -->
             <div class="mb-3">
                 <input type="date" id="lookupDate" class="form-control" />
             </div>
         </div>
 
         <% 
-      // ─── Define your rooms & times for the template ─────────────────
+      // ─── Define your rooms & times ─────────────────────────────────
       const rooms = ['1','2','3','4','5','6','7','15','מקלט'];
       const TIMES = [
         '07:00','07:30','08:00','08:30','09:00','09:30',
