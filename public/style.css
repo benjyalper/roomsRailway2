@@ -29,6 +29,19 @@ body {
     padding-top: var(--navbar-height);
 }
 
+/* ─── Page Banner ───────────────────────────────────────────────── */
+.page-banner {
+    background: var(--sea-light);
+    color: var(--sea-deep);
+    padding: .75rem 1rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    text-align: center;
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+
 /* ─── Navbar ───────────────────────────────────────────────────── */
 .calm-navbar {
     position: fixed;
