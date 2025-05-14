@@ -9,8 +9,6 @@ import dotenv from 'dotenv';
 import passport from 'passport';
 import { Strategy as LocalStrategy } from 'passport-local';
 import flash from 'express-flash';
-import 'moment/locale/he';
-moment.locale('he');
 
 dotenv.config();
 const app = express();
@@ -286,15 +284,13 @@ app.get('/room/:roomNumber', isAuthenticated, async (req, res) => {
         const now = moment().tz('Asia/Jerusalem');
         let currentTherapist = null;
         for (const r of rows) {
-            const s = moment.tz(r.startTime, 'HH:mm:ss', 'Asia/Jerusalem');
-            const e = moment.tz(r.endTime, 'HH:mm:ss', 'Asia/Jerusalem');
-            if (now.isSameOrAfter(s) && now.isBefore(e)) {
+            const s = moment(r.startTime, 'HH:mm:ss');
+            const e = moment(r.endTime, 'HH:mm:ss');
+            if (now.isBetween(s, e)) {
                 currentTherapist = { name: r.names, endTime: e.format('HH:mm') };
                 break;
             }
         }
-
-        const todayLocalized = now.format('dddd D/M/YYYY');
 
         // *** Pass `title` here so navbar.ejs has it ***
         res.render('room', {
@@ -302,8 +298,7 @@ app.get('/room/:roomNumber', isAuthenticated, async (req, res) => {
             roomNumber,
             currentTherapist,
             data: rows,
-            moment,
-            todayLocalized,
+            moment
         });
     } catch (e) {
         console.error(e);
