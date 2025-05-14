@@ -1,94 +1,113 @@
-<head>
-    <meta charset="UTF-8">
-    <title>התחברות</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
 
-    <!-- Bootstrap & FontAwesome -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <head>
+        <meta charset="UTF-8">
+        <title>התחברות</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <!-- Your main stylesheet -->
-    <link rel="stylesheet" href="style.css">
+        <!-- Bootstrap & FontAwesome -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
-    <style>
-        /* Make html/body fill the screen */
-        html,
-        body {
-            height: 100%;
-            margin: 0;
-        }
+        <!-- Your main stylesheet -->
+        <link rel="stylesheet" href="/style.css">
 
-        /* Flex‐center everything */
-        body {
-            display: flex;
-            align-items: center;
-            /* vertical center */
-            justify-content: center;
-            /* horizontal center */
-            background-color: #f4f6f8;
-        }
+        <style>
+            /* Make html/body fill the screen */
+            html,
+            body {
+                height: 100%;
+                margin: 0;
+            }
 
-        .form-container {
-            background-color: white;
-            padding: 2rem;
-            border-radius: 10px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            width: 100%;
-            max-width: 400px;
-            /* no extra margin needed */
-        }
+            /* Flex-center everything */
+            body {
+                display: flex;
+                align-items: center;
+                /* vertical center */
+                justify-content: center;
+                /* horizontal center */
+                background-color: #f4f6f8;
+            }
 
-        .form-container h2 {
-            text-align: center;
-            color: #155724;
-            margin-bottom: 1.5rem;
-            font-weight: 600;
-        }
-
-        .form-container label {
-            margin-top: 1rem;
-            font-weight: bold;
-        }
-
-        .form-container input {
-            margin-bottom: 0.5rem;
-        }
-
-        /* placeholder color */
-        .form-container input::placeholder {
-            color: #888;
-            text-align: right;
-        }
-
-        #submitBtn {
-            width: 100%;
-            background-color: #28a745;
-            color: white;
-            border: none;
-            padding: 0.5rem;
-            font-size: 1rem;
-            margin-top: 1rem;
-            border-radius: 5px;
-        }
-
-        #message {
-            margin-top: 1rem;
-            color: red;
-            text-align: center;
-        }
-
-        /* On very small screens, just bump up font & padding—but no margin-top */
-        @media (max-width: 576px) {
             .form-container {
-                max-width: none;
-                padding: 3rem 1.5rem;
+                background-color: white;
+                padding: 2rem;
+                border-radius: 10px;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+                width: 100%;
+                max-width: 400px;
             }
 
-            form#loginForm .form-control,
-            #submitBtn {
-                font-size: 1.2rem;
-                padding: 0.8rem 1rem;
+            .form-container h2 {
+                text-align: center;
+                color: #155724;
+                margin-bottom: 1.5rem;
+                font-weight: 600;
             }
-        }
-    </style>
-</head>
+
+            .form-container label {
+                margin-top: 1rem;
+                font-weight: bold;
+            }
+
+            .form-container input {
+                margin-bottom: 0.5rem;
+            }
+
+            .form-container input::placeholder {
+                color: #888;
+                text-align: right;
+            }
+
+            #submitBtn {
+                width: 100%;
+                background-color: #28a745;
+                color: white;
+                border: none;
+                padding: 0.5rem;
+                font-size: 1rem;
+                margin-top: 1rem;
+                border-radius: 5px;
+            }
+
+            #message {
+                margin-top: 1rem;
+                color: red;
+                text-align: center;
+            }
+
+            @media (max-width: 576px) {
+                .form-container {
+                    max-width: none;
+                    padding: 3rem 1.5rem;
+                }
+
+                form#loginForm .form-control,
+                #submitBtn {
+                    font-size: 1.2rem;
+                    padding: 0.8rem 1rem;
+                }
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="form-container">
+            <h2>התחברות</h2>
+            <form id="loginForm" action="/signin" method="post">
+                <label for="phone">מספר טלפון</label>
+                <input type="tel" id="phone" name="phone" class="form-control" placeholder="מספר טלפון..."
+                    pattern="[0-9]{10}" required />
+                <button type="submit" id="submitBtn">התחבר</button>
+            </form>
+            <!-- Display Passport flash error if any -->
+            <div id="message"><%= typeof flash !== 'undefined' ? flash('error') : '' %></div>
+        </div>
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    </body>
+
+</html>
