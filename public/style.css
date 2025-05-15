@@ -98,7 +98,10 @@ body {
 
 .clinic-logo {
     max-height: 80%;
-    /* you can tweak this % if you need it a bit bigger or smaller */
+    transform: scale(0.8);
+    /* shrink by 20% */
+    transform-origin: left center;
+    /* keep it flush-left as it scales */
 }
 
 
