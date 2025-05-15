@@ -74,6 +74,24 @@ body {
     margin: auto;
 }
 
+/* ─── Clinic Logo between navbar and banner ───────────────────────── */
+.clinic-logo-container {
+    margin-top: var(--navbar-height);
+    /* if your navbar is 56px high, this pushes it just below */
+    padding: 0.5rem 0;
+    background: var(--white);
+    /* match your page background or banner if you like */
+    z-index: 2500;
+    position: relative;
+}
+
+.clinic-logo {
+    max-height: 60px;
+    /* adjust so it fits nicely */
+    width: auto;
+}
+
+
 .form-container input::placeholder {
     text-align: right;
 }
