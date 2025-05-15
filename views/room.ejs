@@ -61,11 +61,10 @@
         <div style="height:56px;"></div>
 
         <div class="container-lg">
-            <!-- 1) Hebrew‐localized date -->
+            <!-- 1) Hebrew‐localized date AND current local time -->
             <div class="current-date">
-                <%= todayLocalized %>
+                <%= todayLocalized %> &mdash; <%= moment().tz('Asia/Jerusalem').format('HH:mm') %>
             </div>
-
 
             <!-- 3) Status – either therapist name until endTime or “free” -->
             <div class="status-row">
