@@ -76,19 +76,29 @@ body {
 
 /* ─── Clinic Logo between navbar and banner ───────────────────────── */
 .clinic-logo-container {
-    margin-top: var(--navbar-height);
-    /* if your navbar is 56px high, this pushes it just below */
-    padding: 0.5rem 0;
-    background: var(--white);
-    /* match your page background or banner if you like */
-    z-index: 2500;
-    position: relative;
+    /* sit immediately below the navbar */
+    margin: 0;
+    padding-top: var(--navbar-height);
+
+    /* carve out exactly the banner’s height */
+    height: var(--banner-height);
+
+    display: flex;
+    align-items: center;
+    /* vertical centering */
+    justify-content: flex-start;
+    /* flush-left */
+    padding-left: 1rem;
+    /* a little breathing room from the left edge */
+    background: var(--gray-light);
+    /* or whatever wall-color you like behind it */
+    z-index: 1000;
+    /* just above the banner if needed */
 }
 
 .clinic-logo {
-    max-height: 60px;
-    /* adjust so it fits nicely */
-    width: auto;
+    max-height: 80%;
+    /* you can tweak this % if you need it a bit bigger or smaller */
 }
 
 
