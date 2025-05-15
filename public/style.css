@@ -200,18 +200,6 @@ body {
 }
 
 /* ─── Corner cell (top-right in RTL layout) ───────────────────────── */
-#scheduleTable thead th:first-child {
-    /* make the empty corner stick above everything */
-    position: sticky;
-    top: 0;
-    right: var(--time-col-width);
-    /* align it just to the left of the time-col */
-    z-index: 4;
-    background: var(--sea-light);
-    /* match your banner or heading background */
-    width: var(--time-col-width);
-    /* give it the same width as your time-column so it cleanly covers */
-}
 
 
 /* ─── Body Cells ───────────────────────────────────────────────── */

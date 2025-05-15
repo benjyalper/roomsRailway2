@@ -42,13 +42,12 @@
             <table id="scheduleTable">
                 <thead>
                     <tr>
-                        <th class="corner-cell"></th> <!-- now uniquely identifiable -->
+                        <th class="time-col"></th>
                         <% rooms.forEach(label => { %>
                         <th class="room-col"><%= label %></th>
                         <% }) %>
                     </tr>
                 </thead>
-
                 <tbody>
                     <% TIMES.forEach(time => { %>
                     <tr>
