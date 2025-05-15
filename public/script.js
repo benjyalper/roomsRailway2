@@ -56,29 +56,15 @@ function initHome() {
 }
 
 function initSchedule() {
-    // 1) Initialize the native date-picker to today in ISO
-    const todayISO = moment().format('YYYY-MM-DD');
+    // 1) Set the date picker to today
+    const today = moment().format('YYYY-MM-DD');
     $('#lookupDate')
-        .val(todayISO)
-        .off('change')
-        .on('change', () => {
-            updateLocalizedDate();   // refresh the Hebrew label
-            fetchDataByDate();       // fetch new data
-        });
+        .val(today)
+        .off('change')            // remove any old handlers
+        .on('change', fetchDataByDate);
 
-    // 2) Show Hebrew date now and load today’s data
-    updateLocalizedDate();
+    // 2) Load data for today
     fetchDataByDate();
-}
-
-// helper: render “יום רביעי 15.5.2025” under the picker
-function updateLocalizedDate() {
-    const iso = $('#lookupDate').val();
-    if (!iso) return $('#localizedDate').text('');
-    const loc = moment(iso, 'YYYY-MM-DD')
-        .locale('he')
-        .format('dddd D.M.YYYY');
-    $('#localizedDate').text(loc);
 }
 
 function fetchDataByDate() {
