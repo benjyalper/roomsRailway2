@@ -75,34 +75,7 @@ body {
 }
 
 /* ─── Clinic Logo between navbar and banner ───────────────────────── */
-.clinic-logo-container {
-    /* sit immediately below the navbar */
-    margin: 0;
-    padding-top: var(--navbar-height);
 
-    /* carve out exactly the banner’s height */
-    height: var(--banner-height);
-
-    display: flex;
-    align-items: center;
-    /* vertical centering */
-    justify-content: flex-end;
-    /* flush-left */
-    padding-left: 1rem;
-    /* a little breathing room from the left edge */
-    background: var(--gray-light);
-    /* or whatever wall-color you like behind it */
-    z-index: 1000;
-    /* just above the banner if needed */
-}
-
-.clinic-logo {
-    max-height: 80%;
-    transform: scale(0.8);
-    /* shrink by 20% */
-    transform-origin: left center;
-    /* keep it flush-left as it scales */
-}
 
 
 .form-container input::placeholder {
