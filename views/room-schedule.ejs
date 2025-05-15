@@ -4,12 +4,19 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <!-- head partial will inject the <title> -->
+
+        <!-- head partial injects your <title> -->
         <%- include('partials/head', { title: 'טבלת חדרים' }) %>
-        <!-- your styles -->
+
+        <!-- your custom styles -->
         <link rel="stylesheet" href="/style.css" />
+
+        <!-- Bootstrap & FontAwesome -->
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+
+        <!-- jQuery-UI CSS for the datepicker -->
+        <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css" />
     </head>
 
     <body>
@@ -20,9 +27,10 @@
         <div class="page-banner"></div>
 
         <div class="container mt-3 pt-3 text-center">
-            <!-- date selector only -->
+            <!-- date picker only -->
             <div class="mb-3">
-                <input type="date" id="lookupDate" class="form-control" />
+                <!-- ← changed to text for jQuery-UI -->
+                <input type="text" id="lookupDate" class="form-control" autocomplete="off" />
             </div>
         </div>
 
@@ -61,12 +69,30 @@
             </table>
         </div>
 
-        <!-- scripts -->
+        <!-- core scripts -->
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+
+        <!-- jQuery-UI + Hebrew locale for datepicker -->
+        <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-ui-datepicker/1.13.0/i18n/datepicker-he.js"></script>
+
+        <!-- your existing script (initSchedule etc.) -->
         <script src="/script.js"></script>
+
+        <!-- initialize the Hebrew datepicker -->
+        <script>
+            $(function () {
+                $("#lookupDate")
+                    .datepicker($.datepicker.regional["he"])         // Hebrew strings
+                    .datepicker("option", "dateFormat", "dd.mm.yy")   // e.g. 14.05.2025
+                    .datepicker("setDate", new Date())               // default to today
+                    .off("change")                                    // remove old handlers
+                    .on("change", fetchDataByDate);                  // re-fetch on pick
+            });
+        </script>
     </body>
 
 </html>
