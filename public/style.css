@@ -167,7 +167,7 @@ body {
     /* intrinsic width */
 }
 
-/* Header row & time column */
+/* ─── Header row & body time-labels base styling ───────────────── */
 #scheduleTable thead th,
 #scheduleTable tbody th {
     background: var(--sea-medium);
@@ -178,29 +178,45 @@ body {
     border: 1px solid var(--gray);
 }
 
-/* room headers */
+/* room header cells (no extra overrides) */
 #scheduleTable thead th.room-col {}
 
-/* time labels */
+/* ─── Sticky body time-labels (vertical axis) ─────────────────── */
 #scheduleTable tbody th.time-col {
     position: sticky;
+    /* float horizontally */
     right: 0;
-    /* stick to the right edge */
+    /* stick to right edge */
     z-index: 2;
+    /* beneath header corner */
     background: var(--sea-medium);
     min-width: var(--time-col-width);
 }
 
-/* stick the header row */
+/* ─── Sticky header row (horizontal axis) ────────────────────── */
 #scheduleTable thead th {
     position: sticky;
+    /* float vertically */
     top: 0;
+    /* stick to top */
     z-index: 3;
-    /* above time-col */
+    /* above body time-labels */
 }
 
-/* ─── Corner cell (top-right in RTL layout) ───────────────────────── */
-
+/* ─── Corner cell (top-right in RTL layout) ──────────────────── */
+/* ADDED: reuse thead .time-col as your “blank” corner */
+#scheduleTable thead th.time-col {
+    position: sticky;
+    /* float to top-right */
+    top: 0;
+    right: 0;
+    z-index: 4;
+    /* highest layer */
+    background: var(--sea-light);
+    /* match your banner/heading bg */
+    width: var(--time-col-width);
+    /* same as your hour-column width */
+}
 
 /* ─── Body Cells ───────────────────────────────────────────────── */
 #scheduleTable td.grid-cell {
@@ -214,7 +230,7 @@ body {
     position: relative;
 }
 
-/* therapist name inside cell */
+/* therapist name inside each cell */
 .therapist-name {
     position: absolute;
     top: 50%;
@@ -222,6 +238,7 @@ body {
     transform: translate(-50%, -50%);
     font-weight: 500;
 }
+
 
 /* ─── Home Grid Responsive ─────────────────────────────────────── */
 @media (min-width: 1200px) {
