@@ -11,7 +11,7 @@ import { Strategy as LocalStrategy } from 'passport-local';
 import flash from 'express-flash';
 import 'moment/locale/he.js';
 moment.locale('he');
-import { sendWhatsApp } from './utils/whatsapp.js';
+import { sendWhatsApp } from './utils/whatsapp.js'; // Import the WhatsApp function
 
 
 dotenv.config();
@@ -166,16 +166,14 @@ app.post('/submit', isAuthenticated, isAdmin, async (req, res) => {
     const conn = await pool.getConnection();
 
     try {
+        // 1) Begin transaction
         await conn.beginTransaction();
 
-        // 1) Insert the booking(s)
+        // 2) Insert booking(s)
         if (recurringEvent) {
             const times = parseInt(recurringNum, 10);
             for (let i = 0; i < times; i++) {
-                const nextDate = moment(selectedDate)
-                    .add(i, 'weeks')
-                    .format('YYYY-MM-DD');
-
+                const nextDate = moment(selectedDate).add(i, 'weeks').format('YYYY-MM-DD');
                 await conn.execute(
                     `INSERT INTO selected_dates_2_${clinic}
             (selected_date, names, color, startTime, endTime, roomNumber, recurringEvent, recurringNum)
@@ -192,14 +190,14 @@ app.post('/submit', isAuthenticated, isAdmin, async (req, res) => {
             );
         }
 
-        // 2) Commit the DB transaction
+        // 3) Commit & release
         await conn.commit();
         conn.release();
 
-        // 3) If the slot is פנוי, send WhatsApp notifications
+        // 4) If the slot is פנוי, notify via WhatsApp
         if (names.trim() === 'פנוי') {
             const message = `חדר ${roomNumber} פנוי בתאריך ${selectedDate} בין ${startTime} ל–${endTime}`;
-            // TODO: Replace these with the real recipients (or pull from your DB)
+            // Replace with your real recipient list (or fetch from DB)
             const recipients = [
                 '+972509916633',
                 '+972541234567'
@@ -207,17 +205,18 @@ app.post('/submit', isAuthenticated, isAdmin, async (req, res) => {
 
             for (const to of recipients) {
                 try {
-                    await sendWhatsApp(to, message);
-                    console.log(`✅ WhatsApp sent to ${to}`);
+                    const result = await sendWhatsApp(to, message);
+                    console.log(`✅ WhatsApp sent to ${to} (SID: ${result.sid})`);
                 } catch (err) {
                     console.error(`❌ Failed sending WhatsApp to ${to}:`, err.message);
                 }
             }
         }
 
-        // 4) Finally, send success response
+        // 5) Finally respond to the client
         res.send('Room scheduled successfully.');
     } catch (err) {
+        // Roll back on error
         await conn.rollback();
         conn.release();
         console.error(err);
