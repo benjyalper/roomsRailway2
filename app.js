@@ -37,13 +37,6 @@ app.use(passport.session());
 app.use(flash());
 
 export const twilioClient = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
-export function sendWhatsApp(to, body) {
-    return client.messages.create({
-        from: `whatsapp:${process.env.TWILIO_PHONE_NUMBER}`,
-        to: `whatsapp:${to}`,
-        body
-    });
-}
 
 
 // Helper function to send a WhatsApp message
