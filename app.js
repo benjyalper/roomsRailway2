@@ -12,6 +12,7 @@ import flash from 'express-flash';
 import 'moment/locale/he.js';
 moment.locale('he');
 import { sendWhatsApp } from './utils/whatsapp.js'; // Import the WhatsApp function
+import { sendMail } from './utils/mail.js';
 
 
 dotenv.config();
@@ -196,20 +197,13 @@ app.post('/submit', isAuthenticated, isAdmin, async (req, res) => {
 
         // 4) If the slot is פנוי, notify via WhatsApp
         if (names.trim() === 'פנוי') {
-            const message = `חדר ${roomNumber} פנוי בתאריך ${selectedDate} בין ${startTime} ל–${endTime}`;
-            // Replace with your real recipient list (or fetch from DB)
-            const recipients = [
-                '+972509916633',
-                '+972541234567'
-            ];
-
-            for (const to of recipients) {
-                try {
-                    const result = await sendWhatsApp(to, message);
-                    console.log(`✅ WhatsApp sent to ${to} (SID: ${result.sid})`);
-                } catch (err) {
-                    console.error(`❌ Failed sending WhatsApp to ${to}:`, err.message);
-                }
+            const subject = `חדר ${roomNumber} פנוי!`;
+            const text = `חדר ${roomNumber} פנוי בתאריך ${selectedDate} בין ${startTime} ל–${endTime}`;
+            try {
+                await sendMail(subject, text);
+                console.log('✅ Notification email sent');
+            } catch (mailErr) {
+                console.error('❌ sendMail error:', mailErr);
             }
         }
 
