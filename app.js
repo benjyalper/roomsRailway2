@@ -209,6 +209,7 @@ app.post('/submit', isAuthenticated, isAdmin, async (req, res) => {
 
         // Send WhatsApp if therapist is פנוי
         if (names.trim() === 'פנוי') {
+            console.log('💡 about to send WhatsApp to:', recipients);
             const message = `חדר ${roomNumber} פנוי בתאריך ${selectedDate} בין ${startTime} ל–${endTime}`;
             const recipients = [
                 '+972509916633',
