@@ -14,7 +14,7 @@ const client = twilio(
  */
 export function sendWhatsApp(to, body) {
     return client.messages.create({
-        from: process.env.TWILIO_WHATSAPP_NUMBER,     // e.g. 'whatsapp:+14155238886'
+        from: process.env.TWILIO_PHONE_NUMBER,     // e.g. 'whatsapp:+14155238886'
         to: `whatsapp:${to}`,                       // e.g. 'whatsapp:+972501234567'
         body
     });

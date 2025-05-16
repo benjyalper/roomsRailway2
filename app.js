@@ -36,16 +36,24 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
 
-const twilioClient = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
-
-// Helper function to send a WhatsApp message
-async function sendWhatsApp(to, body) {
-    return await twilioClient.messages.create({
-        from: 'whatsapp:' + process.env.TWILIO_PHONE_NUMBER,
-        to: 'whatsapp:' + to,
+export const twilioClient = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
+export function sendWhatsApp(to, body) {
+    return client.messages.create({
+        from: `whatsapp:${process.env.TWILIO_PHONE_NUMBER}`,
+        to: `whatsapp:${to}`,
         body
     });
 }
+
+
+// Helper function to send a WhatsApp message
+// async function sendWhatsApp(to, body) {
+//     return await twilioClient.messages.create({
+//         from: 'whatsapp:' + process.env.TWILIO_PHONE_NUMBER,
+//         to: 'whatsapp:' + to,
+//         body
+//     });
+// }
 // ─── VIEW ENGINE ─────────────────────────────────────────────────────────────
 app.set('view engine', 'ejs');
 app.set('views', './views');
