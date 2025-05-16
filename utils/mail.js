@@ -22,11 +22,24 @@ transporter.verify((err, success) => {
     }
 });
 
-export function sendMail(subject, text) {
-    return transporter.sendMail({
-        from: process.env.EMAIL_FROM,
-        to: process.env.EMAIL_TO,
-        subject,
-        text
-    });
+export async function sendMail(subject, text) {
+    try {
+        const info = await transporter.sendMail({
+            from: process.env.EMAIL_FROM,
+            to: process.env.EMAIL_TO,
+            subject,
+            text
+        });
+        console.log('✉️  sendMail info:', {
+            messageId: info.messageId,
+            accepted: info.accepted,
+            rejected: info.rejected,
+            envelope: info.envelope
+        });
+        return info;
+    } catch (err) {
+        console.error('🚨 sendMail threw error:', err);
+        throw err;
+    }
 }
+
