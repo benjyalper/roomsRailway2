@@ -172,15 +172,28 @@ function initRoomForm() {
             recurringEvent: $('#recurringEvent').is(':checked'),
             recurringNum: $('#recurringNum').val()
         };
+
+        // פנוי detection and message submission
+        if (data.names.trim() === "פנוי") {
+            const messageInput = `חדר ${data.roomNumber} פנוי בתאריך ${data.selectedDate} בשעות ${data.startTime} - ${data.endTime}`;
+            await fetch('/submit_message', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ input: messageInput })
+            });
+        }
+
         await fetch('/submit', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data)
         });
+
         Swal.fire('נשמר!', '', 'success');
         $('#roomForm')[0].reset();
         updateEndTimeOptions();
     });
+
 }
 
 function updateEndTimeOptions() {
