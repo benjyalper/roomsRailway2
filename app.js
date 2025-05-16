@@ -11,6 +11,8 @@ import { Strategy as LocalStrategy } from 'passport-local';
 import flash from 'express-flash';
 import 'moment/locale/he.js';
 moment.locale('he');
+import { sendWhatsApp } from './utils/whatsapp.js';
+
 
 dotenv.config();
 const app = express();
@@ -149,45 +151,77 @@ app.get('/fetchDataByDate', isAuthenticated, async (req, res) => {
 // …the rest of your routes remain exactly the same…
 // ─── SUBMIT BOOKING ────────────────────────────────────────────────────────────
 app.post('/submit', isAuthenticated, isAdmin, async (req, res) => {
-    try {
-        const {
-            selectedDate, names, selectedColor,
-            startTime, endTime, roomNumber,
-            recurringEvent, recurringNum
-        } = req.body;
+    const {
+        selectedDate,
+        names,
+        selectedColor,
+        startTime,
+        endTime,
+        roomNumber,
+        recurringEvent,
+        recurringNum
+    } = req.body;
 
-        const clinic = req.user.clinic;
-        const conn = await pool.getConnection();
+    const clinic = req.user.clinic;
+    const conn = await pool.getConnection();
+
+    try {
         await conn.beginTransaction();
 
+        // 1) Insert the booking(s)
         if (recurringEvent) {
             const times = parseInt(recurringNum, 10);
             for (let i = 0; i < times; i++) {
                 const nextDate = moment(selectedDate)
                     .add(i, 'weeks')
                     .format('YYYY-MM-DD');
+
                 await conn.execute(
                     `INSERT INTO selected_dates_2_${clinic}
-            (selected_date,names,color,startTime,endTime,roomNumber,recurringEvent,recurringNum)
-           VALUES(?,?,?,?,?,?,?,?)`,
+            (selected_date, names, color, startTime, endTime, roomNumber, recurringEvent, recurringNum)
+           VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
                     [nextDate, names, selectedColor, startTime, endTime, roomNumber, true, times]
                 );
             }
         } else {
             await conn.execute(
                 `INSERT INTO selected_dates_2_${clinic}
-          (selected_date,names,color,startTime,endTime,roomNumber,recurringEvent)
-         VALUES(?,?,?,?,?,?,?)`,
+          (selected_date, names, color, startTime, endTime, roomNumber, recurringEvent)
+         VALUES (?, ?, ?, ?, ?, ?, ?)`,
                 [selectedDate, names, selectedColor, startTime, endTime, roomNumber, false]
             );
         }
 
+        // 2) Commit the DB transaction
         await conn.commit();
         conn.release();
+
+        // 3) If the slot is פנוי, send WhatsApp notifications
+        if (names.trim() === 'פנוי') {
+            const message = `חדר ${roomNumber} פנוי בתאריך ${selectedDate} בין ${startTime} ל–${endTime}`;
+            // TODO: Replace these with the real recipients (or pull from your DB)
+            const recipients = [
+                '+972509916633',
+                '+972541234567'
+            ];
+
+            for (const to of recipients) {
+                try {
+                    await sendWhatsApp(to, message);
+                    console.log(`✅ WhatsApp sent to ${to}`);
+                } catch (err) {
+                    console.error(`❌ Failed sending WhatsApp to ${to}:`, err.message);
+                }
+            }
+        }
+
+        // 4) Finally, send success response
         res.send('Room scheduled successfully.');
-    } catch (e) {
-        console.error(e);
-        res.status(500).send(e.message);
+    } catch (err) {
+        await conn.rollback();
+        conn.release();
+        console.error(err);
+        res.status(500).send(err.message);
     }
 });
 
