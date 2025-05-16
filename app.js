@@ -11,9 +11,7 @@ import { Strategy as LocalStrategy } from 'passport-local';
 import flash from 'express-flash';
 import 'moment/locale/he.js';
 moment.locale('he');
-import twilio from 'twilio';
 import { sendWhatsApp } from './utils/whatsapp.js'; // Import the WhatsApp function
-
 
 
 dotenv.config();
@@ -36,17 +34,6 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
 
-export const twilioClient = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
-
-
-// Helper function to send a WhatsApp message
-// async function sendWhatsApp(to, body) {
-//     return await twilioClient.messages.create({
-//         from: 'whatsapp:' + process.env.TWILIO_PHONE_NUMBER,
-//         to: 'whatsapp:' + to,
-//         body
-//     });
-// }
 // ─── VIEW ENGINE ─────────────────────────────────────────────────────────────
 app.set('view engine', 'ejs');
 app.set('views', './views');
@@ -179,38 +166,38 @@ app.post('/submit', isAuthenticated, isAdmin, async (req, res) => {
     const conn = await pool.getConnection();
 
     try {
-        // Begin transaction
+        // 1) Begin transaction
         await conn.beginTransaction();
 
-        // Insert booking(s)
+        // 2) Insert booking(s)
         if (recurringEvent) {
             const times = parseInt(recurringNum, 10);
             for (let i = 0; i < times; i++) {
                 const nextDate = moment(selectedDate).add(i, 'weeks').format('YYYY-MM-DD');
                 await conn.execute(
                     `INSERT INTO selected_dates_2_${clinic}
-                    (selected_date, names, color, startTime, endTime, roomNumber, recurringEvent, recurringNum)
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+            (selected_date, names, color, startTime, endTime, roomNumber, recurringEvent, recurringNum)
+           VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
                     [nextDate, names, selectedColor, startTime, endTime, roomNumber, true, times]
                 );
             }
         } else {
             await conn.execute(
                 `INSERT INTO selected_dates_2_${clinic}
-                (selected_date, names, color, startTime, endTime, roomNumber, recurringEvent)
-                VALUES (?, ?, ?, ?, ?, ?, ?)`,
+          (selected_date, names, color, startTime, endTime, roomNumber, recurringEvent)
+         VALUES (?, ?, ?, ?, ?, ?, ?)`,
                 [selectedDate, names, selectedColor, startTime, endTime, roomNumber, false]
             );
         }
 
-        // Commit transaction
+        // 3) Commit & release
         await conn.commit();
         conn.release();
 
-        // Send WhatsApp if therapist is פנוי
+        // 4) If the slot is פנוי, notify via WhatsApp
         if (names.trim() === 'פנוי') {
-            console.log('💡 about to send WhatsApp to:', recipients);
             const message = `חדר ${roomNumber} פנוי בתאריך ${selectedDate} בין ${startTime} ל–${endTime}`;
+            // Replace with your real recipient list (or fetch from DB)
             const recipients = [
                 '+972509916633',
                 '+972541234567'
@@ -226,16 +213,16 @@ app.post('/submit', isAuthenticated, isAdmin, async (req, res) => {
             }
         }
 
-        // Final response
+        // 5) Finally respond to the client
         res.send('Room scheduled successfully.');
     } catch (err) {
+        // Roll back on error
         await conn.rollback();
         conn.release();
         console.error(err);
         res.status(500).send(err.message);
     }
 });
-
 
 // ─── DELETE BOOKING ────────────────────────────────────────────────────────────
 app.delete('/deleteEntry', isAuthenticated, isAdmin, async (req, res) => {
