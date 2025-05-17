@@ -58,7 +58,7 @@ body {
 
 .calm-navbar .navbar-brand i,
 .calm-navbar .nav-link {
-    color: var(--white) !important;
+    color: var(--sea-deep) !important;
 }
 
 .calm-navbar .nav-link:hover {
