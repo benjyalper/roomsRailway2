@@ -268,3 +268,21 @@ body {
         grid-template-columns: repeat(2, minmax(120px, 1fr));
     }
 }
+
+/* Center the schedule table on larger screens */
+@media (min-width: 992px) {
+    .schedule-wrapper {
+        display: flex;
+        /* make wrapper a flex container */
+        justify-content: center;
+        /* center its contents */
+    }
+
+    /* optional: ensure the table itself doesn’t shrink */
+    #scheduleTable {
+        width: max-content;
+        /* your intrinsic width */
+        margin: 0;
+        /* reset any default margins */
+    }
+}
