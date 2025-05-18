@@ -5,8 +5,8 @@
 :root {
     --sea-deep: #247794;
     --sea-medium: #018594;
-    --sea-lightBlue: #9fe9f1;
-    --sea-light: #e2dcc3;
+    --sea-lightBlue: #d3f8fc;
+    --sea-light: #efede3;
     --white: #ffffff;
     --gray-light: #f7f7f8;
     --gray: #e0e0e0;
@@ -35,7 +35,7 @@ body {
     background: var(--sea-light);
     color: var(--sea-deep);
     padding: .75rem 1rem;
-    border-radius: 8px;
+    height: 56px;
     margin-bottom: 1rem;
     text-align: center;
     font-size: 1.2rem;
