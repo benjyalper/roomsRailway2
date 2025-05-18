@@ -244,6 +244,14 @@ body {
     font-weight: 500;
 }
 
+.grid-cell .therapist-name {
+    /* choose one of the two approaches above */
+    white-space: normal;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    /* etc. */
+}
+
 
 /* ─── Home Grid Responsive ─────────────────────────────────────── */
 @media (min-width: 1200px) {
