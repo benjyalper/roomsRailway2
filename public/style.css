@@ -6,7 +6,7 @@
     --sea-deep: #247794;
     --sea-medium: #018594;
     --sea-lightBlue: #9fe9f1;
-    --sea-light: #f9f6eb;
+    --sea-light: #e2dcc3;
     --white: #ffffff;
     --gray-light: #f7f7f8;
     --gray: #e0e0e0;
@@ -242,14 +242,6 @@ body {
     left: 50%;
     transform: translate(-50%, -50%);
     font-weight: 500;
-}
-
-.grid-cell .therapist-name {
-    /* choose one of the two approaches above */
-    white-space: normal;
-    word-break: break-word;
-    overflow-wrap: break-word;
-    /* etc. */
 }
 
 
