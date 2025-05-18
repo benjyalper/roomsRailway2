@@ -224,24 +224,48 @@ body {
 }
 
 /* ─── Body Cells ───────────────────────────────────────────────── */
+/* ─── Body Cells ───────────────────────────────────────────────── */
 #scheduleTable td.grid-cell {
     background: var(--white);
     min-width: 120px;
     height: 40px;
+    /* keep cells at exactly 40px tall */
     border: 1px solid var(--gray);
-    white-space: nowrap;
     overflow: hidden;
-    text-overflow: ellipsis;
+    /* hide any text that spills past 40px */
     position: relative;
 }
 
+
+/* ─── Body Cells (hover effect) ───────────────────────────────── */
+
+#scheduleTable td.grid-cell:hover {
+    background: var(--sea-lightBlue);
+    cursor: pointer;
+}
+
 /* therapist name inside each cell */
+/* ─── Therapist Name Wrapping in fixed-height cells ───────────────── */
 .therapist-name {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     font-weight: 500;
+
+    /* wrap long names inside the 40px cell */
+    white-space: normal;
+    /* allow line breaks */
+    word-break: break-word;
+    /* break long words */
+    overflow-wrap: break-word;
+    /* extra wrap support */
+    text-align: center;
+    /* keep it centered */
+    width: calc(100% - 8px);
+    /* give some horizontal padding */
+    line-height: 1.1;
+    /* tighten lines so up to 2 lines fit */
 }
 
 
