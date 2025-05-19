@@ -13,6 +13,7 @@ import 'moment/locale/he.js';
 moment.locale('he');
 import { sendWhatsApp } from './utils/whatsapp.js'; // Import the WhatsApp function
 import { sendMail } from './utils/mail.js';
+import { sendSMS } from './utils/sms.js';
 
 
 dotenv.config();
