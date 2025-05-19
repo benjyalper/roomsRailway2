@@ -199,16 +199,24 @@ app.post('/submit', isAuthenticated, isAdmin, async (req, res) => {
         if (names.trim() === 'פנוי') {
             const subject = `חדר ${roomNumber} פנוי!`;
             const text = `חדר ${roomNumber} פנוי בתאריך ${selectedDate} בין ${startTime} ל–${endTime}`;
+            const to = '+972' + '0509916633'.slice(1);
             try {
                 await sendMail(subject, text);
                 console.log('✅ Notification email sent');
             } catch (mailErr) {
                 console.error('❌ sendMail error:', mailErr);
             }
+
+            try {
+                await sendSMS(to, text);
+                console.log(`✅ SMS sent to ${to}`);
+            } catch (err) {
+                console.error(`❌ SMS error for ${to}:`, err);
+            }
         }
 
-        // 5) Finally respond to the client
-        res.send('Room scheduled successfully.');
+        return res.json({ success: true, message: 'Room scheduled successfully.' });
+
     } catch (err) {
         // Roll back on error
         await conn.rollback();
