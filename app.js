@@ -200,20 +200,36 @@ app.post('/submit', isAuthenticated, isAdmin, async (req, res) => {
         if (names.trim() === 'פנוי') {
             const subject = `חדר ${roomNumber} פנוי!`;
             const text = `חדר ${roomNumber} פנוי בתאריך ${selectedDate} בין ${startTime} ל–${endTime}`;
-            const to = '+972' + '0509916633'.slice(1);
+            // const to = '+972' + '0509916633'.slice(1);
+            const recipients = [
+                '+972508294194',  // e.g. your first user
+                '+972509916633'   // another user…
+            ];
+
             try {
                 await sendMail(subject, text);
                 console.log('✅ Notification email sent');
             } catch (mailErr) {
                 console.error('❌ sendMail error:', mailErr);
             }
+            //emails are defined in railway variables
 
-            try {
-                await sendSMS(to, text);
-                console.log(`✅ SMS sent to ${to}`);
-            } catch (err) {
-                console.error(`❌ SMS error for ${to}:`, err);
+            // try {
+            //     await sendSMS(to, text);
+            //     console.log(`✅ SMS sent to ${to}`);
+            // } catch (err) {
+            //     console.error(`❌ SMS error for ${to}:`, err);
+            // }
+
+            for (const to of recipients) {
+                try {
+                    await sendSMS(to, text);
+                    console.log(`✅ SMS sent to ${to}`);
+                } catch (smsErr) {
+                    console.error(`❌ SMS error for ${to}:`, smsErr);
+                }
             }
+            //phone numbers are defined in array above
         }
 
         return res.json({ success: true, message: 'Room scheduled successfully.' });
