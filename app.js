@@ -51,6 +51,8 @@ const users = [
     { id: 7, phone: '0524393500', role: 'admin', clinic: 'marbah' },
     { id: 8, phone: '0546718945', role: 'admin', clinic: 'marbah' },
     { id: 9, phone: '0524543471', role: 'admin', clinic: 'marbah' },
+    //demo users
+    { id: 10, phone: '0504444445', role: 'user', clinic: 'demo' },
 ];
 
 // ─── PASSPORT LOCAL STRATEGY (PHONE ONLY) ───────────────────────────────────
