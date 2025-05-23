@@ -45,7 +45,8 @@ const users = [
     { id: 1, phone: '0509916633', role: 'admin', clinic: 'marbah' },
     { id: 2, phone: '0506431842', role: 'admin', clinic: 'marbah' },
     { id: 3, phone: '0546634482', role: 'admin', clinic: 'marbah' },
-    { id: 4, phone: '0502476078', role: 'user', clinic: 'marbah' },
+    { id: 4, phone: '0599999999', role: 'admin', clinic: 'marbah' },
+
     { id: 5, phone: '0504444444', role: 'user', clinic: 'clalit' },
     { id: 6, phone: '0505555555', role: 'user', clinic: 'marbah' },
     { id: 7, phone: '0524393500', role: 'admin', clinic: 'marbah' },
