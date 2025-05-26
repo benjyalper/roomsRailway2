@@ -14,6 +14,8 @@ moment.locale('he');
 import { sendWhatsApp } from './utils/whatsapp.js'; // Import the WhatsApp function
 import { sendMail } from './utils/mail.js';
 import { sendSMS } from './utils/sms.js';
+import { clinicRecipients } from './config/clinic-recipients.js';
+
 
 
 dotenv.config();
@@ -211,15 +213,25 @@ app.post('/submit', isAuthenticated, isAdmin, async (req, res) => {
             // const to = '+972' + '0509916633'.slice(1);
             const recipients = [
                 '+972508294194',  // e.g. your first user
-                '+972509916633'   // another user…
+                '+972509916633',
+                '+972507779390' // another user…
             ];
 
-            try {
-                await sendMail(subject, text);
-                console.log('✅ Notification email sent');
-            } catch (mailErr) {
-                console.error('❌ sendMail error:', mailErr);
+            const toEmails = clinicRecipients[clinic] || [];
+            if (toEmails.Length) {
+                await sendMail(subject, text, toEmails);
+                console.log('✅ Notification email sent to:', toEmails);
             }
+
+            const toSMS = recipients[clinic] || [];
+            for (const nr of toSMS) await sendSMS(nr, text);
+
+            // try {
+            //     await sendMail(subject, text);
+            //     console.log('✅ Notification email sent');
+            // } catch (mailErr) {
+            //     console.error('❌ sendMail error:', mailErr);
+            // }
             //emails are defined in railway variables
 
             // try {
@@ -229,14 +241,14 @@ app.post('/submit', isAuthenticated, isAdmin, async (req, res) => {
             //     console.error(`❌ SMS error for ${to}:`, err);
             // }
 
-            for (const to of recipients) {
-                try {
-                    await sendSMS(to, text);
-                    console.log(`✅ SMS sent to ${to}`);
-                } catch (smsErr) {
-                    console.error(`❌ SMS error for ${to}:`, smsErr);
-                }
-            }
+            // for (const to of recipients) {
+            //     try {
+            //         await sendSMS(to, text);
+            //         console.log(`✅ SMS sent to ${to}`);
+            //     } catch (smsErr) {
+            //         console.error(`❌ SMS error for ${to}:`, smsErr);
+            //     }
+            // }
             //phone numbers are defined in array above
         }
 
