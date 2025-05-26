@@ -218,7 +218,7 @@ app.post('/submit', isAuthenticated, isAdmin, async (req, res) => {
             ];
 
             const toEmails = clinicRecipients[clinic] || [];
-            if (toEmails.Length) {
+            if (toEmails.length) {
                 await sendMail(subject, text, toEmails);
                 console.log('✅ Notification email sent to:', toEmails);
             }
