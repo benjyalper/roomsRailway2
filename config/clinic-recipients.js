@@ -1,8 +1,7 @@
 // config/clinic-recipients.js
 export const clinicEmailRecipients = {
     marbah: [
-        'alice@marbah.health',
-        'moshe@marbah.health'
+        'benjyalper@hotmail.com', 'bintyalper@gmail.com', 'benjyalper@hotmail.com', 'inbalkeshet111@hotmail.com', 'yaniv.shavit@gmail.com', 'morshani20@gmail.com', 'rnt832@gmail.com'
     ],
     clalit: [
         'dalia@clalit.org',
