@@ -14,7 +14,7 @@ moment.locale('he');
 import { sendWhatsApp } from './utils/whatsapp.js'; // Import the WhatsApp function
 import { sendMail } from './utils/mail.js';
 import { sendSMS } from './utils/sms.js';
-import { clinicRecipients } from './config/clinic-recipients.js';
+import { clinicEmailRecipients, clinicSmsRecipients } from './config/clinic-recipients.js';
 
 
 
@@ -217,14 +217,17 @@ app.post('/submit', isAuthenticated, isAdmin, async (req, res) => {
                 '+972507779390' // another user…
             ];
 
-            const toEmails = clinicRecipients[clinic] || [];
+            const toEmails = clinicEmailRecipients[clinic] || [];
             if (toEmails.length) {
                 await sendMail(subject, text, toEmails);
                 console.log('✅ Notification email sent to:', toEmails);
             }
 
-            const toSMS = recipients[clinic] || [];
-            for (const nr of toSMS) await sendSMS(nr, text);
+            const toSMS = clinicSmsRecipients[clinic] || [];
+            for (const nr of toSMS) {
+                await sendSMS(nr, text);
+                console.log(`📲 SMS sent to ${nr}`);
+            }
 
             // try {
             //     await sendMail(subject, text);
