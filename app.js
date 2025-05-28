@@ -300,6 +300,31 @@ app.delete('/deleteEntry', isAuthenticated, isAdmin, async (req, res) => {
     }
 });
 
+// ─── DELETE RECURRING ───────────────────────────────────────────────────────
+app.delete('/deleteRecurring', isAuthenticated, isAdmin, async (req, res) => {
+    try {
+        const { selectedDate, roomNumber, startTime } = req.body;
+        const clinic = req.user.clinic;
+        const conn = await pool.getConnection();
+
+        // Remove every booking for this room+time on-or-after the clicked date
+        await conn.execute(
+            `DELETE FROM selected_dates_2_${clinic}
+         WHERE roomNumber = ?
+           AND startTime  = ?
+           AND selected_date >= ?`,
+            [roomNumber, startTime, selectedDate]
+        );
+
+        conn.release();
+        res.sendStatus(200);
+    } catch (e) {
+        console.error(e);
+        res.status(500).send(e.message);
+    }
+});
+
+
 // ─── MESSAGES API ─────────────────────────────────────────────────────────────
 app.get('/get_last_messages', isAuthenticated, async (req, res) => {
     try {

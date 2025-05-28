@@ -113,18 +113,21 @@ function updateScheduleGrid(rows) {
             .off('click')
             .on('click', () => {
                 Swal.fire({
-                    title: 'האם להסיר פגישה זו?',
+                    title: 'בחר פעולה',
+                    showDenyButton: true,
                     showCancelButton: true,
-                    confirmButtonText: 'כן',
-                    cancelButtonText: 'לא'
+                    confirmButtonText: 'מחק פגישה זו',
+                    denyButtonText: 'מחק את כל הפגישות הבאות',
+                    cancelButtonText: 'בטל'
                 }).then(res => {
                     if (res.isConfirmed) {
-                        deleteEntry(
-                            $('#lookupDate').val(),
-                            r.roomNumber,
-                            r.startTime,
-                            r.endTime
-                        ).then(fetchDataByDate);
+                        // רק הפגישה הנוכחית
+                        deleteEntry(r.selected_date, r.roomNumber, r.startTime, r.endTime)
+                            .then(fetchDataByDate);
+                    } else if (res.isDenied) {
+                        // כל הפגישות בשרשור החל מהיום
+                        deleteRecurring(r.selected_date, r.roomNumber, r.startTime)
+                            .then(fetchDataByDate);
                     }
                 });
             });
@@ -143,6 +146,15 @@ function deleteEntry(date, room, start, end) {
         })
     });
 }
+
+function deleteRecurring(date, room, start) {
+    return fetch('/deleteRecurring', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ selectedDate: date, roomNumber: room, startTime: start })
+    });
+}
+
 
 // ... the rest of your initRoomForm, messages, etc. remains unchanged ...
 
