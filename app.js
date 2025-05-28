@@ -194,78 +194,126 @@ app.post('/submit', isAuthenticated, isAdmin, async (req, res) => {
         // 1) Begin transaction
         await conn.beginTransaction();
 
-        // 2) Insert booking(s)
-        if (recurringEvent) {
+        // 2) If this is a 'פנוי' submission, slice any overlapping bookings
+        if (names.trim() === 'פנוי') {
+            // Find all bookings that overlap the free slot
+            const [overlaps] = await conn.execute(
+                `SELECT id, startTime AS s, endTime AS e, names, color
+           FROM selected_dates_2_${clinic}
+          WHERE selected_date = ?
+            AND roomNumber    = ?
+            AND s < ?
+            AND e > ?`,
+                [selectedDate, roomNumber, endTime, startTime]
+            );
+
+            for (const b of overlaps) {
+                const origS = b.s;
+                const origE = b.e;
+
+                // 2a) Booking fully contains the free slot → split into two
+                if (origS < startTime && origE > endTime) {
+                    // shrink the existing row to end at free.start
+                    await conn.execute(
+                        `UPDATE selected_dates_2_${clinic}
+               SET endTime = ?
+             WHERE id = ?`,
+                        [startTime, b.id]
+                    );
+                    // insert the tail-part from free.end to orig end
+                    await conn.execute(
+                        `INSERT INTO selected_dates_2_${clinic}
+               (selected_date, names, color, startTime, endTime, roomNumber, recurringEvent)
+             VALUES (?, ?, ?, ?, ?, ?, false)`,
+                        [selectedDate, b.names, b.color, endTime, origE, roomNumber]
+                    );
+
+                    // 2b) Overlaps only at the front → clip the end
+                } else if (origS < startTime) {
+                    await conn.execute(
+                        `UPDATE selected_dates_2_${clinic}
+               SET endTime = ?
+             WHERE id = ?`,
+                        [startTime, b.id]
+                    );
+
+                    // 2c) Overlaps only at the back → clip the start
+                } else if (origE > endTime) {
+                    await conn.execute(
+                        `UPDATE selected_dates_2_${clinic}
+               SET startTime = ?
+             WHERE id = ?`,
+                        [endTime, b.id]
+                    );
+
+                    // 2d) Booking fully inside free slot → delete it
+                } else {
+                    await conn.execute(
+                        `DELETE FROM selected_dates_2_${clinic}
+               WHERE id = ?`,
+                        [b.id]
+                    );
+                }
+            }
+
+            // 3) Insert the single 'פנוי' row (no recurrence)
+            await conn.execute(
+                `INSERT INTO selected_dates_2_${clinic}
+           (selected_date, names, color, startTime, endTime, roomNumber, recurringEvent)
+         VALUES (?, ?, ?, ?, ?, ?, false)`,
+                [selectedDate, names, selectedColor, startTime, endTime, roomNumber]
+            );
+
+        } else if (recurringEvent) {
+            // 4) Original recurrence logic for non-פנוי names
             const times = parseInt(recurringNum, 10);
             for (let i = 0; i < times; i++) {
-                const nextDate = moment(selectedDate).add(i, 'weeks').format('YYYY-MM-DD');
+                const nextDate = moment(selectedDate)
+                    .add(i, 'weeks')
+                    .format('YYYY-MM-DD');
                 await conn.execute(
                     `INSERT INTO selected_dates_2_${clinic}
-            (selected_date, names, color, startTime, endTime, roomNumber, recurringEvent, recurringNum)
+             (selected_date, names, color, startTime, endTime, roomNumber, recurringEvent, recurringNum)
            VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
                     [nextDate, names, selectedColor, startTime, endTime, roomNumber, true, times]
                 );
             }
+
         } else {
+            // 5) Original single-insert for non-פנוי, non-recurring
             await conn.execute(
                 `INSERT INTO selected_dates_2_${clinic}
-          (selected_date, names, color, startTime, endTime, roomNumber, recurringEvent)
+           (selected_date, names, color, startTime, endTime, roomNumber, recurringEvent)
          VALUES (?, ?, ?, ?, ?, ?, ?)`,
                 [selectedDate, names, selectedColor, startTime, endTime, roomNumber, false]
             );
         }
 
-        // 3) Commit & release
+        // 6) Commit & release
         await conn.commit();
         conn.release();
 
-        // 4) If the slot is פנוי, notify via WhatsApp
+        // 7) Send notifications if this was a 'פנוי' slot
         if (names.trim() === 'פנוי') {
             const subject = `חדר ${roomNumber} פנוי!`;
-            const text = `חדר ${roomNumber} פנוי בתאריך ${selectedDate} בין ${startTime} ל–${endTime}`;
-            // const to = '+972' + '0509916633'.slice(1);
-            const recipients = [
-                '+972508294194',  // e.g. your first user
-                '+972509916633',
-                '+972507779390' // another user…
-            ];
+            const text = `חדר ${roomNumber} פנוי בתאריך ${selectedDate} בין ${startTime}–${endTime}`;
 
+            // Email
             const toEmails = clinicEmailRecipients[clinic] || [];
             if (toEmails.length) {
                 await sendMail(subject, text, toEmails);
                 console.log('✅ Notification email sent to:', toEmails);
             }
 
+            // SMS
             const toSMS = clinicSmsRecipients[clinic] || [];
             for (const nr of toSMS) {
                 await sendSMS(nr, text);
                 console.log(`📲 SMS sent to ${nr}`);
             }
 
-            // try {
-            //     await sendMail(subject, text);
-            //     console.log('✅ Notification email sent');
-            // } catch (mailErr) {
-            //     console.error('❌ sendMail error:', mailErr);
-            // }
-            //emails are defined in railway variables
-
-            // try {
-            //     await sendSMS(to, text);
-            //     console.log(`✅ SMS sent to ${to}`);
-            // } catch (err) {
-            //     console.error(`❌ SMS error for ${to}:`, err);
-            // }
-
-            // for (const to of recipients) {
-            //     try {
-            //         await sendSMS(to, text);
-            //         console.log(`✅ SMS sent to ${to}`);
-            //     } catch (smsErr) {
-            //         console.error(`❌ SMS error for ${to}:`, smsErr);
-            //     }
-            // }
-            //phone numbers are defined in array above
+            // WhatsApp (if desired)
+            // await sendWhatsApp(toWhatsApp, text);
         }
 
         return res.json({ success: true, message: 'Room scheduled successfully.' });
@@ -278,6 +326,7 @@ app.post('/submit', isAuthenticated, isAdmin, async (req, res) => {
         res.status(500).send(err.message);
     }
 });
+
 
 // ─── DELETE BOOKING ────────────────────────────────────────────────────────────
 app.delete('/deleteEntry', isAuthenticated, isAdmin, async (req, res) => {
