@@ -62,15 +62,15 @@ const users = [
     { id: 16, phone: '0528204818', role: 'admin', clinic: 'marbah' },
     { id: 17, phone: '0522261073', role: 'admin', clinic: 'marbah' },
 
-    { id: 5, phone: '0504444444', role: 'user', clinic: 'clalit' },
-    { id: 6, phone: '0505555522', role: 'user', clinic: 'marbah' },
-    { id: 7, phone: '0524393500', role: 'admin', clinic: 'marbah' },
-    { id: 8, phone: '0546718945', role: 'admin', clinic: 'marbah' },
-    { id: 9, phone: '0590909090', role: 'admin', clinic: 'marbah' },
+    { id: 18, phone: '0504444444', role: 'user', clinic: 'clalit' },
+    { id: 19, phone: '0505555522', role: 'user', clinic: 'marbah' },
+    { id: 20, phone: '0524393500', role: 'admin', clinic: 'marbah' },
+    { id: 21, phone: '0546718945', role: 'admin', clinic: 'marbah' },
+    { id: 22, phone: '0590909090', role: 'admin', clinic: 'marbah' },
     //demo users
-    { id: 10, phone: '0505555555', role: 'admin', clinic: 'demo1' },
-    { id: 11, phone: '0502476078', role: 'admin', clinic: 'demo1' },
-    { id: 11, phone: '0547515021', role: 'admin', clinic: 'demo1' },
+    { id: 23, phone: '0505555555', role: 'admin', clinic: 'demo1' },
+    { id: 24, phone: '0502476078', role: 'admin', clinic: 'demo1' },
+    { id: 25, phone: '0547515021', role: 'admin', clinic: 'demo1' },
 ];
 
 // ─── PASSPORT LOCAL STRATEGY (PHONE ONLY) ───────────────────────────────────
