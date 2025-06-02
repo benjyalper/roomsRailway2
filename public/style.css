@@ -65,6 +65,34 @@ body {
     color: var(--sea-light) !important;
 }
 
+/* ─── Clinic Name (between navbar and banner) ───────────────────────── */
+.clinic-name {
+    /* Use the same Poppins font but a lighter weight for a “calm” look */
+    font-family: 'Poppins', sans-serif;
+    font-weight: 300;
+    /* light */
+    font-size: 1.25rem;
+    /* adjust as needed */
+
+    /* deep-blue from the palette, with slight transparency (80% opacity) */
+    color: rgba(36, 119, 148, 0.8);
+    /* same as var(--sea-deep) but 0.8 alpha */
+
+    text-align: center;
+    padding-top: 0;
+    padding-bottom: 0.5rem;
+    padding-left: 0;
+    padding-right: 0;
+    /* some vertical spacing */
+    margin-top: -5px;
+    /* if you need extra spacing, tweak here */
+    margin-bottom: 0.5rem;
+    /* separate from the banner */
+
+    /* Optional: slightly increase line-height for more breathing room */
+    line-height: 1.4;
+}
+
 /* ─── Form (Sign-In) ───────────────────────────────────────────── */
 .form-container {
     background: var(--white);

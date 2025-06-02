@@ -142,14 +142,33 @@ app.get('/logout', (req, res) => {
 });
 
 // ─── PAGE ROUTES ──────────────────────────────────────────────────────────────
+// מיפוי מפתח המרפאה לשם קריא (display name) בעברית
+const clinicDisplayNames = {
+    marbah: 'מרבך ילד ונוער',
+    clalit: 'מרפאת כללית',
+    demo1: 'מרפאת ילד ונוער',
+    nefesh: 'מרפאת בריאות הנפש',
+    // הוסיפו כאן מיפויים נוספים לפי הצורך
+};
+
 app.get('/home', isAuthenticated, (req, res) => {
-    const clinic = req.user.clinic;       // e.g. "marbah" or "clalit"
+    // 1) נקודת כניסה: קבלת המפתח (key) של המרפאה מהמשתמש
+    const clinic = req.user.clinic;            // למשל: "marbah" או "clalit"
+
+    // 2) מציאת השם לקריאה (display name) מתוך המיפוי, או שימוש במפתח עצמו אם לא קיים מיפוי
+    const clinicName = clinicDisplayNames[clinic] || clinic;
+
+    // 3) שליפת רשימת החדרים בהתאם למפתח המרפאה (או מערך ריק אם אין ערך בעבור המפתח)
     const rooms = clinicRooms[clinic] || [];
+
+    // 4) רינדור התבנית home.ejs עם כל המשתנים הדרושים
     res.render('home', {
         title: 'סידור חדרים',
-        rooms   // ← pass the array of room-labels into home.ejs
+        rooms,
+        clinicName
     });
 });
+
 
 
 app.get('/room-schedule', isAuthenticated, (req, res) => {
