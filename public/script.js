@@ -1,13 +1,4 @@
-// script.js
-// Main JavaScript for all pages
 
-const TIMES = [
-    '07:00', '07:30', '08:00', '08:30', '09:00', '09:30',
-    '10:00', '10:30', '11:00', '11:30', '12:00', '12:30',
-    '13:00', '13:30', '14:00', '14:30', '15:00', '15:30',
-    '16:00', '16:30', '17:00', '17:30', '18:00', '18:30',
-    '19:00', '19:30', '20:00', '20:30', '21:00'
-];
 
 $(document).ready(function () {
     setupNavigation();
@@ -34,8 +25,9 @@ function setupNavigation() {
 
 function initHome() {
     // 1) Define your rooms however you like:
-    const rooms = ['1', '2', '3', '4', '5', '6', '7', '8', '15', 'מקלט'];
+    // const rooms = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', 'מקלט'];
 
+    const rooms = Array.isArray(window.ROOMS) ? window.ROOMS : [];
     // 2) Grab & clear the grid container
     const $grid = $('#room-grid').empty();
 
@@ -104,12 +96,10 @@ function updateScheduleGrid(rows) {
 
         // Show the therapist’s name in the middle cell
         const $middle = $cells.eq(Math.floor($cells.length / 2));
-        $middle.html(`<div class="therapist-name">${r.names}</div>`);
+        $middle.append(`<div class="therapist-name">${r.names}</div>`);
 
         // Tooltip + click‐to‐delete
         $cells
-            .attr('title', `מטפל/ת: ${r.names}\nחדר: ${r.roomNumber}`)
-            .tooltip()
             .off('click')
             .on('click', () => {
                 Swal.fire({
@@ -122,10 +112,9 @@ function updateScheduleGrid(rows) {
                 }).then(res => {
                     if (res.isConfirmed) {
                         // רק הפגישה הנוכחית
-                        deleteEntry(r.selected_date, r.roomNumber, r.startTime, r.endTime)
-                            .then(fetchDataByDate);
+                        deleteEntry(r.id).then(fetchDataByDate);
                     } else if (res.isDenied) {
-                        // כל הפגישות בשרשור החל מהיום
+                        // your existing recurring‐delete logic…
                         deleteRecurring(r.selected_date, r.roomNumber, r.startTime)
                             .then(fetchDataByDate);
                     }
@@ -134,16 +123,11 @@ function updateScheduleGrid(rows) {
     });
 }
 
-function deleteEntry(date, room, start, end) {
+function deleteEntry(id) {
     return fetch('/deleteEntry', {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-            selected_date: date,
-            roomNumber: room,
-            startTime: start,
-            endTime: end
-        })
+        body: JSON.stringify({ id })
     });
 }
 
@@ -155,13 +139,13 @@ function deleteRecurring(date, room, start) {
     });
 }
 
-
 // ... the rest of your initRoomForm, messages, etc. remains unchanged ...
 
 
 function initRoomForm() {
+    console.log('initRoomForm sees window.TIMES =', window.TIMES);
     const $start = $('#startTime').empty();
-    TIMES.forEach(t => $start.append(`<option value="${t}">${t}</option>`));
+    window.TIMES.forEach(t => $start.append(`<option value="${t}">${t}</option>`));
     $start.change(updateEndTimeOptions);
     updateEndTimeOptions();
 

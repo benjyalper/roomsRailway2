@@ -15,6 +15,8 @@ import { sendWhatsApp } from './utils/whatsapp.js'; // Import the WhatsApp funct
 import { sendMail } from './utils/mail.js';
 import { sendSMS } from './utils/sms.js';
 import { clinicEmailRecipients, clinicSmsRecipients } from './config/clinic-recipients.js';
+import { clinicRooms, TIMES } from './config/clinic-rooms.js';
+
 
 
 
@@ -61,17 +63,19 @@ const users = [
     { id: 15, phone: '0507517336', role: 'admin', clinic: 'marbah' },
     { id: 16, phone: '0528204818', role: 'admin', clinic: 'marbah' },
     { id: 17, phone: '0522261073', role: 'admin', clinic: 'marbah' },
-
-    { id: 18, phone: '0504444444', role: 'user', clinic: 'clalit' },
+    { id: 18, phone: '0504444444', role: 'user', clinic: 'marbah' },
     { id: 19, phone: '0505555522', role: 'user', clinic: 'marbah' },
     { id: 20, phone: '0524393500', role: 'admin', clinic: 'marbah' },
     { id: 21, phone: '0546718945', role: 'admin', clinic: 'marbah' },
     { id: 22, phone: '0590909090', role: 'admin', clinic: 'marbah' },
-    //demo users
+    //demo1 users
     { id: 23, phone: '0505555555', role: 'admin', clinic: 'demo1' },
     { id: 24, phone: '0502476078', role: 'admin', clinic: 'demo1' },
     { id: 25, phone: '0547515021', role: 'admin', clinic: 'demo1' },
+    //nefesh users
     { id: 26, phone: '0501234567', role: 'admin', clinic: 'nefesh' },
+    //clalit users
+    { id: 27, phone: '0501234568', role: 'admin', clinic: 'clalit' }
 ];
 
 // ─── PASSPORT LOCAL STRATEGY (PHONE ONLY) ───────────────────────────────────
@@ -139,15 +143,42 @@ app.get('/logout', (req, res) => {
 
 // ─── PAGE ROUTES ──────────────────────────────────────────────────────────────
 app.get('/home', isAuthenticated, (req, res) => {
-    res.render('home', { title: 'סידור חדרים' });
+    const clinic = req.user.clinic;       // e.g. "marbah" or "clalit"
+    const rooms = clinicRooms[clinic] || [];
+    res.render('home', {
+        title: 'סידור חדרים',
+        rooms   // ← pass the array of room-labels into home.ejs
+    });
 });
 
-app.get('/room-schedule', isAuthenticated, (req, res) =>
-    res.render('room-schedule', { title: 'טבלת חדרים' })
-);
-app.get('/room-form', isAuthenticated, (req, res) =>
-    res.render('room-form', { title: 'עריכת חדרים' })
-);
+
+app.get('/room-schedule', isAuthenticated, (req, res) => {
+    const clinic = req.user.clinic;
+    const rooms = clinicRooms[clinic] || [];
+    const times = TIMES[clinic] || [];
+
+    res.render('room-schedule', {
+        title: 'טבלת חדרים',
+        rooms,
+        TIMES: times
+    });
+});
+
+app.get('/room-form', isAuthenticated, (req, res) => {
+    const clinic = req.user.clinic;
+    const rooms = clinicRooms[clinic] || [];
+    const times = TIMES[clinic] || [];
+
+    console.log('🕒 Rendering room-form with TIMES:', times);
+
+    res.render('room-form', {
+        title: 'עריכת חדרים',
+        rooms,
+        TIMES: times
+    });
+});
+
+
 app.get('/messages', isAuthenticated, (req, res) =>
     res.render('messages', { title: 'הודעות' })
 );
@@ -160,7 +191,7 @@ app.get('/fetchDataByDate', isAuthenticated, async (req, res) => {
             || moment().tz('Asia/Jerusalem').format('YYYY-MM-DD');
         const conn = await pool.getConnection();
         const [rows] = await conn.execute(
-            `SELECT selected_date, names, color, startTime, endTime, roomNumber
+            `SELECT id, selected_date, names, color, startTime, endTime, roomNumber
          FROM selected_dates_2_${clinic}
         WHERE selected_date = ?`,
             [date]
@@ -281,23 +312,21 @@ app.post('/submit', isAuthenticated, isAdmin, async (req, res) => {
 });
 
 // ─── DELETE BOOKING ────────────────────────────────────────────────────────────
+
 app.delete('/deleteEntry', isAuthenticated, isAdmin, async (req, res) => {
+    const { id } = req.body;
+    const clinic = req.user.clinic;
+    const conn = await pool.getConnection();
     try {
-        const { selected_date, roomNumber, startTime } = req.body;
-        const clinic = req.user.clinic;
-        const conn = await pool.getConnection();
         await conn.execute(
             `DELETE FROM selected_dates_2_${clinic}
-         WHERE selected_date = ?
-           AND roomNumber    = ?
-           AND startTime     = ?`,
-            [selected_date, roomNumber, startTime]
+         WHERE id = ?
+         LIMIT 1`,
+            [id]
         );
-        conn.release();
         res.sendStatus(200);
-    } catch (e) {
-        console.error(e);
-        res.status(500).send(e.message);
+    } finally {
+        conn.release();
     }
 });
 
