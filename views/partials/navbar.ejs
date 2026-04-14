@@ -23,6 +23,9 @@
                     <a class="nav-link" href="/messages" id="nav-messages">הודעות</a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link" href="#" id="nav-import-pdf" data-bs-toggle="modal" data-bs-target="#importPdfModal">יבא קובץ</a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link" href="#" id="nav-signout">התנתק/י</a>
                 </li>
             </ul>
@@ -30,3 +33,80 @@
     </div>
 </nav>
 <div style="height:56px;"></div>
+
+<!-- ── Import PDF Modal ─────────────────────────────────────────────────── -->
+<div class="modal fade" id="importPdfModal" tabindex="-1" aria-labelledby="importPdfModalLabel" aria-hidden="true" dir="rtl">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="importPdfModalLabel">יבא קובץ סידור חדרים</h5>
+        <button type="button" class="btn-close ms-0 me-auto" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p class="text-muted small">בחר קובץ PDF של סידור חדרים. הנתונים יוכנסו אוטומטית ל-3 חודשים קדימה.</p>
+        <input type="file" class="form-control" id="pdfFileInput" accept=".pdf" />
+        <div id="importPdfStatus" class="mt-3" style="display:none;"></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ביטול</button>
+        <button type="button" class="btn btn-primary" id="importPdfBtn">יבא</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  const btn    = document.getElementById('importPdfBtn');
+  const input  = document.getElementById('pdfFileInput');
+  const status = document.getElementById('importPdfStatus');
+
+  if (!btn) return;
+
+  btn.addEventListener('click', async () => {
+    const file = input.files[0];
+    if (!file) {
+      showStatus('danger', 'אנא בחר קובץ PDF תחילה.');
+      return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = 'מעבד...';
+    showStatus('info', 'מנתח את הקובץ ומכניס לבסיס הנתונים...');
+
+    const form = new FormData();
+    form.append('pdfFile', file);
+
+    try {
+      const resp = await fetch('/import-pdf', { method: 'POST', body: form });
+      const data = await resp.json();
+      if (resp.ok && data.success) {
+        showStatus('success', `✅ יובאו ${data.inserted} רשומות בהצלחה!`);
+        btn.textContent = 'הושלם';
+      } else {
+        showStatus('danger', `שגיאה: ${data.error || 'לא ידוע'}`);
+        btn.disabled    = false;
+        btn.textContent = 'יבא';
+      }
+    } catch (err) {
+      showStatus('danger', `שגיאת רשת: ${err.message}`);
+      btn.disabled    = false;
+      btn.textContent = 'יבא';
+    }
+  });
+
+  // Reset modal state when closed
+  document.getElementById('importPdfModal').addEventListener('hidden.bs.modal', () => {
+    input.value         = '';
+    status.style.display = 'none';
+    btn.disabled        = false;
+    btn.textContent     = 'יבא';
+  });
+
+  function showStatus(type, msg) {
+    status.style.display = 'block';
+    status.className     = `alert alert-${type}`;
+    status.textContent   = msg;
+  }
+})();
+</script>

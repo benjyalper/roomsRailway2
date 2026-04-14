@@ -16,6 +16,9 @@ import { sendMail } from './utils/mail.js';
 import { sendSMS } from './utils/sms.js';
 import { clinicEmailRecipients, clinicSmsRecipients } from './config/clinic-recipients.js';
 import { clinicRooms, TIMES } from './config/clinic-rooms.js';
+import { parsePdfSchedule } from './utils/pdf-import.js';
+import multer from 'multer';
+const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 20 * 1024 * 1024 } });
 
 
 
@@ -474,6 +477,40 @@ app.get('/room/:roomNumber', isAuthenticated, async (req, res) => {
 });
 
 
+
+// ─── IMPORT PDF ────────────────────────────────────────────────────────────────
+app.post('/import-pdf', isAuthenticated, isAdmin, upload.single('pdfFile'), async (req, res) => {
+    if (!req.file) return res.status(400).json({ error: 'לא נבחר קובץ' });
+
+    try {
+        const entries = await parsePdfSchedule(req.file.buffer, req.file.originalname);
+        if (!entries.length) return res.status(422).json({ error: 'לא נמצאו נתונים בקובץ' });
+
+        const clinic = req.user.clinic;
+        const conn   = await pool.getConnection();
+        try {
+            await conn.beginTransaction();
+            for (const e of entries) {
+                await conn.execute(
+                    `INSERT INTO selected_dates_2_${clinic}
+                     (selected_date, names, color, startTime, endTime, roomNumber, recurringEvent)
+                     VALUES (?, ?, ?, ?, ?, ?, ?)`,
+                    [e.date, e.names, '#6cb4e4', e.startTime, e.endTime, e.roomNumber, false]
+                );
+            }
+            await conn.commit();
+            res.json({ success: true, inserted: entries.length });
+        } catch (dbErr) {
+            await conn.rollback();
+            throw dbErr;
+        } finally {
+            conn.release();
+        }
+    } catch (err) {
+        console.error('PDF import error:', err);
+        res.status(500).json({ error: err.message });
+    }
+});
 
 // ─── FAVICON & ERROR HANDLER ───────────────────────────────────────────────
 app.get('/favicon.ico', (req, res) => res.status(204));
