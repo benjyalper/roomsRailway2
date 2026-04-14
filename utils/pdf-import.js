@@ -266,7 +266,8 @@ function expandToWeeks(slots, startDateStr, numWeeks) {
                 startTime:  slot.startTime,
                 endTime:    slot.endTime,
                 roomNumber: slot.roomNumber,
-                names:      slot.names
+                names:      slot.names,
+                color:      nameToColor(slot.names)
             });
         }
     }
@@ -285,4 +286,22 @@ function normalizeText(str) {
         .replace(/[""״]/g, '"')
         .replace(/\s+/g, ' ')
         .trim();
+}
+
+// ─── Therapist colour assignment ──────────────────────────────────────────────
+// 20 visually distinct, pleasant colours (not too dark/light for readability)
+const PALETTE = [
+    '#4e9af1', '#f4a261', '#2a9d8f', '#e76f51', '#8ecae6',
+    '#a8dadc', '#f6c90e', '#b5838d', '#6d6875', '#52b788',
+    '#ff9f1c', '#cbf3f0', '#e9c46a', '#457b9d', '#f1faee',
+    '#d4a5a5', '#9b5de5', '#00bbf9', '#fee440', '#00f5d4'
+];
+
+// Deterministic hash → same name always gets same colour across imports
+function nameToColor(name) {
+    let hash = 0;
+    for (let i = 0; i < name.length; i++) {
+        hash = Math.imul(31, hash) + name.charCodeAt(i) | 0;
+    }
+    return PALETTE[Math.abs(hash) % PALETTE.length];
 }

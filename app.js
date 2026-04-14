@@ -495,7 +495,7 @@ app.post('/import-pdf', isAuthenticated, isAdmin, upload.single('pdfFile'), asyn
                     `INSERT INTO selected_dates_2_${clinic}
                      (selected_date, names, color, startTime, endTime, roomNumber, recurringEvent)
                      VALUES (?, ?, ?, ?, ?, ?, ?)`,
-                    [e.date, e.names, '#6cb4e4', e.startTime, e.endTime, e.roomNumber, false]
+                    [e.date, e.names, e.color, e.startTime, e.endTime, e.roomNumber, false]
                 );
             }
             await conn.commit();
