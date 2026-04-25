@@ -2,7 +2,7 @@
   "name": "סידור חדרים",
   "short_name": "חדרים",
   "description": "מערכת ניהול חדרי מרפאה",
-  "start_url": "/home",
+  "start_url": "/",
   "display": "standalone",
   "background_color": "#efede3",
   "theme_color": "#018594",
