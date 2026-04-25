@@ -100,18 +100,18 @@ function fetchDataByDate() {
 
 function updateScheduleGrid(rows) {
     // Clear styling, content and classes from all existing table cells
-    $(‘#scheduleTable td.grid-cell’)
-        .removeAttr(‘style’)
-        .removeClass(‘occupied empty-slot’)
-        .off(‘click mouseenter mouseleave’)
+    $('#scheduleTable td.grid-cell')
+        .removeAttr('style')
+        .removeClass('occupied empty-slot')
+        .off('click mouseenter mouseleave')
         .empty();
 
     // For each booking, find the matching cells and color them
     (rows || []).forEach(r => {
         const selector = `[data-room-hour="${r.roomNumber} ${r.startTime}"]`;
         // Actually we need all cells whose data-room-hour time is between startTime (inclusive) and endTime (exclusive):
-        const $cells = $(‘#scheduleTable td.grid-cell’).filter(function () {
-            const [room, time] = $(this).data(‘room-hour’).split(‘ ‘);
+        const $cells = $('#scheduleTable td.grid-cell').filter(function () {
+            const [room, time] = $(this).data('room-hour').split(' ');
             return (
                 room === String(r.roomNumber) &&
                 time >= r.startTime &&
@@ -120,7 +120,7 @@ function updateScheduleGrid(rows) {
         });
 
         // Mark as occupied so empty-slot handler can skip them
-        $cells.addClass(‘occupied’);
+        $cells.addClass('occupied');
 
         // Style the range of cells
         $cells.css({
@@ -128,21 +128,21 @@ function updateScheduleGrid(rows) {
             border: `2px solid ${r.color}`
         });
 
-        // Show the therapist’s name in the middle cell
+        // Show the therapist's name in the middle cell
         const $middle = $cells.eq(Math.floor($cells.length / 2));
         $middle.append(`<div class="therapist-name">${r.names}</div>`);
 
         // Tooltip + click‐to‐delete
         $cells
-            .off(‘click’)
-            .on(‘click’, () => {
+            .off('click')
+            .on('click', () => {
                 Swal.fire({
-                    title: ‘בחר פעולה’,
+                    title: 'בחר פעולה',
                     showDenyButton: true,
                     showCancelButton: true,
-                    confirmButtonText: ‘מחק פגישה זו’,
-                    denyButtonText: ‘מחק את כל הפגישות הבאות’,
-                    cancelButtonText: ‘בטל’
+                    confirmButtonText: 'מחק פגישה זו',
+                    denyButtonText: 'מחק את כל הפגישות הבאות',
+                    cancelButtonText: 'בטל'
                 }).then(res => {
                     if (res.isConfirmed) {
                         deleteEntry(r.id).then(fetchDataByDate);
