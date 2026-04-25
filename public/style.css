@@ -191,9 +191,10 @@ body {
     position: relative;
     max-height: calc(100vh - var(--navbar-height) - var(--heading-height) - var(--date-height));
     overflow: auto;
-    /* both axes */
-    /* NOTE: -webkit-overflow-scrolling:touch intentionally removed —
-       it creates a native scroll layer that breaks position:sticky on iOS */
+    /* Allow finger panning but suppress native pinch-zoom so our snap zoom
+       takes over. JS preventDefault on 2-finger touchmove does the same job
+       for older iOS versions that ignore touch-action. */
+    touch-action: pan-x pan-y;
     /* inherit RTL from page */
 }
 

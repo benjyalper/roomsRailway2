@@ -126,18 +126,20 @@ function initPinchZoom() {
         return Math.hypot(dx, dy);
     }
 
+    // Non-passive so we can call preventDefault() and block native iOS zoom
     wrapper.addEventListener('touchstart', e => {
         if (e.touches.length === 2) {
             startDist = touchDist(e.touches);
             lastDist  = startDist;
         }
-    }, { passive: true });
+    }, { passive: false });
 
     wrapper.addEventListener('touchmove', e => {
-        if (e.touches.length === 2 && startDist !== null) {
-            lastDist = touchDist(e.touches);
+        if (e.touches.length === 2) {
+            e.preventDefault();           // ← blocks native pinch-zoom
+            if (startDist !== null) lastDist = touchDist(e.touches);
         }
-    }, { passive: true });
+    }, { passive: false });
 
     wrapper.addEventListener('touchend', e => {
         if (startDist === null) return;
