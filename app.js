@@ -178,11 +178,13 @@ app.get('/room-schedule', isAuthenticated, (req, res) => {
     const clinic = req.user.clinic;
     const rooms = clinicRooms[clinic] || [];
     const times = TIMES[clinic] || [];
+    const clinicName = clinicDisplayNames[clinic] || clinic;
 
     res.render('room-schedule', {
         title: 'טבלת חדרים',
         rooms,
-        TIMES: times
+        TIMES: times,
+        clinicName
     });
 });
 
@@ -190,13 +192,15 @@ app.get('/room-form', isAuthenticated, (req, res) => {
     const clinic = req.user.clinic;
     const rooms = clinicRooms[clinic] || [];
     const times = TIMES[clinic] || [];
+    const clinicName = clinicDisplayNames[clinic] || clinic;
 
     console.log('🕒 Rendering room-form with TIMES:', times);
 
     res.render('room-form', {
         title: 'עריכת חדרים',
         rooms,
-        TIMES: times
+        TIMES: times,
+        clinicName
     });
 });
 
