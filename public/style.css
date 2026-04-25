@@ -27,6 +27,15 @@
     --name-font-size: 0.72rem;
 }
 
+/* ─── Scroll snap for home page room grid ──────────────────────── */
+/* html is the true scroll container on iOS Safari.                  */
+/* scroll-padding-top offsets the fixed navbar so rows land below it.*/
+/* proximity = only snaps when the finger stops near a row boundary. */
+html {
+    scroll-snap-type: y proximity;
+    scroll-padding-top: var(--navbar-height);
+}
+
 /* ─── Global ───────────────────────────────────────────────────── */
 body {
     font-family: 'Poppins', sans-serif;
@@ -133,6 +142,10 @@ body {
     position: relative;
     cursor: pointer;
     transition: transform .2s;
+    /* Each card registers its top edge as a scroll snap point.
+       Cards in the same grid row share the same top position, so
+       the browser snaps a full row at a time, never cutting an image. */
+    scroll-snap-align: start;
 }
 
 #room-grid .room:hover {
