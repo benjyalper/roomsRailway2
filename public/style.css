@@ -29,12 +29,14 @@
 
 
 /* ─── Global ───────────────────────────────────────────────────── */
+/* Note: no padding-top here — the navbar partial injects a 56px    */
+/* spacer <div> on every page, which is sufficient on its own.      */
+/* (body.home-page already sets padding-top:0 explicitly.)          */
 body {
     font-family: 'Poppins', sans-serif;
     background: var(--gray-light);
     color: var(--text-dark);
     margin: 0;
-    padding-top: var(--navbar-height);
 }
 
 /* ─── Page Banner ───────────────────────────────────────────────── */
@@ -83,16 +85,15 @@ body {
 }
 
 /* ─── Clinic Name (white strip between navbar and beige banner) ─────── */
-/* Identical appearance on every page. Spacing lives here so the white  */
-/* strip is the same height whether the element is standalone or inside  */
-/* #home-subheader.                                                       */
-.clinic-name {
+/* body prefix raises specificity above Bootstrap's body/type rules so  */
+/* colour and alignment are never overridden regardless of load order.   */
+body .clinic-name {
     font-family: 'Poppins', sans-serif;
     font-weight: 300;
     font-size: 1.25rem;
     color: rgba(36, 119, 148, 0.8);   /* var(--sea-deep) at 80% opacity */
     text-align: center;
-    padding: 0.6rem 0 0.5rem;         /* top gap + bottom gap — same on all pages */
+    padding: 0.6rem 0 0.5rem;
     margin: 0;
     line-height: 1.4;
 }
