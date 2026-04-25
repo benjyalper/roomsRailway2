@@ -205,9 +205,11 @@ app.get('/room-form', isAuthenticated, (req, res) => {
 });
 
 
-app.get('/messages', isAuthenticated, (req, res) =>
-    res.render('messages', { title: 'הודעות' })
-);
+app.get('/messages', isAuthenticated, (req, res) => {
+    const clinic = req.user.clinic;
+    const clinicName = clinicDisplayNames[clinic] || clinic;
+    res.render('messages', { title: 'הודעות', clinicName });
+});
 
 // ─── FETCH SCHEDULE DATA ──────────────────────────────────────────────────────
 app.get('/fetchDataByDate', isAuthenticated, async (req, res) => {

@@ -82,31 +82,18 @@ body {
     letter-spacing: 0.02em;
 }
 
-/* ─── Clinic Name (between navbar and banner) ───────────────────────── */
+/* ─── Clinic Name (white strip between navbar and beige banner) ─────── */
+/* Identical appearance on every page. Spacing lives here so the white  */
+/* strip is the same height whether the element is standalone or inside  */
+/* #home-subheader.                                                       */
 .clinic-name {
-    /* Use the same Poppins font but a lighter weight for a “calm” look */
     font-family: 'Poppins', sans-serif;
     font-weight: 300;
-    /* light */
     font-size: 1.25rem;
-    /* adjust as needed */
-
-    /* deep-blue from the palette, with slight transparency (80% opacity) */
-    color: rgba(36, 119, 148, 0.8);
-    /* same as var(--sea-deep) but 0.8 alpha */
-
+    color: rgba(36, 119, 148, 0.8);   /* var(--sea-deep) at 80% opacity */
     text-align: center;
-    padding-top: 0;
-    padding-bottom: 0.5rem;
-    padding-left: 0;
-    padding-right: 0;
-    /* some vertical spacing */
-    margin-top: -5px;
-    /* if you need extra spacing, tweak here */
-    margin-bottom: 0.5rem;
-    /* separate from the banner */
-
-    /* Optional: slightly increase line-height for more breathing room */
+    padding: 0.6rem 0 0.5rem;         /* top gap + bottom gap — same on all pages */
+    margin: 0;
     line-height: 1.4;
 }
 
@@ -144,7 +131,7 @@ body.home-page {
 #home-subheader {
     flex-shrink: 0;
     background: var(--gray-light);   /* hides any content that scrolls under it */
-    padding-top: 0.6rem;             /* breathing room below the navbar */
+    /* spacing comes from .clinic-name padding-top — no extra needed here */
 }
 
 /* remove the bottom margin so the banner butts up cleanly */
