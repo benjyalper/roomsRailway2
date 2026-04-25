@@ -1,0 +1,25 @@
+{
+  "name": "סידור חדרים",
+  "short_name": "חדרים",
+  "description": "מערכת ניהול חדרי מרפאה",
+  "start_url": "/home",
+  "display": "standalone",
+  "background_color": "#efede3",
+  "theme_color": "#018594",
+  "lang": "he",
+  "dir": "rtl",
+  "icons": [
+    {
+      "src": "/images/clinic-logo.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/images/clinic-logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
