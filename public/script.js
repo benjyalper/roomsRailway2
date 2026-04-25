@@ -70,23 +70,28 @@ function fetchDataByDate() {
 }
 
 function updateScheduleGrid(rows) {
-    // Clear styling and content from all the existing table cells
-    $('#scheduleTable td.grid-cell')
-        .removeAttr('style')
+    // Clear styling, content and classes from all existing table cells
+    $(‘#scheduleTable td.grid-cell’)
+        .removeAttr(‘style’)
+        .removeClass(‘occupied empty-slot’)
+        .off(‘click mouseenter mouseleave’)
         .empty();
 
     // For each booking, find the matching cells and color them
     (rows || []).forEach(r => {
         const selector = `[data-room-hour="${r.roomNumber} ${r.startTime}"]`;
         // Actually we need all cells whose data-room-hour time is between startTime (inclusive) and endTime (exclusive):
-        const $cells = $('#scheduleTable td.grid-cell').filter(function () {
-            const [room, time] = $(this).data('room-hour').split(' ');
+        const $cells = $(‘#scheduleTable td.grid-cell’).filter(function () {
+            const [room, time] = $(this).data(‘room-hour’).split(‘ ‘);
             return (
                 room === String(r.roomNumber) &&
                 time >= r.startTime &&
                 time < r.endTime
             );
         });
+
+        // Mark as occupied so empty-slot handler can skip them
+        $cells.addClass(‘occupied’);
 
         // Style the range of cells
         $cells.css({
@@ -100,25 +105,46 @@ function updateScheduleGrid(rows) {
 
         // Tooltip + click‐to‐delete
         $cells
-            .off('click')
-            .on('click', () => {
+            .off(‘click’)
+            .on(‘click’, () => {
                 Swal.fire({
-                    title: 'בחר פעולה',
+                    title: ‘בחר פעולה’,
                     showDenyButton: true,
                     showCancelButton: true,
-                    confirmButtonText: 'מחק פגישה זו',
-                    denyButtonText: 'מחק את כל הפגישות הבאות',
-                    cancelButtonText: 'בטל'
+                    confirmButtonText: ‘מחק פגישה זו’,
+                    denyButtonText: ‘מחק את כל הפגישות הבאות’,
+                    cancelButtonText: ‘בטל’
                 }).then(res => {
                     if (res.isConfirmed) {
-                        // רק הפגישה הנוכחית
                         deleteEntry(r.id).then(fetchDataByDate);
                     } else if (res.isDenied) {
-                        // your existing recurring‐delete logic…
                         deleteRecurring(r.selected_date, r.roomNumber, r.startTime)
                             .then(fetchDataByDate);
                     }
                 });
+            });
+    });
+
+    // ── Empty-slot click: redirect to עריכה with pre-filled params ──────────
+    $(‘#scheduleTable td.grid-cell:not(.occupied)’).each(function () {
+        const $cell = $(this);
+        $cell
+            .addClass(‘empty-slot’)
+            .css(‘cursor’, ‘pointer’)
+            .on(‘mouseenter’, function () {
+                $(this).css(‘backgroundColor’, ‘rgba(121,194,179,0.18)’);
+            })
+            .on(‘mouseleave’, function () {
+                $(this).css(‘backgroundColor’, ‘’);
+            })
+            .on(‘click’, function () {
+                const roomHour  = $(this).data(‘room-hour’);       // e.g. "1 08:00:00"
+                const parts     = roomHour.split(‘ ‘);
+                const room      = parts[0];
+                const startTime = parts[1].slice(0, 5);            // "08:00"
+                const date      = $(‘#lookupDate’).val();
+                window.location.href =
+                    `/room-form?date=${encodeURIComponent(date)}&room=${encodeURIComponent(room)}&startTime=${encodeURIComponent(startTime)}`;
             });
     });
 }
@@ -148,6 +174,17 @@ function initRoomForm() {
     window.TIMES.forEach(t => $start.append(`<option value="${t}">${t}</option>`));
     $start.change(updateEndTimeOptions);
     updateEndTimeOptions();
+
+    // ── Pre-fill from URL params (when arriving from an empty slot click) ───
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('date'))      $('#selectedDate').val(params.get('date'));
+    if (params.get('room'))      $('#roomNumber').val(params.get('room'));
+    if (params.get('startTime')) {
+        $('#startTime').val(params.get('startTime'));
+        updateEndTimeOptions();   // sets endTime to the next slot (30 min later)
+    }
+    // Default to today if no date param supplied
+    if (!params.get('date')) $('#selectedDate').val(moment().format('YYYY-MM-DD'));
 
     $('#recurringEvent').change(() => {
         $('#recurringOptions').css(
