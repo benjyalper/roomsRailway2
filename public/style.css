@@ -280,20 +280,17 @@ body {
     left: 50%;
     transform: translate(-50%, -50%);
     font-weight: 500;
+    font-size: clamp(0.55rem, 1.2vw, 0.72rem); /* shrinks on narrow screens */
 
-    /* wrap long names inside the 40px cell */
+    width: calc(100% - 6px);
+    max-height: 38px;          /* never taller than the cell */
+    overflow: hidden;
+
     white-space: normal;
-    /* allow line breaks */
     word-break: break-word;
-    /* break long words */
     overflow-wrap: break-word;
-    /* extra wrap support */
     text-align: center;
-    /* keep it centered */
-    width: calc(100% - 8px);
-    /* give some horizontal padding */
-    line-height: 1.1;
-    /* tighten lines so up to 2 lines fit */
+    line-height: 1.15;
 }
 
 
