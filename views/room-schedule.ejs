@@ -19,10 +19,12 @@
         <div class="page-banner"></div>
 
         <div class="container mt-3 pt-3 text-center">
-            <!-- date selector only -->
-            <div class="mb-3">
+            <!-- date selector -->
+            <div class="mb-2">
                 <input type="date" id="lookupDate" class="form-control" />
             </div>
+            <!-- Hebrew day name -->
+            <div id="hebrewDayName" style="font-size:1.5rem; font-weight:700; letter-spacing:0.05em; color:#1a6b74;"></div>
         </div>
 
         <div class="schedule-wrapper">
@@ -54,6 +56,23 @@
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
         <script src="/script.js"></script>
+        <script>
+            const HEB_DAYS = ["יום א'", "יום ב'", "יום ג'", "יום ד'", "יום ה'", "יום ו'", "יום ש'"];
+            function updateHebrewDay(dateStr) {
+                const el = document.getElementById('hebrewDayName');
+                if (!el) return;
+                const d = dateStr ? new Date(dateStr + 'T00:00:00') : new Date();
+                el.textContent = HEB_DAYS[d.getDay()];
+            }
+            // Update on date-picker change
+            document.getElementById('lookupDate').addEventListener('change', function () {
+                updateHebrewDay(this.value);
+            });
+            // Init after script.js sets today's date
+            window.addEventListener('load', function () {
+                updateHebrewDay(document.getElementById('lookupDate').value);
+            });
+        </script>
     </body>
 
 </html>
