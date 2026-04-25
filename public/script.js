@@ -12,7 +12,8 @@ function setupNavigation() {
     $('#nav-schedule').click(() => { window.location.href = '/room-schedule'; });
     $('#nav-edit').click(() => { window.location.href = '/room-form'; });
     $('#nav-messages').click(() => { window.location.href = '/messages'; });
-    $('#nav-signout').click(() => {
+    $('#nav-signout').click(e => {
+        e.preventDefault();
         Swal.fire({
             title: 'להתנתק?',
             showCancelButton: true,
@@ -48,15 +49,43 @@ function initHome() {
 }
 
 function initSchedule() {
-    // 1) Set the date picker to today
-    const today = moment().format('YYYY-MM-DD');
+    // 1) Set the date picker to today — use native Date, no moment dependency
+    const today = new Date().toISOString().split('T')[0];   // "YYYY-MM-DD"
     $('#lookupDate')
         .val(today)
-        .off('change')            // remove any old handlers
-        .on('change', fetchDataByDate);
+        .off('change')
+        .on('change', function () {
+            fetchDataByDate();
+            updateHebrewDay(this.value);
+        });
 
-    // 2) Load data for today
+    updateHebrewDay(today);
+
+    // 2) Delegated click for empty slots — registered ONCE on the stable
+    //    table element, fires for any :not(.occupied) cell at click time.
+    //    This survives every updateScheduleGrid refresh automatically.
+    $('#scheduleTable')
+        .off('click.emptySlot')
+        .on('click.emptySlot', 'td.grid-cell:not(.occupied)', function () {
+            const parts     = $(this).data('room-hour').split(' ');
+            const room      = parts[0];
+            const startTime = parts[1].slice(0, 5);          // "08:00"
+            const date      = $('#lookupDate').val();
+            window.location.href =
+                `/room-form?date=${encodeURIComponent(date)}&room=${encodeURIComponent(room)}&startTime=${encodeURIComponent(startTime)}`;
+        });
+
+    // 3) Load data for today
     fetchDataByDate();
+}
+
+// Updates the Hebrew day-name banner (only present on the schedule page)
+function updateHebrewDay(dateStr) {
+    const el = document.getElementById('hebrewDayName');
+    if (!el) return;
+    const HEB_DAYS = ["יום א'", "יום ב'", "יום ג'", "יום ד'", "יום ה'", "יום ו'", "יום ש'"];
+    const d = dateStr ? new Date(dateStr + 'T00:00:00') : new Date();
+    el.textContent = HEB_DAYS[d.getDay()];
 }
 
 function fetchDataByDate() {
@@ -125,28 +154,6 @@ function updateScheduleGrid(rows) {
             });
     });
 
-    // ── Empty-slot click: redirect to עריכה with pre-filled params ──────────
-    $(‘#scheduleTable td.grid-cell:not(.occupied)’).each(function () {
-        const $cell = $(this);
-        $cell
-            .addClass(‘empty-slot’)
-            .css(‘cursor’, ‘pointer’)
-            .on(‘mouseenter’, function () {
-                $(this).css(‘backgroundColor’, ‘rgba(121,194,179,0.18)’);
-            })
-            .on(‘mouseleave’, function () {
-                $(this).css(‘backgroundColor’, ‘’);
-            })
-            .on(‘click’, function () {
-                const roomHour  = $(this).data(‘room-hour’);       // e.g. "1 08:00:00"
-                const parts     = roomHour.split(‘ ‘);
-                const room      = parts[0];
-                const startTime = parts[1].slice(0, 5);            // "08:00"
-                const date      = $(‘#lookupDate’).val();
-                window.location.href =
-                    `/room-form?date=${encodeURIComponent(date)}&room=${encodeURIComponent(room)}&startTime=${encodeURIComponent(startTime)}`;
-            });
-    });
 }
 
 function deleteEntry(id) {

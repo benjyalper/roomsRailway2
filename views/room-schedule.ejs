@@ -56,23 +56,6 @@
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
         <script src="/script.js"></script>
-        <script>
-            const HEB_DAYS = ["יום א'", "יום ב'", "יום ג'", "יום ד'", "יום ה'", "יום ו'", "יום ש'"];
-            function updateHebrewDay(dateStr) {
-                const el = document.getElementById('hebrewDayName');
-                if (!el) return;
-                const d = dateStr ? new Date(dateStr + 'T00:00:00') : new Date();
-                el.textContent = HEB_DAYS[d.getDay()];
-            }
-            // Update on date-picker change
-            document.getElementById('lookupDate').addEventListener('change', function () {
-                updateHebrewDay(this.value);
-            });
-            // Init after script.js sets today's date
-            window.addEventListener('load', function () {
-                updateHebrewDay(document.getElementById('lookupDate').value);
-            });
-        </script>
     </body>
 
 </html>
