@@ -15,8 +15,13 @@
         <!-- fixed navbar with page title -->
         <%- include('partials/navbar') %>
 
+        <!-- clinic name in the white strip between navbar and banner -->
+        <% if (typeof clinicName !== 'undefined' && clinicName) { %>
+        <div class=”clinic-name”><%= clinicName %></div>
+        <% } %>
+
         <!-- decorative “sea-tone” banner -->
-        <div class="page-banner"></div>
+        <div class=”page-banner”></div>
 
         <div class="container mt-3 pt-3 text-center">
             <!-- date selector -->

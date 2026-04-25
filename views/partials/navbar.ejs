@@ -5,13 +5,8 @@
             <span class="navbar-toggler-icon"></span>
         </button>
 
-        <!-- embedded “sandy” heading with optional clinic name subtitle -->
-        <span class=”navbar-text sandy-heading”>
-            <%= title %>
-            <% if (typeof clinicName !== 'undefined' && clinicName) { %>
-            <small class=”navbar-clinic-name”><%= clinicName %></small>
-            <% } %>
-        </span>
+        <!-- embedded “sandy” heading -->
+        <span class=”navbar-text sandy-heading”><%= title %></span>
 
         <!-- home icon -->
         <a class="navbar-brand" href="/home"><i class="fa fa-home"></i></a>

@@ -12,6 +12,12 @@
 
     <body>
         <%- include('partials/navbar') %>
+
+        <!-- clinic name in the white strip between navbar and banner -->
+        <% if (typeof clinicName !== 'undefined' && clinicName) { %>
+        <div class="clinic-name"><%= clinicName %></div>
+        <% } %>
+
         <div class="page-banner"></div>
 
         <div class="container mt-3 pt-3">
