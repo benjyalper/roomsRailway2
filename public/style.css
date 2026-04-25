@@ -27,14 +27,6 @@
     --name-font-size: 0.72rem;
 }
 
-/* ─── Scroll snap for home page room grid ──────────────────────── */
-/* html is the true scroll container on iOS Safari.                  */
-/* scroll-padding-top offsets the fixed navbar so rows land below it.*/
-/* proximity = only snaps when the finger stops near a row boundary. */
-html {
-    scroll-snap-type: y proximity;
-    scroll-padding-top: var(--navbar-height);
-}
 
 /* ─── Global ───────────────────────────────────────────────────── */
 body {
@@ -124,6 +116,38 @@ body {
 
 .form-container input::placeholder {
     text-align: right;
+}
+
+/* ─── Home page: fixed-height flex layout ──────────────────────── */
+/* body.home-page is a flex column filling the full viewport.        */
+/* The navbar partial injects its own 56px spacer so padding-top:0  */
+/* avoids doubling up that offset.                                   */
+body.home-page {
+    padding-top: 0;
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+/* clinic name + decorative banner — stays pinned below the navbar */
+#home-subheader {
+    flex-shrink: 0;
+    background: var(--gray-light);   /* hides any content that scrolls under it */
+}
+
+/* remove the bottom margin so the banner butts up cleanly */
+#home-subheader .page-banner {
+    margin-bottom: 0;
+}
+
+/* scrollable grid container — takes all remaining height */
+#grid-scroll-wrapper {
+    flex: 1;
+    min-height: 0;                   /* lets flex child shrink below content size */
+    overflow-y: scroll;
+    scroll-snap-type: y proximity;
+    scroll-padding-top: 1rem;        /* accounts for #room-grid top padding */
 }
 
 /* ─── Home Grid ───────────────────────────────────────────────── */

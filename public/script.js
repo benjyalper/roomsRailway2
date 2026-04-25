@@ -25,14 +25,9 @@ function setupNavigation() {
 }
 
 function initHome() {
-    // 1) Define your rooms however you like:
-    // const rooms = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', 'מקלט'];
-
     const rooms = Array.isArray(window.ROOMS) ? window.ROOMS : [];
-    // 2) Grab & clear the grid container
     const $grid = $('#room-grid').empty();
 
-    // 3) Render each room from the array
     rooms.forEach(label => {
         $grid.append(`
       <div class="room" data-room-number="${label}">
@@ -41,11 +36,41 @@ function initHome() {
     `);
     });
 
-    // 4) Preserve the click behavior
     $('.room').click(function () {
         const room = $(this).data('room-number');
         window.location.href = `/room/${room}`;
     });
+
+    // Trim the grid wrapper to an exact multiple of row height so no
+    // partial room image is ever visible at the top or bottom.
+    sizeHomeGrid();
+    window.addEventListener('resize', sizeHomeGrid);
+    window.addEventListener('orientationchange', () => setTimeout(sizeHomeGrid, 300));
+}
+
+function sizeHomeGrid() {
+    const wrapper = document.getElementById('grid-scroll-wrapper');
+    const grid    = document.getElementById('room-grid');
+    if (!wrapper || !grid) return;
+
+    // Reset so flex:1 gives us the natural available height first
+    wrapper.style.height = '';
+
+    // Two rAF frames to let the browser finish layout before measuring
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+        const firstCard = grid.querySelector('.room');
+        if (!firstCard) return;
+
+        const gap  = parseFloat(getComputedStyle(grid).gap) || 16;  // 1rem gap
+        const pad  = parseFloat(getComputedStyle(grid).paddingTop) || 16; // 1rem padding
+        const rowH = firstCard.offsetHeight + gap;   // e.g. 140 + 16 = 156 px
+
+        // How many whole rows fit in the available height (below top padding)?
+        const rows  = Math.max(1, Math.floor((wrapper.clientHeight - pad) / rowH));
+
+        // Set exact height: top-padding + N rows (last row has no trailing gap)
+        wrapper.style.height = (rows * rowH - gap + pad * 2) + 'px';
+    }));
 }
 
 function initSchedule() {
