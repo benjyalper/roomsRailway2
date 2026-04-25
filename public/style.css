@@ -189,10 +189,8 @@ body {
     max-height: calc(100vh - var(--navbar-height) - var(--heading-height) - var(--date-height));
     overflow: auto;
     /* both axes */
-    -webkit-overflow-scrolling: touch;
-    /* Force GPU compositing layer — fixes iOS Safari sticky-element paint bug */
-    -webkit-transform: translateZ(0);
-    transform: translateZ(0);
+    /* NOTE: -webkit-overflow-scrolling:touch intentionally removed —
+       it creates a native scroll layer that breaks position:sticky on iOS */
     /* inherit RTL from page */
 }
 
@@ -227,9 +225,6 @@ body {
     /* beneath header corner */
     background: var(--sea-medium);
     min-width: var(--time-col-width);
-    /* iOS Safari: force own compositing layer so sticky cell paints immediately */
-    -webkit-transform: translateZ(0);
-    transform: translateZ(0);
 }
 
 /* ─── Sticky header row (horizontal axis) ────────────────────── */

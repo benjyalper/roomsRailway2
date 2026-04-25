@@ -94,8 +94,20 @@ function fetchDataByDate() {
         headers: { Accept: 'application/json' }
     })
         .then(r => (r.ok ? r.json() : Promise.reject(r.status)))
-        .then(updateScheduleGrid)
+        .then(rows => { updateScheduleGrid(rows); iosRepaintStickyCol(); })
         .catch(() => Swal.fire('שגיאה בטעינת נתוני החדרים'));
+}
+
+// iOS Safari doesn't paint position:sticky cells inside overflow:auto until
+// the first scroll event fires. Nudging scrollLeft by 1px and back triggers
+// the paint without the user seeing any movement.
+function iosRepaintStickyCol() {
+    const w = document.querySelector('.schedule-wrapper');
+    if (!w) return;
+    requestAnimationFrame(() => {
+        w.scrollLeft += 1;
+        requestAnimationFrame(() => { w.scrollLeft -= 1; });
+    });
 }
 
 function updateScheduleGrid(rows) {
