@@ -99,8 +99,12 @@ function initPinchZoom() {
     let snapIdx = SNAP_COLS.indexOf(4);
 
     function colWidth(snapCols) {
-        const n = snapCols === 0 ? totalRooms : snapCols;
-        return Math.max(MIN_COL_W, Math.floor((wrapper.clientWidth - TIME_COL_W) / n));
+        const showAll = snapCols === 0;
+        const n       = showAll ? totalRooms : snapCols;
+        const px      = Math.floor((wrapper.clientWidth - TIME_COL_W) / n);
+        // For "show all", allow columns to go as narrow as they need to fit;
+        // for every other level keep a readable 60 px floor.
+        return showAll ? Math.max(28, px) : Math.max(MIN_COL_W, px);
     }
 
     function applySnap(idx) {
