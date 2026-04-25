@@ -19,6 +19,9 @@
 
     /* Time-column width */
     --time-col-width: 80px;
+
+    /* Room-column width — overridden by JS pinch-zoom on touch devices */
+    --col-width: 120px;
 }
 
 /* ─── Global ───────────────────────────────────────────────────── */
@@ -212,8 +215,11 @@ body {
     border: 1px solid var(--gray);
 }
 
-/* room header cells (no extra overrides) */
-#scheduleTable thead th.room-col {}
+/* room header cells */
+#scheduleTable thead th.room-col {
+    min-width: var(--col-width);
+    width: var(--col-width);
+}
 
 /* ─── Sticky body time-labels (vertical axis) ─────────────────── */
 #scheduleTable tbody th.time-col {
@@ -256,7 +262,7 @@ body {
 /* ─── Body Cells ───────────────────────────────────────────────── */
 #scheduleTable td.grid-cell {
     background: var(--white);
-    min-width: 120px;
+    min-width: var(--col-width);
     height: 40px;
     /* keep cells at exactly 40px tall */
     border: 1px solid var(--gray);

@@ -61,7 +61,10 @@ function initSchedule() {
 
     updateHebrewDay(today);
 
-    // 2) Delegated click for empty slots — registered ONCE on the stable
+    // 2) Pinch-to-snap zoom (touch devices only)
+    initPinchZoom();
+
+    // 4) Delegated click for empty slots — registered ONCE on the stable
     //    table element, fires for any :not(.occupied) cell at click time.
     //    This survives every updateScheduleGrid refresh automatically.
     $('#scheduleTable')
@@ -75,8 +78,82 @@ function initSchedule() {
                 `/room-form?date=${encodeURIComponent(date)}&room=${encodeURIComponent(room)}&startTime=${encodeURIComponent(startTime)}`;
         });
 
-    // 3) Load data for today
+    // 5) Load data for today
     fetchDataByDate();
+}
+
+// ─── Pinch-to-snap zoom ───────────────────────────────────────────────────────
+// Snap levels: number of room columns visible simultaneously in the viewport.
+// 0 is the special "show all" level (every room fits without scrolling).
+// Only activated on touch devices; desktop behaviour is unchanged.
+function initPinchZoom() {
+    const wrapper = document.querySelector('.schedule-wrapper');
+    if (!wrapper || !('ontouchstart' in window)) return;
+
+    const SNAP_COLS  = [1, 2, 4, 6, 8, 0];   // 0 = all rooms
+    const totalRooms = Array.isArray(window.ROOMS) ? window.ROOMS.length : 9;
+    const TIME_COL_W = 80;                     // matches --time-col-width
+    const MIN_COL_W  = 60;                     // never narrower than 60 px
+
+    // Start at 4-column level
+    let snapIdx = SNAP_COLS.indexOf(4);
+
+    function colWidth(snapCols) {
+        const n = snapCols === 0 ? totalRooms : snapCols;
+        return Math.max(MIN_COL_W, Math.floor((wrapper.clientWidth - TIME_COL_W) / n));
+    }
+
+    function applySnap(idx) {
+        snapIdx = Math.max(0, Math.min(SNAP_COLS.length - 1, idx));
+        const w = colWidth(SNAP_COLS[snapIdx]);
+        document.documentElement.style.setProperty('--col-width', w + 'px');
+        iosRepaintStickyCol();
+    }
+
+    // Apply default zoom on load
+    applySnap(snapIdx);
+
+    // Re-apply on orientation change / resize so widths stay accurate
+    window.addEventListener('resize', () => applySnap(snapIdx));
+
+    // ── Pinch gesture tracking ────────────────────────────────────────────────
+    let startDist = null;
+    let lastDist  = null;
+
+    function touchDist(touches) {
+        const dx = touches[0].clientX - touches[1].clientX;
+        const dy = touches[0].clientY - touches[1].clientY;
+        return Math.hypot(dx, dy);
+    }
+
+    wrapper.addEventListener('touchstart', e => {
+        if (e.touches.length === 2) {
+            startDist = touchDist(e.touches);
+            lastDist  = startDist;
+        }
+    }, { passive: true });
+
+    wrapper.addEventListener('touchmove', e => {
+        if (e.touches.length === 2 && startDist !== null) {
+            lastDist = touchDist(e.touches);
+        }
+    }, { passive: true });
+
+    wrapper.addEventListener('touchend', e => {
+        if (startDist === null) return;
+        const delta = lastDist - startDist;
+
+        if (Math.abs(delta) > 30) {        // ignore tiny accidental touches
+            if (delta > 0) {
+                applySnap(snapIdx - 1);    // spread → zoom in → fewer cols
+            } else {
+                applySnap(snapIdx + 1);    // pinch  → zoom out → more cols
+            }
+        }
+
+        startDist = null;
+        lastDist  = null;
+    }, { passive: true });
 }
 
 // Updates the Hebrew day-name banner (only present on the schedule page)
