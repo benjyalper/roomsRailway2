@@ -107,10 +107,15 @@ function initPinchZoom() {
         return showAll ? Math.max(28, px) : Math.max(MIN_COL_W, px);
     }
 
+    // Font size per snap level: bigger columns → bigger, more readable names
+    const SNAP_FONT = { 1: '1rem', 2: '0.85rem', 4: '0.72rem', 6: '0.65rem', 8: '0.58rem', 0: '0.52rem' };
+
     function applySnap(idx) {
         snapIdx = Math.max(0, Math.min(SNAP_COLS.length - 1, idx));
-        const w = colWidth(SNAP_COLS[snapIdx]);
+        const cols = SNAP_COLS[snapIdx];
+        const w    = colWidth(cols);
         document.documentElement.style.setProperty('--col-width', w + 'px');
+        document.documentElement.style.setProperty('--name-font-size', SNAP_FONT[cols] ?? '0.65rem');
         iosRepaintStickyCol();
     }
 
