@@ -29,6 +29,8 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const port = process.env.PORT || 3000;
 
 // ─── STATIC FILES (except index.html) ───────────────────────────────────────
+// Images get a 30-day cache so iOS doesn't re-fetch newRoom.png on every visit
+app.use('/images', express.static('public/images', { maxAge: '30d', immutable: true }));
 app.use(express.static('public', { index: false }));
 
 // ─── BODY & SESSION MIDDLEWARE ──────────────────────────────────────────────
