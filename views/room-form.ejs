@@ -1,16 +1,5 @@
-<!DOCTYPE html>
-<html lang="he" dir="rtl">
+<%- include('partials/head', { title: 'עריכת חדרים' }) %>
 
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <%- include('partials/head', { title: 'עריכת חדרים' }) %>
-        <link rel="stylesheet" href="/style.css" />
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" />
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
-    </head>
-
-    <body>
         <%- include('partials/navbar') %>
 
         <!-- clinic name in the white strip between navbar and banner -->
@@ -65,17 +54,11 @@
             </form>
         </div>
 
-
-
-
-        <!-- your usual scripts -->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script>
-            // Define window.TIMES so that script.js can see it:
-            // the error below is not a problem, it is saved with a syntax error (possible when in settings edit format on save is disabled)
             window.TIMES = <%- JSON.stringify(TIMES) %>;
         </script>
         <script src="/script.js"></script>
