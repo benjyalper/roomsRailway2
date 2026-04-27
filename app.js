@@ -1,7 +1,8 @@
 import express from 'express';
 import session from 'express-session';
 import bodyParser from 'body-parser';
-import mysql from 'mysql2/promise';
+import pg from 'pg';
+const { Pool } = pg;
 import { dirname } from 'path';
 import { fileURLToPath } from 'url';
 import moment from 'moment-timezone';
@@ -110,15 +111,9 @@ function isAdmin(req, res, next) {
 }
 
 // ─── DATABASE POOL ───────────────────────────────────────────────────────────
-const pool = mysql.createPool({
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME,
-    port: process.env.DB_PORT,
-    waitForConnections: true,
-    connectionLimit: 10,
-    queueLimit: 0
+const pool = new Pool({
+    connectionString: process.env.DATABASE_URL,
+    ssl: process.env.DATABASE_URL?.includes('railway.internal') ? false : { rejectUnauthorized: false }
 });
 
 // ─── AUTH ROUTES ──────────────────────────────────────────────────────────────
@@ -219,15 +214,14 @@ app.get('/fetchDataByDate', isAuthenticated, async (req, res) => {
         const clinic = req.user.clinic;
         const date = req.query.date
             || moment().tz('Asia/Jerusalem').format('YYYY-MM-DD');
-        const conn = await pool.getConnection();
-        const [rows] = await conn.execute(
-            `SELECT id, selected_date, names, color, startTime, endTime, roomNumber
-         FROM selected_dates_2_${clinic}
-        WHERE selected_date = ?`,
+        const result = await pool.query(
+            `SELECT id, selected_date, names, color,
+                    starttime AS "startTime", endtime AS "endTime", roomnumber AS "roomNumber"
+             FROM selected_dates_2_${clinic}
+             WHERE selected_date = $1`,
             [date]
         );
-        conn.release();
-        res.json(rows);
+        res.json(result.rows);
     } catch (e) {
         console.error(e);
         res.status(500).json({ error: e.message });
@@ -250,36 +244,36 @@ app.post('/submit', isAuthenticated, isAdmin, async (req, res) => {
     } = req.body;
 
     const clinic = req.user.clinic;
-    const conn = await pool.getConnection();
+    const client = await pool.connect();
 
     try {
         // 1) Begin transaction
-        await conn.beginTransaction();
+        await client.query('BEGIN');
 
         // 2) Insert booking(s)
         if (recurringEvent) {
             const times = parseInt(recurringNum, 10);
             for (let i = 0; i < times; i++) {
                 const nextDate = moment(selectedDate).add(i, 'weeks').format('YYYY-MM-DD');
-                await conn.execute(
+                await client.query(
                     `INSERT INTO selected_dates_2_${clinic}
-            (selected_date, names, color, startTime, endTime, roomNumber, recurringEvent, recurringNum)
-           VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+                     (selected_date, names, color, starttime, endtime, roomnumber, recurringevent, recurringnum)
+                     VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
                     [nextDate, names, selectedColor, startTime, endTime, roomNumber, true, times]
                 );
             }
         } else {
-            await conn.execute(
+            await client.query(
                 `INSERT INTO selected_dates_2_${clinic}
-          (selected_date, names, color, startTime, endTime, roomNumber, recurringEvent)
-         VALUES (?, ?, ?, ?, ?, ?, ?)`,
+                 (selected_date, names, color, starttime, endtime, roomnumber, recurringevent)
+                 VALUES ($1, $2, $3, $4, $5, $6, $7)`,
                 [selectedDate, names, selectedColor, startTime, endTime, roomNumber, false]
             );
         }
 
         // 3) Commit & release
-        await conn.commit();
-        conn.release();
+        await client.query('COMMIT');
+        client.release();
 
         // 4) If the slot is פנוי, notify via WhatsApp
         if (names.trim() === 'פנוי') {
@@ -333,9 +327,8 @@ app.post('/submit', isAuthenticated, isAdmin, async (req, res) => {
         return res.json({ success: true, message: 'Room scheduled successfully.' });
 
     } catch (err) {
-        // Roll back on error
-        await conn.rollback();
-        conn.release();
+        await client.query('ROLLBACK');
+        client.release();
         console.error(err);
         res.status(500).send(err.message);
     }
@@ -346,17 +339,15 @@ app.post('/submit', isAuthenticated, isAdmin, async (req, res) => {
 app.delete('/deleteEntry', isAuthenticated, isAdmin, async (req, res) => {
     const { id } = req.body;
     const clinic = req.user.clinic;
-    const conn = await pool.getConnection();
     try {
-        await conn.execute(
-            `DELETE FROM selected_dates_2_${clinic}
-         WHERE id = ?
-         LIMIT 1`,
+        await pool.query(
+            `DELETE FROM selected_dates_2_${clinic} WHERE id = $1`,
             [id]
         );
         res.sendStatus(200);
-    } finally {
-        conn.release();
+    } catch (e) {
+        console.error(e);
+        res.status(500).send(e.message);
     }
 });
 
@@ -365,18 +356,15 @@ app.delete('/deleteRecurring', isAuthenticated, isAdmin, async (req, res) => {
     try {
         const { selectedDate, roomNumber, startTime } = req.body;
         const clinic = req.user.clinic;
-        const conn = await pool.getConnection();
 
-        // Remove every booking for this room+time on-or-after the clicked date
-        await conn.execute(
+        await pool.query(
             `DELETE FROM selected_dates_2_${clinic}
-         WHERE roomNumber = ?
-           AND startTime  = ?
-           AND selected_date >= ?`,
+             WHERE roomnumber = $1
+               AND starttime  = $2
+               AND selected_date >= $3`,
             [roomNumber, startTime, selectedDate]
         );
 
-        conn.release();
         res.sendStatus(200);
     } catch (e) {
         console.error(e);
@@ -389,14 +377,14 @@ app.delete('/deleteRecurring', isAuthenticated, isAdmin, async (req, res) => {
 app.get('/get_last_messages', isAuthenticated, async (req, res) => {
     try {
         const clinic = req.user.clinic;
-        const [rows] = await pool.query(
+        const result = await pool.query(
             `SELECT * FROM messages_${clinic}
-       ORDER BY id DESC
-       LIMIT 10`
+             ORDER BY id DESC
+             LIMIT 10`
         );
         res.json({
-            messages: rows.map(r => r.message),
-            messageIds: rows.map(r => r.id)
+            messages: result.rows.map(r => r.message),
+            messageIds: result.rows.map(r => r.id)
         });
     } catch (e) {
         console.error(e);
@@ -410,14 +398,11 @@ app.post('/submit_message', isAuthenticated, async (req, res) => {
         if (!message) return res.status(400).json({ error: 'Empty' });
 
         const clinic = req.user.clinic;
-        const conn = await pool.getConnection();
-        const [r] = await conn.execute(
-            `INSERT INTO messages_${clinic}(message) VALUES(?)`,
+        const result = await pool.query(
+            `INSERT INTO messages_${clinic}(message) VALUES($1) RETURNING id`,
             [message]
         );
-        conn.release();
-
-        res.json({ messageId: r.insertId });
+        res.json({ messageId: result.rows[0].id });
     } catch (e) {
         console.error(e);
         res.status(500).json({ error: e.message });
@@ -428,12 +413,10 @@ app.post('/delete_message', isAuthenticated, isAdmin, async (req, res) => {
     try {
         const messageId = parseInt(req.body.messageId, 10);
         const clinic = req.user.clinic;
-        const conn = await pool.getConnection();
-        await conn.execute(
-            `DELETE FROM messages_${clinic} WHERE id=?`,
+        await pool.query(
+            `DELETE FROM messages_${clinic} WHERE id=$1`,
             [messageId]
         );
-        conn.release();
         res.send('Deleted');
     } catch (e) {
         console.error(e);
@@ -447,20 +430,19 @@ app.get('/room/:roomNumber', isAuthenticated, async (req, res) => {
         const roomNumber = req.params.roomNumber;
         const clinic = req.user.clinic;
         const today = moment().tz('Asia/Jerusalem').format('YYYY-MM-DD');
-        const conn = await pool.getConnection();
-        const [rows] = await conn.execute(
+        const result = await pool.query(
             `SELECT * FROM selected_dates_2_${clinic}
-         WHERE selected_date = ?
-           AND roomNumber    = ?`,
+             WHERE selected_date = $1
+               AND roomnumber    = $2`,
             [today, roomNumber]
         );
-        conn.release();
+        const rows = result.rows;
 
         const now = moment().tz('Asia/Jerusalem');
         let currentTherapist = null;
         for (const r of rows) {
-            const s = moment.tz(r.startTime, 'HH:mm:ss', 'Asia/Jerusalem');
-            const e = moment.tz(r.endTime, 'HH:mm:ss', 'Asia/Jerusalem');
+            const s = moment.tz(r.starttime, 'HH:mm:ss', 'Asia/Jerusalem');
+            const e = moment.tz(r.endtime, 'HH:mm:ss', 'Asia/Jerusalem');
             if (now.isSameOrAfter(s) && now.isBefore(e)) {
                 currentTherapist = { name: r.names, endTime: e.format('HH:mm') };
                 break;
@@ -495,24 +477,24 @@ app.post('/import-pdf', isAuthenticated, isAdmin, upload.single('pdfFile'), asyn
         if (!entries.length) return res.status(422).json({ error: 'לא נמצאו נתונים בקובץ' });
 
         const clinic = req.user.clinic;
-        const conn   = await pool.getConnection();
+        const client = await pool.connect();
         try {
-            await conn.beginTransaction();
+            await client.query('BEGIN');
             for (const e of entries) {
-                await conn.execute(
+                await client.query(
                     `INSERT INTO selected_dates_2_${clinic}
-                     (selected_date, names, color, startTime, endTime, roomNumber, recurringEvent)
-                     VALUES (?, ?, ?, ?, ?, ?, ?)`,
+                     (selected_date, names, color, starttime, endtime, roomnumber, recurringevent)
+                     VALUES ($1, $2, $3, $4, $5, $6, $7)`,
                     [e.date, e.names, e.color, e.startTime, e.endTime, e.roomNumber, false]
                 );
             }
-            await conn.commit();
+            await client.query('COMMIT');
             res.json({ success: true, inserted: entries.length });
         } catch (dbErr) {
-            await conn.rollback();
+            await client.query('ROLLBACK');
             throw dbErr;
         } finally {
-            conn.release();
+            client.release();
         }
     } catch (err) {
         console.error('PDF import error:', err);
