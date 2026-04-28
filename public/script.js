@@ -76,13 +76,17 @@ function sizeHomeGrid() {
 function initSchedule() {
     // 1) Set the date picker to today — use native Date, no moment dependency
     const today = new Date().toISOString().split('T')[0];   // "YYYY-MM-DD"
-    $('#lookupDate')
-        .val(today)
-        .off('change')
-        .on('change', function () {
+    flatpickr('#lookupDate', {
+        dateFormat: 'Y-m-d',
+        altInput: true,
+        altFormat: 'd/m/Y',
+        defaultDate: today,
+        locale: 'he',
+        onChange(_, dateStr) {
             fetchDataByDate();
-            updateHebrewDay(this.value);
-        });
+            updateHebrewDay(dateStr);
+        }
+    });
 
     updateHebrewDay(today);
 
@@ -309,14 +313,19 @@ function initRoomForm() {
 
     // ── Pre-fill from URL params (when arriving from an empty slot click) ───
     const params = new URLSearchParams(window.location.search);
-    if (params.get('date'))      $('#selectedDate').val(params.get('date'));
+    const defaultDate = params.get('date') || moment().format('YYYY-MM-DD');
+    flatpickr('#selectedDate', {
+        dateFormat: 'Y-m-d',
+        altInput: true,
+        altFormat: 'd/m/Y',
+        defaultDate,
+        locale: 'he'
+    });
     if (params.get('room'))      $('#roomNumber').val(params.get('room'));
     if (params.get('startTime')) {
         $('#startTime').val(params.get('startTime'));
-        updateEndTimeOptions();   // sets endTime to the next slot (30 min later)
+        updateEndTimeOptions();
     }
-    // Default to today if no date param supplied
-    if (!params.get('date')) $('#selectedDate').val(moment().format('YYYY-MM-DD'));
 
     $('#recurringEvent').change(() => {
         $('#recurringOptions').css(
