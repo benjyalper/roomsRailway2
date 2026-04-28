@@ -82,6 +82,7 @@ function initSchedule() {
         altFormat: 'd/m/Y',
         defaultDate: today,
         locale: 'he',
+        disableMobile: true,
         onChange(_, dateStr) {
             fetchDataByDate();
             updateHebrewDay(dateStr);
@@ -319,7 +320,8 @@ function initRoomForm() {
         altInput: true,
         altFormat: 'd/m/Y',
         defaultDate,
-        locale: 'he'
+        locale: 'he',
+        disableMobile: true
     });
     if (params.get('room'))      $('#roomNumber').val(params.get('room'));
     if (params.get('startTime')) {
