@@ -18,6 +18,7 @@ import { sendSMS } from './utils/sms.js';
 import { clinicEmailRecipients, clinicSmsRecipients } from './config/clinic-recipients.js';
 import { clinicRooms, TIMES } from './config/clinic-rooms.js';
 import { parsePdfSchedule } from './utils/pdf-import.js';
+import ExcelJS from 'exceljs';
 import multer from 'multer';
 const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 20 * 1024 * 1024 } });
 
@@ -476,6 +477,92 @@ app.post('/import-pdf', isAuthenticated, isAdmin, upload.single('pdfFile'), asyn
         const entries = await parsePdfSchedule(req.file.buffer, req.file.originalname);
         if (!entries.length) return res.status(422).json({ error: 'לא נמצאו נתונים בקובץ' });
 
+        // Build an Excel workbook from the parsed entries (no DB insert yet)
+        const wb = new ExcelJS.Workbook();
+        const ws = wb.addWorksheet('סידור חדרים', { views: [{ rightToLeft: true }] });
+        ws.columns = [
+            { header: 'תאריך',  key: 'date',       width: 14 },
+            { header: 'מטפל',   key: 'names',      width: 28 },
+            { header: 'חדר',    key: 'roomNumber', width: 8  },
+            { header: 'התחלה', key: 'startTime',  width: 10 },
+            { header: 'סיום',   key: 'endTime',    width: 10 },
+            { header: 'צבע',    key: 'color',      width: 12 }
+        ];
+        // Force these columns to text so Excel doesn't auto-format
+        ws.getColumn('date').numFmt      = '@';
+        ws.getColumn('startTime').numFmt = '@';
+        ws.getColumn('endTime').numFmt   = '@';
+
+        entries.forEach(e => ws.addRow({
+            date:       e.date,
+            names:      e.names,
+            roomNumber: e.roomNumber,
+            startTime:  e.startTime,
+            endTime:    e.endTime,
+            color:      e.color
+        }));
+        ws.getRow(1).font = { bold: true };
+
+        const buffer = await wb.xlsx.writeBuffer();
+        res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        res.setHeader('Content-Disposition', `attachment; filename="schedule-review-${Date.now()}.xlsx"`);
+        res.send(Buffer.from(buffer));
+    } catch (err) {
+        console.error('PDF import error:', err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// ─── IMPORT EXCEL → inserts the reviewed rows into the DB ──────────────────
+app.post('/import-excel', isAuthenticated, isAdmin, upload.single('xlsxFile'), async (req, res) => {
+    if (!req.file) return res.status(400).json({ error: 'לא נבחר קובץ' });
+
+    try {
+        const wb = new ExcelJS.Workbook();
+        await wb.xlsx.load(req.file.buffer);
+        const ws = wb.worksheets[0];
+        if (!ws) return res.status(422).json({ error: 'הקובץ ריק' });
+
+        const toStr = v => {
+            if (v == null) return '';
+            if (v instanceof Date) return v.toISOString();
+            if (typeof v === 'object' && v.text)   return v.text;
+            if (typeof v === 'object' && v.result !== undefined) return String(v.result);
+            return String(v);
+        };
+        const formatDate = v => {
+            if (v instanceof Date) return moment(v).format('YYYY-MM-DD');
+            const s = toStr(v).trim();
+            if (/^\d{4}-\d{2}-\d{2}$/.test(s)) return s;
+            if (/^\d{1,2}\/\d{1,2}\/\d{4}$/.test(s)) {
+                const [d, m, y] = s.split('/');
+                return `${y}-${m.padStart(2, '0')}-${d.padStart(2, '0')}`;
+            }
+            return null;
+        };
+        const formatTime = v => {
+            if (v instanceof Date) return moment(v).format('HH:mm');
+            const s = toStr(v).trim();
+            if (/^\d{1,2}:\d{2}/.test(s)) return s.slice(0, 5);
+            return null;
+        };
+
+        const entries = [];
+        ws.eachRow((row, rowNum) => {
+            if (rowNum === 1) return;             // skip header
+            const v = row.values;                 // 1-indexed
+            const date       = formatDate(v[1]);
+            const names      = toStr(v[2]).trim();
+            const roomNumber = toStr(v[3]).trim();
+            const startTime  = formatTime(v[4]);
+            const endTime    = formatTime(v[5]);
+            const color      = toStr(v[6]).trim() || '#79c2b3';
+            if (!date || !names || !roomNumber || !startTime || !endTime) return;
+            entries.push({ date, names, roomNumber, startTime, endTime, color });
+        });
+
+        if (!entries.length) return res.status(422).json({ error: 'לא נמצאו רשומות תקינות' });
+
         const clinic = req.user.clinic;
         const client = await pool.connect();
         try {
@@ -497,7 +584,19 @@ app.post('/import-pdf', isAuthenticated, isAdmin, upload.single('pdfFile'), asyn
             client.release();
         }
     } catch (err) {
-        console.error('PDF import error:', err);
+        console.error('Excel import error:', err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// ─── ERASE ALL DATA (admin only) ────────────────────────────────────────────
+app.post('/erase-all', isAuthenticated, isAdmin, async (req, res) => {
+    try {
+        const clinic = req.user.clinic;
+        const result = await pool.query(`DELETE FROM selected_dates_2_${clinic}`);
+        res.json({ success: true, deleted: result.rowCount });
+    } catch (err) {
+        console.error('erase-all error:', err);
         res.status(500).json({ error: err.message });
     }
 });
