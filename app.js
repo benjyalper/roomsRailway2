@@ -567,12 +567,22 @@ app.post('/import-excel', isAuthenticated, isAdmin, upload.single('xlsxFile'), a
         const client = await pool.connect();
         try {
             await client.query('BEGIN');
-            for (const e of entries) {
+            // Batch insert in chunks of 500 rows to avoid timeouts
+            const CHUNK = 500;
+            for (let i = 0; i < entries.length; i += CHUNK) {
+                const chunk = entries.slice(i, i + CHUNK);
+                const values = [];
+                const params = [];
+                chunk.forEach((e, idx) => {
+                    const o = idx * 7;
+                    values.push(`($${o+1},$${o+2},$${o+3},$${o+4},$${o+5},$${o+6},$${o+7})`);
+                    params.push(e.date, e.names, e.color, e.startTime, e.endTime, e.roomNumber, false);
+                });
                 await client.query(
                     `INSERT INTO selected_dates_2_${clinic}
                      (selected_date, names, color, starttime, endtime, roomnumber, recurringevent)
-                     VALUES ($1, $2, $3, $4, $5, $6, $7)`,
-                    [e.date, e.names, e.color, e.startTime, e.endTime, e.roomNumber, false]
+                     VALUES ${values.join(',')}`,
+                    params
                 );
             }
             await client.query('COMMIT');
